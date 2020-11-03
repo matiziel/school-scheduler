@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Model;
 
+
 namespace Persistence {
     public class AppData {
         public List<string> Rooms { get; set; }
