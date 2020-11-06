@@ -19,6 +19,10 @@ namespace Persistence {
         public DbContext() {
             pathToJsonFile = "./db.json";
         }
+        public DbContext(string path)
+        {
+            pathToJsonFile = path;
+        }
         private void LoadData() {
             using (StreamReader r = new StreamReader(pathToJsonFile)) {
                 string data = r.ReadToEnd();
@@ -26,11 +30,14 @@ namespace Persistence {
             }
         }
         public void SaveChanges() {
+            if (appData is null)
+                return;
             FileInfo fi = new FileInfo(pathToJsonFile);
             using (TextWriter txtWriter = new StreamWriter(fi.Open(FileMode.Truncate))) {
-                string data = JsonConvert.SerializeObject(AppData);
+                string data = JsonConvert.SerializeObject(appData);
                 txtWriter.Write(data);
             }
+            appData = null;
         }
     }
 }
