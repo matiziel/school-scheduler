@@ -4,7 +4,7 @@ using Model;
 
 
 namespace Persistence {
-    public class AppData {
+    public class Schedule {
         public List<string> Rooms { get; set; }
         public List<string> Groups { get; set; }
         public List<string> Classes { get; set; }

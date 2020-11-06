@@ -10,12 +10,12 @@ namespace UnitTests {
         public void LoadData_ReadDbFileToAppDataObject_CorrectAppDataObject() {
             PrepareTestData();
             var context = new DbContext(pathToJsonTestFile);
-            Assert.NotNull(context.AppData);
-            Assert.Equal(2, context.AppData.Rooms.Count);
-            Assert.Equal(1, context.AppData.Groups.Count);
-            Assert.Equal(2, context.AppData.Classes.Count);
-            Assert.Equal(2, context.AppData.Teachers.Count);
-            Assert.Equal(2, context.AppData.Activities.Count);
+            Assert.NotNull(context.Schedule);
+            Assert.Equal(2, context.Schedule.Rooms.Count);
+            Assert.Equal(1, context.Schedule.Groups.Count);
+            Assert.Equal(2, context.Schedule.Classes.Count);
+            Assert.Equal(2, context.Schedule.Teachers.Count);
+            Assert.Equal(2, context.Schedule.Activities.Count);
         }
         [Theory]
         [InlineData("132")]
@@ -24,9 +24,9 @@ namespace UnitTests {
         public void SaveChanges_AddNewValues_CorrectAppDataObjectWithNewValues(string room) {
             PrepareTestData();
             var context = new DbContext(pathToJsonTestFile);
-            context.AppData.Rooms.Add(room);
+            context.Schedule.Rooms.Add(room);
             context.SaveChanges();
-            Assert.True(context.AppData.Rooms.Contains(room));
+            Assert.True(context.Schedule.Rooms.Contains(room));
         }
         private void PrepareTestData() {
             FileInfo fi = new FileInfo(pathToJsonTestFile);
