@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Contracts.Services;
+using Application;
 using Persistence;
 
 namespace WebClient
@@ -25,6 +27,7 @@ namespace WebClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<DbContext>();
+            services.AddTransient<IScheduleService, ScheduleService>();
             services.AddControllersWithViews();
         }
 
