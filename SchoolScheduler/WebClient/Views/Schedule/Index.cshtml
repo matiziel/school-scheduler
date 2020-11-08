@@ -1,5 +1,5 @@
 @model Contracts.ViewModels.ScheduleViewModel
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Index";
 }
@@ -10,21 +10,32 @@
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
-    <thead>
-        <tr>
-            <th></th>
-        </tr>
-    </thead>
     <tbody>
-@foreach (var item in Model.Slots) {
         <tr>
             <td>
-                <label>@item</label>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <button type="button" class="btn btn-light btn-block">czas</button>
             </td>
+            @foreach (WebClient.Utils.Days day in Enum.GetValues(typeof(WebClient.Utils.Days)))
+            {
+                <td>
+                    <a type="button" class="btn btn-light btn-block">@day</a>
+                </td>
+            }
         </tr>
-}
+        @for (int i = 0; i < 9; ++i)
+        {
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-light btn-block">@WebClient.Utils.Hours.Values[i]</button>
+                </td>
+                @for (int k = 0; k < 5; ++k)
+                {
+                    <td>
+                        <a asp-controller="Home" asp-action="Privacy" type="button" class="btn btn-secondary btn-block">
+                            @Model.Slots[i * 5 + k]</a>
+                    </td>
+                }
+            </tr>
+        }
     </tbody>
 </table>
