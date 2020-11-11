@@ -4,18 +4,30 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>@ViewBag.Name</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <tbody>
-        <tr>
-            <td>
-                <button type="button" class="btn btn-light btn-block">czas</button>
-            </td>
-            @foreach (WebClient.Utils.Days day in Enum.GetValues(typeof(WebClient.Utils.Days)))
+<div class="dropdown">
+    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        @ViewBag.Description
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        @foreach (string item in ViewBag.DropDownListElements)
+        {
+            <a asp-action="Index" asp-route-group="@item" class="dropdown-item">@item</a>
+        }
+        </div>
+    </div>
+    <br>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-light btn-block">czas</button>
+                </td>
+                @foreach (WebClient.Utils.Days day in Enum.GetValues(typeof(WebClient.Utils.Days)))
             {
                 <td>
                     <a type="button" class="btn btn-light btn-block">@day</a>
@@ -31,7 +43,7 @@
                 @for (int k = 0; k < 5; ++k)
                 {
                     <td>
-                        <a asp-controller="Home" asp-action="Privacy" type="button" class="btn btn-secondary btn-block">
+                        <a asp-action="Edit" type="button" class="btn btn-secondary btn-block">
                             @Model.Slots[i * 5 + k]</a>
                     </td>
                 }
