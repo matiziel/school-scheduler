@@ -2,11 +2,12 @@ using System;
 
 namespace Contracts.ViewModels {
     public class ScheduleViewModel {
-        public string[] Slots { get; set; }
+        public ActivityViewModel[] Slots { get; set; }
         public ScheduleViewModel() {
-            Slots = new string[45];
+            Slots = new ActivityViewModel[45];
             for (int i = 0; i < Slots.Length; i++) {
-                Slots[i] = "-";
+                Slots[i] = new ActivityViewModel();
+                Slots[i].Title = "-";
             }
         }
     }

@@ -42,10 +42,20 @@
                 </td>
                 @for (int k = 0; k < 5; ++k)
                 {
+                    int slotNumber = i * 5 + k;
                     <td>
-                        <a asp-action="Edit" type="button" class="btn btn-secondary btn-block">
-                            @Model.Slots[i * 5 + k]</a>
-                    </td>
+                        @if (Model.Slots[slotNumber].Id is null)
+                        {
+                            <a asp-action="Create" asp-route-slot="@slotNumber" asp-route-helper="@ViewBag.Description" type="button" class="btn btn-secondary btn-block">
+                                @Model.Slots[slotNumber].Title</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.Slots[slotNumber].Id" type="button"
+                                class="btn btn-secondary btn-block">
+                                @Model.Slots[slotNumber].Title</a>
+                        }
+                        </td>
                 }
             </tr>
         }

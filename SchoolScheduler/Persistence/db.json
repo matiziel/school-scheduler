@@ -1,11 +1,11 @@
 {
-    "rooms": [
+    "Rooms": [
         "110",
         "111",
         "120",
         "121"
     ],
-    "groups": [
+    "Groups": [
         "1a",
         "1b",
         "1c",
@@ -16,14 +16,14 @@
         "4a",
         "4b"
     ],
-    "classes": [
+    "Classes": [
         "mat",
         "geo",
         "eng",
         "phys",
         "biol"
     ],
-    "teachers": [
+    "Teachers": [
         "kowalski",
         "nowak",
         "smith",
@@ -32,20 +32,38 @@
         "hammond",
         "atkinson"
     ],
-    "activities": [
+    "Activities": [
         {
-            "room": "110",
-            "group": "1a",
-            "class": "mat",
-            "slot": 1,
-            "teacher": "kowalski"
+            "Id": 1,
+            "Room": "110",
+            "Group": "1a",
+            "Class": "mat",
+            "Slot": 1,
+            "Teacher": "kowalski"
         },
-    {
-            "room": "121",
-            "group": "1c",
-            "class": "eng",
-            "slot": 3,
-            "teacher": "nowak"
+        {
+            "Id": 2,
+            "Room": "121",
+            "Group": "1c",
+            "Class": "eng",
+            "Slot": 3,
+            "Teacher": "nowak"
+        },
+        {
+            "Id": 3,
+            "Room": "111",
+            "Group": "1a",
+            "Class": "geo",
+            "Slot": 2,
+            "Teacher": "clarkson"
+        },
+        {
+            "Id": 4,
+            "Room": "121",
+            "Group": "1a",
+            "Class": "phys",
+            "Slot": 4,
+            "Teacher": "clarkson"
         }
     ]
 }
