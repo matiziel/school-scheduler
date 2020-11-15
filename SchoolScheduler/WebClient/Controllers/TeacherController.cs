@@ -29,9 +29,9 @@ namespace WebClient.Controllers {
         }
         public IActionResult Create(int slot, string helper) {
             try {
-                ViewBag.ListOfRooms = _editDataService.GetAllRooms();
+                ViewBag.ListOfRooms = _editDataService.GetFreeRoomsBySlot(slot);
                 ViewBag.ListOfClasses = _editDataService.GetAllClasses();
-                ViewBag.ListOfGroups = _editDataService.GetAllGroups();
+                ViewBag.ListOfGroups = _editDataService.GetFreeGroupsBySlot(slot);
                 ViewBag.Method = "Create";
                 return View("./Views/Schedule/EditForTeacher.cshtml", new Activity {
                     Slot = slot,
@@ -60,11 +60,13 @@ namespace WebClient.Controllers {
             try {
                 if (id is null)
                     return NotFound();
-                ViewBag.ListOfRooms = _editDataService.GetAllRooms();
+                var activity = _scheduleService.GetActivity(id.Value);
+
+                ViewBag.ListOfRooms = _editDataService.GetFreeRoomsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _editDataService.GetAllClasses();
-                ViewBag.ListOfGroups = _editDataService.GetAllGroups();
+                ViewBag.ListOfGroups = _editDataService.GetFreeGroupsBySlot(activity.Slot, id);
                 ViewBag.Method = "Edit";
-                return View("./Views/Schedule/EditForTeacher.cshtml", _scheduleService.GetActivity(id.Value));
+                return View("./Views/Schedule/EditForTeacher.cshtml", activity);
             }
             catch (Exception) {
                 return BadRequest();

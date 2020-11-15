@@ -29,7 +29,15 @@ namespace Application {
         }
 
         public ScheduleViewModel GetScheduleByRoom(string room) {
-            throw new NotImplementedException();
+            var activitiesByRoom = _context.Schedule.Activities.Where(a => a.Room == room);
+            var schedule = new ScheduleViewModel();
+            foreach (var item in activitiesByRoom) {
+                if (item.Slot < schedule.Slots.Length) {
+                    schedule.Slots[item.Slot].Id = item.Id;
+                    schedule.Slots[item.Slot].Title = item.Group;
+                }
+            }
+            return schedule;
         }
 
         public ScheduleViewModel GetScheduleByTeacher(string teacher) {

@@ -4,9 +4,12 @@ using Model;
 
 namespace Contracts.Services {
     public interface IEditDataService {
-        List<string> GetAllGroups();
-        List<string> GetAllRooms();
-        List<string> GetAllTeachers();
-        List<string> GetAllClasses();
+        IEnumerable<string> GetAllGroups();
+        IEnumerable<string> GetAllRooms();
+        IEnumerable<string> GetAllTeachers();
+        IEnumerable<string> GetAllClasses();
+        IEnumerable<string> GetFreeGroupsBySlot(int slot, int? id = null);
+        IEnumerable<string> GetFreeRoomsBySlot(int slot, int? id = null);
+        IEnumerable<string> GetFreeTeachersBySlot(int slot, int? id = null);
     }
 }
