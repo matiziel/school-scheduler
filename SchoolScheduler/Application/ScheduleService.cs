@@ -9,12 +9,9 @@ using Persistence;
 namespace Application {
     public class ScheduleService : IScheduleService {
         private readonly DbContext _context;
-        public ScheduleService(DbContext context) {
-            _context = context;
-        }
-        public Activity GetActivity(int id) {
-            return _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
-        }
+        public ScheduleService(DbContext context) => _context = context;
+        
+        public Activity GetActivity(int id) => _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
 
         public ScheduleViewModel GetScheduleByGroup(string group) {
             var activitiesByGroup = _context.Schedule.Activities.Where(a => a.Group == group);
@@ -63,12 +60,10 @@ namespace Application {
             _context.Schedule.Activities.Add(activity);
             _context.SaveChanges();
         }
-        private bool ValidateActivityForCreate(Activity activity) {
-            return ValidateActivity(_context.Schedule.Activities, activity);
-        }
-        private int GetFreeId() {
-            return _context.Schedule.Activities.Select(a => a.Id).Max() + 1;
-        }
+        private bool ValidateActivityForCreate(Activity activity) => 
+            ValidateActivity(_context.Schedule.Activities, activity);
+        private int GetFreeId() => _context.Schedule.Activities.Select(a => a.Id).Max() + 1;
+
         public void EditActivity(int id, Activity activity) {
             var temp = _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
             if (temp is null || activity is null)
@@ -83,9 +78,8 @@ namespace Application {
             temp.Teacher = activity.Teacher;
             _context.SaveChanges();
         }
-        private bool ValidateActivityForEdit(int id, Activity activity) {
-            return ValidateActivity(_context.Schedule.Activities.Where(a => a.Id != id), activity);
-        }
+        private bool ValidateActivityForEdit(int id, Activity activity) =>
+            ValidateActivity(_context.Schedule.Activities.Where(a => a.Id != id), activity);
 
         private bool ValidateActivity(IEnumerable<Activity> activities, Activity activity) {
             return activities.Where(a =>

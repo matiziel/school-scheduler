@@ -9,21 +9,34 @@ using Persistence;
 
 namespace Application {
     public class EditDataService : IEditDataService {
+
+
         private readonly DbContext _context;
-        public EditDataService(DbContext context) {
-            _context = context;
-        }
-        public IEnumerable<string> GetAllGroups() {
-            return _context.Schedule.Groups;
-        }
-        public IEnumerable<string> GetAllRooms() {
-            return _context.Schedule.Rooms;
-        }
-        public IEnumerable<string> GetAllTeachers() {
-            return _context.Schedule.Teachers;
-        }
-        public IEnumerable<string> GetAllClasses() {
-            return _context.Schedule.Classes;
+        public EditDataService(DbContext context) => _context = context;
+
+        public enum DataType { Group, Class, Teacher, Room }
+        public IEnumerable<string> GetAllGroups() => _context.Schedule.Groups;
+        public IEnumerable<string> GetAllRooms() => _context.Schedule.Rooms;
+        public IEnumerable<string> GetAllTeachers() => _context.Schedule.Teachers;
+        public IEnumerable<string> GetAllClasses() => _context.Schedule.Classes;
+
+        public void AddKey(string value, DataType type) {
+            if (type == DataType.Group) {
+                if (!_context.Schedule.Groups.Contains(value))
+                    _context.Schedule.Groups.Add(value);
+            }
+            else if (type == DataType.Class) {
+                if (!_context.Schedule.Classes.Contains(value))
+                    _context.Schedule.Classes.Add(value);
+            }
+            else if (type == DataType.Teacher) {
+                if (!_context.Schedule.Teachers.Contains(value))
+                    _context.Schedule.Teachers.Add(value);
+            }
+            else if (type == DataType.Room) {
+                if (!_context.Schedule.Rooms.Contains(value))
+                    _context.Schedule.Rooms.Add(value);
+            }
         }
 
         public IEnumerable<string> GetFreeGroupsBySlot(int slot, int? id = null) {
@@ -42,7 +55,7 @@ namespace Application {
             return teachers.Where(t => !occupiedTeachers.Contains(t));
         }
         private IEnumerable<Activity> GetActivitiesBySlot(int slot, int? id) {
-            if(id is null)
+            if (id is null)
                 return _context.Schedule.Activities.Where(a => a.Slot == slot);
             else
                 return _context.Schedule.Activities.Where(a => a.Slot == slot && a.Id != id.Value);
