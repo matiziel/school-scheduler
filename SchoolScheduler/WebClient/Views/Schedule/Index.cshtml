@@ -15,7 +15,7 @@
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         @foreach (string item in ViewBag.DropDownListElements)
         {
-            <a asp-action="Index" asp-route-group="@item" class="dropdown-item">@item</a>
+            <a asp-action="Index" asp-route-name="@item" class="dropdown-item">@item</a>
         }
         </div>
     </div>

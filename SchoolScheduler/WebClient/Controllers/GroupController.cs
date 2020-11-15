@@ -5,22 +5,23 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model;
-using Persistence;
 
 namespace WebClient.Controllers {
     public class GroupController : Controller {
         private readonly IScheduleService _scheduleService;
-        public GroupController(IScheduleService scheduleService) {
+        private readonly IEditDataService _editDataService;
+        public GroupController(IScheduleService scheduleService, IEditDataService editDataService) {
             _scheduleService = scheduleService;
+            _editDataService = editDataService;
         }
-        public IActionResult Index(string group) {
+        public IActionResult Index(string name) {
             try {
-                if (string.IsNullOrEmpty(group))
-                    group = _scheduleService.GetAllGroups().FirstOrDefault();
-                ViewBag.Description = group;
+                if (string.IsNullOrEmpty(name))
+                    name = _editDataService.GetAllGroups().FirstOrDefault();
+                ViewBag.Description = name;
                 ViewBag.Name = "Klasa";
-                ViewBag.DropDownListElements = _scheduleService.GetAllGroups();
-                return View("./Views/Schedule/Index.cshtml", _scheduleService.GetScheduleByGroup(group));
+                ViewBag.DropDownListElements = _editDataService.GetAllGroups();
+                return View("./Views/Schedule/Index.cshtml", _scheduleService.GetScheduleByGroup(name));
             }
             catch (Exception) {
                 return BadRequest();
@@ -28,9 +29,9 @@ namespace WebClient.Controllers {
         }
         public IActionResult Create(int slot, string helper) {
             try {
-                ViewBag.ListOfRooms = _scheduleService.GetAllRooms();
-                ViewBag.ListOfClasses = _scheduleService.GetAllClasses();
-                ViewBag.ListOfTeachers = _scheduleService.GetAllTeachers();
+                ViewBag.ListOfRooms = _editDataService.GetAllRooms();
+                ViewBag.ListOfClasses = _editDataService.GetAllClasses();
+                ViewBag.ListOfTeachers = _editDataService.GetAllTeachers();
                 ViewBag.Method = "Create";
                 return View("./Views/Schedule/EditForGroup.cshtml", new Activity {
                     Slot = slot,
@@ -49,7 +50,7 @@ namespace WebClient.Controllers {
                     return BadRequest();
 
                 _scheduleService.CreateActivity(activity);
-                return RedirectToAction("Index", new { group = activity.Group });
+                return RedirectToAction("Index", new { name = activity.Group });
             }
             catch (Exception) {
                 return BadRequest();
@@ -60,9 +61,9 @@ namespace WebClient.Controllers {
             try {
                 if (id is null)
                     return NotFound();
-                ViewBag.ListOfRooms = _scheduleService.GetAllRooms();
-                ViewBag.ListOfClasses = _scheduleService.GetAllClasses();
-                ViewBag.ListOfTeachers = _scheduleService.GetAllTeachers();
+                ViewBag.ListOfRooms = _editDataService.GetAllRooms();
+                ViewBag.ListOfClasses = _editDataService.GetAllClasses();
+                ViewBag.ListOfTeachers = _editDataService.GetAllTeachers();
                 ViewBag.Method = "Edit";
                 return View("./Views/Schedule/EditForGroup.cshtml", _scheduleService.GetActivity(id.Value));
             }
@@ -77,7 +78,20 @@ namespace WebClient.Controllers {
                     return NotFound();
 
                 _scheduleService.EditActivity(id.Value, activity);
-                return RedirectToAction("Index", new { group = activity.Group });
+                return RedirectToAction("Index", new { name = activity.Group });
+            }
+            catch (Exception) {
+                return BadRequest();
+            }
+        }
+        [HttpPost]
+        public IActionResult Delete(int? id, string group) {
+            try {
+                if (id is null)
+                    return NotFound();
+
+                _scheduleService.DeleteActivity(id.Value);
+                return RedirectToAction("Index", new { name = group });
             }
             catch (Exception) {
                 return BadRequest();

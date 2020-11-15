@@ -11,9 +11,6 @@ namespace Persistence {
                     LoadData();
                 return schedule;
             }
-            set {
-                schedule = value;
-            }
         }
         private readonly string pathToJsonFile;
         public DbContext() {

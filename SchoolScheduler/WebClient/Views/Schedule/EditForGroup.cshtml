@@ -1,7 +1,7 @@
 @model Model.Activity
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = ViewBag.Method;
 }
 
 <h1>@ViewBag.Method</h1>
@@ -44,9 +44,18 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
-    </div>
-</div>
+        @if (ViewBag.Method == "Edit")
+        {
+            <form asp-action="Delete" asp-route-id="@Model.Id" asp-route-group="@Model.Group">
+                <div class="form-group">
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                </div>
+            </form>
+        }
 
-<div>
-    <a asp-action="Index" asp-route-group="@Model.Group">Back to List</a>
-</div>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index" asp-route-name="@Model.Group">Back to List</a>
+    </div>
