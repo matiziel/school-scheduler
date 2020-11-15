@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Contracts.Services;
 using Contracts.ViewModels;
@@ -10,35 +11,60 @@ using Persistence;
 namespace Application {
     public class EditDataService : IEditDataService {
 
-
         private readonly DbContext _context;
         public EditDataService(DbContext context) => _context = context;
 
-        public enum DataType { Group, Class, Teacher, Room }
         public IEnumerable<string> GetAllGroups() => _context.Schedule.Groups;
         public IEnumerable<string> GetAllRooms() => _context.Schedule.Rooms;
         public IEnumerable<string> GetAllTeachers() => _context.Schedule.Teachers;
         public IEnumerable<string> GetAllClasses() => _context.Schedule.Classes;
 
         public void AddKey(string value, DataType type) {
-            if (type == DataType.Group) {
-                if (!_context.Schedule.Groups.Contains(value))
-                    _context.Schedule.Groups.Add(value);
-            }
-            else if (type == DataType.Class) {
-                if (!_context.Schedule.Classes.Contains(value))
-                    _context.Schedule.Classes.Add(value);
-            }
-            else if (type == DataType.Teacher) {
-                if (!_context.Schedule.Teachers.Contains(value))
-                    _context.Schedule.Teachers.Add(value);
-            }
-            else if (type == DataType.Room) {
-                if (!_context.Schedule.Rooms.Contains(value))
-                    _context.Schedule.Rooms.Add(value);
+            var dict = GetDictionary(type);
+            if (!dict.Contains(value)) {
+                dict.Add(value);
+                _context.SaveChanges();
             }
         }
+        public List<string> GetDictionary(DataType type) {
+            if (type == DataType.Group)
+                return _context.Schedule.Groups;
+            else if (type == DataType.Class)
+                return _context.Schedule.Classes;
+            else if (type == DataType.Teacher)
+                return _context.Schedule.Teachers;
+            else if (type == DataType.Room)
+                return _context.Schedule.Rooms;
 
+            throw new ArgumentException();
+        }
+        public void DeleteKey(string value, DataType type) {
+            var dict = GetDictionary(type);
+            if (dict.Contains(value)) {
+                dict.Remove(value);
+                RemoveFromActivities(value, type);
+            }
+            _context.SaveChanges();
+        }
+        private void RemoveFromActivities(string value, DataType type) {
+            Func<Activity, bool> lambda;
+
+            if (type == DataType.Group)
+                lambda = a => a.Group == value;
+            else if (type == DataType.Class)
+                lambda = a => a.Class == value;
+            else if (type == DataType.Teacher)
+                lambda = a => a.Teacher == value;
+            else if (type == DataType.Room)
+                lambda = a => a.Room == value;
+            else
+                throw new ArgumentException();
+
+            var activitiesIdToRemove = _context.Schedule.Activities.Where(lambda).Select(a => a.Id);
+            _context.Schedule.Activities.RemoveAll(a => activitiesIdToRemove.Contains(a.Id));
+
+            _context.SaveChanges();
+        }
         public IEnumerable<string> GetFreeGroupsBySlot(int slot, int? id = null) {
             var groups = GetAllGroups();
             var occupiedGroups = GetActivitiesBySlot(slot, id).Select(a => a.Group);

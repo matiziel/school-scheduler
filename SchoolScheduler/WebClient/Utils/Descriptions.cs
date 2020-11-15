@@ -32,7 +32,8 @@ namespace WebClient.Utils {
             { 3, Days.Thursday },
             { 4, Days.Friday }
         };
-
     }
+
+    
 
 }
