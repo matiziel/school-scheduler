@@ -10,7 +10,7 @@ namespace Application {
     public class ScheduleService : IScheduleService {
         private readonly DbContext _context;
         public ScheduleService(DbContext context) => _context = context;
-        
+
         public Activity GetActivity(int id) => _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
 
         public ScheduleViewModel GetScheduleByGroup(string group) {
@@ -51,26 +51,26 @@ namespace Application {
 
         public void CreateActivity(Activity activity) {
             if (activity is null)
-                throw new ArgumentException();
+                throw new ArgumentException("Activity does not exists");
 
             if (!ValidateActivityForCreate(activity))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("One of values on this slot is occupied");
 
             activity.Id = GetFreeId();
             _context.Schedule.Activities.Add(activity);
             _context.SaveChanges();
         }
-        private bool ValidateActivityForCreate(Activity activity) => 
+        private bool ValidateActivityForCreate(Activity activity) =>
             ValidateActivity(_context.Schedule.Activities, activity);
         private int GetFreeId() => _context.Schedule.Activities.Select(a => a.Id).Max() + 1;
 
         public void EditActivity(int id, Activity activity) {
             var temp = _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
             if (temp is null || activity is null)
-                throw new ArgumentException();
+                throw new ArgumentException("Activity does not exists");
 
             if (!ValidateActivityForEdit(id, activity))
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("One of values on this slot is occupied");
 
             temp.Class = activity.Class;
             temp.Group = activity.Group;
@@ -82,6 +82,9 @@ namespace Application {
             ValidateActivity(_context.Schedule.Activities.Where(a => a.Id != id), activity);
 
         private bool ValidateActivity(IEnumerable<Activity> activities, Activity activity) {
+            if (!ValidateValues(activity))
+                return false;
+
             return activities.Where(a =>
                 a.Slot == activity.Slot && (
                     a.Teacher == activity.Teacher ||
@@ -90,11 +93,18 @@ namespace Application {
                 )
             ).Count() == 0;
         }
+        private bool ValidateValues(Activity activity) {
+            if (string.IsNullOrEmpty(activity.Class) || string.IsNullOrEmpty(activity.Group) ||
+                string.IsNullOrEmpty(activity.Room) || string.IsNullOrEmpty(activity.Teacher))
+                return false;
+            else
+                return true;
+        }
 
         public void DeleteActivity(int id) {
             var activity = _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
             if (activity is null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Activity does not exist");
             _context.Schedule.Activities.Remove(activity);
             _context.SaveChanges();
         }

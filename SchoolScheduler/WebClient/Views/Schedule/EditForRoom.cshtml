@@ -4,9 +4,10 @@
     ViewData["Title"] = ViewBag.Method;
 }
 
-<h1>@ViewBag.Method</h1>
+<h1>@Model.Room</h1>
 
-<h4>Activity</h4>
+<h4>@WebClient.Utils.SlotToTermMapper.GetTerm(Model.Slot).Item1</h4>
+<h4>@WebClient.Utils.SlotToTermMapper.GetTerm(Model.Slot).Item2</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">

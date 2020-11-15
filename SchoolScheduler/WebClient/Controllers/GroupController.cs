@@ -19,12 +19,12 @@ namespace WebClient.Controllers {
                 if (string.IsNullOrEmpty(name))
                     name = _editDataService.GetAllGroups().FirstOrDefault();
                 ViewBag.Description = name;
-                ViewBag.Name = "Klasa";
+                ViewBag.Name = "Group";
                 ViewBag.DropDownListElements = _editDataService.GetAllGroups();
                 return View("./Views/Schedule/Index.cshtml", _scheduleService.GetScheduleByGroup(name));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
         public IActionResult Create(int slot, string helper) {
@@ -38,8 +38,8 @@ namespace WebClient.Controllers {
                     Group = helper
                 });
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
 
@@ -47,20 +47,20 @@ namespace WebClient.Controllers {
         public IActionResult Create(Activity activity) {
             try {
                 if (activity is null)
-                    return BadRequest();
+                    return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 _scheduleService.CreateActivity(activity);
                 return RedirectToAction("Index", new { name = activity.Group });
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
 
         public IActionResult Edit(int? id) {
             try {
                 if (id is null)
-                    return NotFound();
+                    return View("./Views/ErrorView.cshtml", "Error during http request");
                 var activity = _scheduleService.GetActivity(id.Value);
 
                 ViewBag.ListOfRooms = _editDataService.GetFreeRoomsBySlot(activity.Slot, id);
@@ -69,34 +69,34 @@ namespace WebClient.Controllers {
                 ViewBag.Method = "Edit";
                 return View("./Views/Schedule/EditForGroup.cshtml", activity);
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
         [HttpPost]
         public IActionResult Edit(int? id, Activity activity) {
             try {
                 if (id is null || activity is null)
-                    return NotFound();
+                    return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 _scheduleService.EditActivity(id.Value, activity);
                 return RedirectToAction("Index", new { name = activity.Group });
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
         [HttpPost]
         public IActionResult Delete(int? id, string group) {
             try {
                 if (id is null)
-                    return NotFound();
+                    return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 _scheduleService.DeleteActivity(id.Value);
                 return RedirectToAction("Index", new { name = group });
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
     }

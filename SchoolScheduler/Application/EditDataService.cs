@@ -36,7 +36,7 @@ namespace Application {
             else if (type == DataType.Room)
                 return _context.Schedule.Rooms;
 
-            throw new ArgumentException();
+            throw new ArgumentException("Type of dictionary does not exist");
         }
         public void DeleteKey(string value, DataType type) {
             var dict = GetDictionary(type);
@@ -58,7 +58,7 @@ namespace Application {
             else if (type == DataType.Room)
                 lambda = a => a.Room == value;
             else
-                throw new ArgumentException();
+                throw new ArgumentException("Type of dictionary does not exist");
 
             var activitiesIdToRemove = _context.Schedule.Activities.Where(lambda).Select(a => a.Id);
             _context.Schedule.Activities.RemoveAll(a => activitiesIdToRemove.Contains(a.Id));
