@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj"/>
     <ProjectReference Include="..\Persistence\Persistence.csproj"/>
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

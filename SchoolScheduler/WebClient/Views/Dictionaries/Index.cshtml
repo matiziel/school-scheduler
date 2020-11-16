@@ -13,7 +13,7 @@
     </a>
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-        @foreach (string name in Enum.GetNames(typeof(DataType)))
+        @foreach (string name in Enum.GetNames(typeof(Common.DataType)))
         {
             <a asp-action="Index" asp-route-type="@name" class="dropdown-item">@name</a>
         }

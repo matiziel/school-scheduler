@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Application;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
-using Model;
+using Common;
 
 namespace WebClient.Controllers {
     public class DictionariesController : Controller {

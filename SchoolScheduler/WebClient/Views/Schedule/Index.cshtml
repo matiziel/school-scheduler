@@ -27,7 +27,7 @@
                 <td>
                     <button type="button" class="btn btn-light btn-block">time</button>
                 </td>
-                @foreach (WebClient.Utils.Days day in Enum.GetValues(typeof(WebClient.Utils.Days)))
+                @foreach (Common.Days day in Enum.GetValues(typeof(Common.Days)))
             {
                 <td>
                     <a type="button" class="btn btn-light btn-block">@day</a>
@@ -38,7 +38,7 @@
         {
             <tr>
                 <td>
-                    <button type="button" class="btn btn-light btn-block">@WebClient.Utils.Hours.Values[i]</button>
+                    <button type="button" class="btn btn-light btn-block">@Common.Hours.Values[i]</button>
                 </td>
                 @for (int k = 0; k < 5; ++k)
                 {

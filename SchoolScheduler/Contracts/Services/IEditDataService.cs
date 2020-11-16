@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Contracts.ViewModels;
-using Model;
+using Common;
 
 namespace Contracts.Services {
     public interface IEditDataService {
