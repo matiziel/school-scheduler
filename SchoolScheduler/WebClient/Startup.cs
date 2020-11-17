@@ -28,8 +28,8 @@ namespace WebClient {
         public void ConfigureServices(IServiceCollection services) {
 
             services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), 
-                b => b.MigrationsAssembly("Persistence"))
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("WebClient"))
             );
 
             services.AddTransient<IScheduleService, ScheduleService>();
