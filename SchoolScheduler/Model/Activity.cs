@@ -3,10 +3,10 @@
 namespace Model {
     public class Activity {
         public int Id { get; set; }
-        public string Room { get; set; }
-        public string Group { get; set; }
-        public string Class { get; set; }
-        public int Slot { get; set; }
-        public string Teacher { get; set; }
+        public Room Room { get; set; }
+        public ClassGroup ClassGroup { get; set; }
+        public Subject Subject { get; set; }
+        public Slot Slot { get; set; }
+        public Teacher Teacher { get; set; }
     }
 }
