@@ -8,105 +8,32 @@ using Persistence;
 
 namespace Application {
     public class ScheduleService : IScheduleService {
-        private readonly DbContext _context;
-        public ScheduleService(DbContext context) => _context = context;
-
-        public Activity GetActivity(int id) => _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
-
-        public ScheduleViewModel GetScheduleByGroup(string group) {
-            var activitiesByGroup = _context.Schedule.Activities.Where(a => a.Group == group);
-            var schedule = new ScheduleViewModel();
-            foreach (var item in activitiesByGroup) {
-                if (item.Slot < schedule.Slots.Length) {
-                    schedule.Slots[item.Slot].Id = item.Id;
-                    schedule.Slots[item.Slot].Title = item.Room + " " + item.Class;
-                }
-            }
-            return schedule;
-        }
-
-        public ScheduleViewModel GetScheduleByRoom(string room) {
-            var activitiesByRoom = _context.Schedule.Activities.Where(a => a.Room == room);
-            var schedule = new ScheduleViewModel();
-            foreach (var item in activitiesByRoom) {
-                if (item.Slot < schedule.Slots.Length) {
-                    schedule.Slots[item.Slot].Id = item.Id;
-                    schedule.Slots[item.Slot].Title = item.Group;
-                }
-            }
-            return schedule;
-        }
-
-        public ScheduleViewModel GetScheduleByTeacher(string teacher) {
-            var activitiesByTeacher = _context.Schedule.Activities.Where(a => a.Teacher == teacher);
-            var schedule = new ScheduleViewModel();
-            foreach (var item in activitiesByTeacher) {
-                if (item.Slot < schedule.Slots.Length) {
-                    schedule.Slots[item.Slot].Id = item.Id;
-                    schedule.Slots[item.Slot].Title = item.Room + " " + item.Class + " " + item.Group;
-                }
-            }
-            return schedule;
-        }
-
         public void CreateActivity(Activity activity) {
-            if (activity is null)
-                throw new ArgumentException("Activity does not exists");
-
-            if (!ValidateActivityForCreate(activity))
-                throw new InvalidOperationException("One of values on this slot is occupied");
-
-            activity.Id = GetFreeId();
-            _context.Schedule.Activities.Add(activity);
-            _context.SaveChanges();
-        }
-        private bool ValidateActivityForCreate(Activity activity) =>
-            ValidateActivity(_context.Schedule.Activities, activity);
-        private int GetFreeId() => _context.Schedule.Activities.Select(a => a.Id).Max() + 1;
-
-        public void EditActivity(int id, Activity activity) {
-            var temp = _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
-            if (temp is null || activity is null)
-                throw new ArgumentException("Activity does not exists");
-
-            if (!ValidateActivityForEdit(id, activity))
-                throw new InvalidOperationException("One of values on this slot is occupied");
-
-            temp.Class = activity.Class;
-            temp.Group = activity.Group;
-            temp.Room = activity.Room;
-            temp.Teacher = activity.Teacher;
-            _context.SaveChanges();
-        }
-        private bool ValidateActivityForEdit(int id, Activity activity) =>
-            ValidateActivity(_context.Schedule.Activities.Where(a => a.Id != id), activity);
-
-        private bool ValidateActivity(IEnumerable<Activity> activities, Activity activity) {
-            if (!ValidateValues(activity))
-                return false;
-
-            return activities.Where(a =>
-                a.Slot == activity.Slot && (
-                    a.Teacher == activity.Teacher ||
-                    a.Room == activity.Room ||
-                    a.Group == activity.Group
-                )
-            ).Count() == 0;
-        }
-        private bool ValidateValues(Activity activity) {
-            if (string.IsNullOrEmpty(activity.Class) || string.IsNullOrEmpty(activity.Group) ||
-                string.IsNullOrEmpty(activity.Room) || string.IsNullOrEmpty(activity.Teacher))
-                return false;
-            else
-                return true;
+            throw new NotImplementedException();
         }
 
         public void DeleteActivity(int id) {
-            var activity = _context.Schedule.Activities.FirstOrDefault(a => a.Id == id);
-            if (activity is null)
-                throw new InvalidOperationException("Activity does not exist");
-            _context.Schedule.Activities.Remove(activity);
-            _context.SaveChanges();
+            throw new NotImplementedException();
+        }
+
+        public void EditActivity(int id, Activity activity) {
+            throw new NotImplementedException();
+        }
+
+        public Activity GetActivity(int id) {
+            throw new NotImplementedException();
+        }
+
+        public ScheduleViewModel GetScheduleByGroup(string group) {
+            throw new NotImplementedException();
+        }
+
+        public ScheduleViewModel GetScheduleByRoom(string room) {
+            throw new NotImplementedException();
+        }
+
+        public ScheduleViewModel GetScheduleByTeacher(string teacher) {
+            throw new NotImplementedException();
         }
     }
 }
