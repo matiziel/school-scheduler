@@ -33,10 +33,7 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfClasses = _editDataService.GetAllClasses();
                 ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(slot);
                 ViewBag.Method = "Create";
-                return View("./Views/Schedule/EditForGroup.cshtml", new Activity {
-                    Slot = slot,
-                    Group = helper
-                });
+                return View("./Views/Schedule/EditForGroup.cshtml");
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -50,7 +47,7 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 _scheduleService.CreateActivity(activity);
-                return RedirectToAction("Index", new { name = activity.Group });
+                return RedirectToAction("Index");
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -63,9 +60,9 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Error during http request");
                 var activity = _scheduleService.GetActivity(id.Value);
 
-                ViewBag.ListOfRooms = _editDataService.GetFreeRoomsBySlot(activity.Slot, id);
-                ViewBag.ListOfClasses = _editDataService.GetAllClasses();
-                ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(activity.Slot, id);
+                // ViewBag.ListOfRooms = _editDataService.GetFreeRoomsBySlot(activity.Slot, id);
+                // ViewBag.ListOfClasses = _editDataService.GetAllClasses();
+                // ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(activity.Slot, id);
                 ViewBag.Method = "Edit";
                 return View("./Views/Schedule/EditForGroup.cshtml", activity);
             }
@@ -80,7 +77,7 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 _scheduleService.EditActivity(id.Value, activity);
-                return RedirectToAction("Index", new { name = activity.Group });
+                return RedirectToAction("Index");
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);

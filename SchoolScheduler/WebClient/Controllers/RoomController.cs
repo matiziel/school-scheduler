@@ -33,10 +33,7 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfClasses = _editDataService.GetAllClasses();
                 ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(slot);
                 ViewBag.Method = "Create";
-                return View("./Views/Schedule/EditForRoom.cshtml", new Activity {
-                    Slot = slot,
-                    Room = helper
-                });
+                return View("./Views/Schedule/EditForRoom.cshtml");
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -64,9 +61,9 @@ namespace WebClient.Controllers {
 
                 var activity = _scheduleService.GetActivity(id.Value);
 
-                ViewBag.ListOfGroups = _editDataService.GetFreeGroupsBySlot(activity.Slot, id);
-                ViewBag.ListOfClasses = _editDataService.GetAllClasses();
-                ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(activity.Slot, id);
+                // ViewBag.ListOfGroups = _editDataService.GetFreeGroupsBySlot(activity.Slot, id);
+                // ViewBag.ListOfClasses = _editDataService.GetAllClasses();
+                // ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(activity.Slot, id);
                 ViewBag.Method = "Edit";
                 return View("./Views/Schedule/EditForRoom.cshtml", activity);
             }
