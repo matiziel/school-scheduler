@@ -27,13 +27,13 @@ namespace WebClient {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
 
-            services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly("WebClient"))
             );
 
             services.AddTransient<IScheduleService, ScheduleService>();
-            services.AddTransient<IEditDataService, EditDataService>();
+            services.AddTransient<IDisctionariesService, DisctionariesService>();
             services.AddControllersWithViews();
         }
 

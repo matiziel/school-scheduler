@@ -1,10 +1,10 @@
-@model Model.Activity
+@model Contracts.ViewModels.ActivityEditViewModel
 
 @{
     ViewData["Title"] = ViewBag.Method;
 }
 
-@* <h1>@Model.Group</h1>
+<h1>@Model.ClassGroup</h1>
 
 <h4>@Common.SlotToTermMapper.GetTerm(Model.Slot).Item1</h4>
 <h4>@Common.SlotToTermMapper.GetTerm(Model.Slot).Item2</h4>
@@ -18,8 +18,8 @@
                 <span asp-validation-for="Slot" class="text-danger"></span>
             </div>
             <div class="form-group hide-form">
-                <input asp-for="Group" class="form-control" type="hidden" />
-                <span asp-validation-for="Group" class="text-danger"></span>
+                <input asp-for="ClassGroup" class="form-control" type="hidden" />
+                <span asp-validation-for="ClassGroup" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -29,10 +29,10 @@
                 <span asp-validation-for="Room" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Class" class="control-label"></label>
-                <select asp-for="Class" class="form-control"
+                <label asp-for="Subject" class="control-label"></label>
+                <select asp-for="Subject" class="form-control"
                     asp-items="@(new SelectList(@ViewBag.ListOfClasses))"></select>
-                <span asp-validation-for="Class" class="text-danger"></span>
+                <span asp-validation-for="Subject" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -47,7 +47,7 @@
         </form>
         @if (ViewBag.Method == "Edit")
         {
-            <form asp-action="Delete" asp-route-id="@Model.Id" asp-route-group="@Model.Group">
+            <form asp-action="Delete" asp-route-id="@Model.Id" asp-route-group="@Model.ClassGroup">
                 <div class="form-group">
                     <input type="submit" value="Delete" class="btn btn-danger" />
                 </div>
@@ -57,5 +57,5 @@
     </div>
 
     <div>
-        <a asp-action="Index" asp-route-name="@Model.Group">Back to List</a>
-    </div> *@
+        <a asp-action="Index" asp-route-name="@Model.ClassGroup">Back to List</a>
+    </div>

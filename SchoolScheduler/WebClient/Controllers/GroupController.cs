@@ -5,22 +5,23 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using Contracts.ViewModels;
 
 namespace WebClient.Controllers {
     public class GroupController : Controller {
         private readonly IScheduleService _scheduleService;
-        private readonly IEditDataService _editDataService;
-        public GroupController(IScheduleService scheduleService, IEditDataService editDataService) {
+        private readonly IDisctionariesService _disctionariesService;
+        public GroupController(IScheduleService scheduleService, IDisctionariesService editDataService) {
             _scheduleService = scheduleService;
-            _editDataService = editDataService;
+            _disctionariesService = editDataService;
         }
         public IActionResult Index(string name) {
             try {
                 if (string.IsNullOrEmpty(name))
-                    name = _editDataService.GetAllGroups().FirstOrDefault();
+                    name = _disctionariesService.GetAllClassGroups().FirstOrDefault();
                 ViewBag.Description = name;
                 ViewBag.Name = "Group";
-                ViewBag.DropDownListElements = _editDataService.GetAllGroups();
+                ViewBag.DropDownListElements = _disctionariesService.GetAllClassGroups();
                 return View("./Views/Schedule/Index.cshtml", _scheduleService.GetScheduleByGroup(name));
             }
             catch (Exception e) {
@@ -29,9 +30,9 @@ namespace WebClient.Controllers {
         }
         public IActionResult Create(int slot, string helper) {
             try {
-                ViewBag.ListOfRooms = _editDataService.GetFreeRoomsBySlot(slot);
-                ViewBag.ListOfClasses = _editDataService.GetAllClasses();
-                ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(slot);
+                ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot);
+                ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
+                ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot);
                 ViewBag.Method = "Create";
                 return View("./Views/Schedule/EditForGroup.cshtml");
             }
@@ -41,7 +42,7 @@ namespace WebClient.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Create(Activity activity) {
+        public IActionResult Create(ActivityEditViewModel activity) {
             try {
                 if (activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
@@ -60,9 +61,9 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Error during http request");
                 var activity = _scheduleService.GetActivity(id.Value);
 
-                // ViewBag.ListOfRooms = _editDataService.GetFreeRoomsBySlot(activity.Slot, id);
-                // ViewBag.ListOfClasses = _editDataService.GetAllClasses();
-                // ViewBag.ListOfTeachers = _editDataService.GetFreeTeachersBySlot(activity.Slot, id);
+                // ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
+                // ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
+                // ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot, id);
                 ViewBag.Method = "Edit";
                 return View("./Views/Schedule/EditForGroup.cshtml", activity);
             }
@@ -71,7 +72,7 @@ namespace WebClient.Controllers {
             }
         }
         [HttpPost]
-        public IActionResult Edit(int? id, Activity activity) {
+        public IActionResult Edit(int? id, ActivityEditViewModel activity) {
             try {
                 if (id is null || activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");

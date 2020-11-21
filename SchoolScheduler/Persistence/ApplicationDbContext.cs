@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Model;
 
 namespace Persistence {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext {
+    public class ApplicationDbContext : DbContext {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
@@ -37,14 +37,24 @@ namespace Persistence {
                  .IsRequired();
 
             modelBuilder.Entity<ClassGroup>().HasKey(c => c.Id);
+            modelBuilder.Entity<ClassGroup>().Property(c => c.Name).IsRequired();
+            modelBuilder.Entity<ClassGroup>().HasIndex(c => c.Name).IsUnique();
 
             modelBuilder.Entity<Room>().HasKey(r => r.Id);
+            modelBuilder.Entity<Room>().Property(r => r.Name).IsRequired();
+            modelBuilder.Entity<Room>().HasIndex(r => r.Name).IsUnique();
 
             modelBuilder.Entity<Slot>().HasKey(s => s.Id);
+            modelBuilder.Entity<Slot>().Property(r => r.Name).IsRequired();
+            modelBuilder.Entity<Slot>().HasIndex(s => s.Name).IsUnique();
 
             modelBuilder.Entity<Subject>().HasKey(s => s.Id);
+            modelBuilder.Entity<Subject>().Property(t => t.Name).IsRequired();
+            modelBuilder.Entity<Subject>().HasIndex(s => s.Name).IsUnique();
 
-            modelBuilder.Entity<Teacher>().HasKey(r => r.Id);
+            modelBuilder.Entity<Teacher>().HasKey(t => t.Id);
+            modelBuilder.Entity<Teacher>().Property(t => t.Name).IsRequired();
+            modelBuilder.Entity<Teacher>().HasIndex(t => t.Name).IsUnique();
         }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ClassGroup> ClassGroups { get; set; }

@@ -10,20 +10,25 @@ using Common;
 
 
 namespace Application {
-    public class EditDataService : IEditDataService {
+    public class DisctionariesService : IDisctionariesService {
+        private readonly ApplicationDbContext _context;
+        public DisctionariesService(ApplicationDbContext context) {
+            _context = context;
+        }
         public void AddKey(string value, DataType type) {
             throw new NotImplementedException();
         }
+
 
         public void DeleteKey(string value, DataType type) {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetAllClasses() {
+        public IEnumerable<string> GetAllSubjects() {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetAllGroups() {
+        public IEnumerable<string> GetAllClassGroups() {
             throw new NotImplementedException();
         }
 
@@ -50,5 +55,6 @@ namespace Application {
         public IEnumerable<string> GetFreeTeachersBySlot(int slot, int? id = null) {
             throw new NotImplementedException();
         }
+
     }
 }
