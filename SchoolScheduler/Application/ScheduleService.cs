@@ -15,10 +15,10 @@ namespace Application {
             return new ActivityEditViewModel() {
                 Id = activity.Id,
                 Slot = activity.Slot.Id,
-                ClassGroup = new DropdownModel(activity.ClassGroup.Id, activity.ClassGroup.Name),
-                Room = new DropdownModel(activity.Room.Id, activity.Room.Name),
-                Subject = new DropdownModel(activity.Subject.Id, activity.Subject.Name),
-                Teacher = new DropdownModel(activity.Teacher.Id, activity.Teacher.Name)
+                ClassGroup = activity.ClassGroup.Name,
+                Room =  activity.Room.Name,
+                Subject = activity.Subject.Name,
+                Teacher = activity.Teacher.Name
             };
         }
         private IQueryable<Activity> GetActivities() {
@@ -54,9 +54,9 @@ namespace Application {
         private bool ValidateActivity(IEnumerable<Activity> activities, ActivityEditViewModel activity) {
             return activities.Where(a =>
                 a.Slot.Id == activity.Slot && (
-                    a.Teacher.Id == activity.Teacher.Id ||
-                    a.Room.Id == activity.Room.Id ||
-                    a.ClassGroup.Id == activity.ClassGroup.Id
+                    a.Teacher.Name == activity.Teacher||
+                    a.Room.Name == activity.Room ||
+                    a.ClassGroup.Name == activity.ClassGroup 
                 )
             ).Count() == 0;
         }
@@ -71,9 +71,6 @@ namespace Application {
         public void EditActivity(int id, ActivityEditViewModel activity) {
             throw new NotImplementedException();
         }
-
-
-
 
         public ScheduleViewModel GetScheduleByGroup(string group) {
             throw new NotImplementedException();
