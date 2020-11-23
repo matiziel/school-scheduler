@@ -13,8 +13,5 @@ namespace Contracts.ViewModels {
         public string Subject { get; set; }
         [Required]
         public string Teacher { get; set; }
-        
-        
-        
     }
 }

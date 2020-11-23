@@ -24,21 +24,17 @@ namespace Application {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetAllSubjects() {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<string> GetAllSubjects() =>
+            _context.Subjects.Select(c => c.Name);
 
-        public IEnumerable<string> GetAllClassGroups() {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<string> GetAllClassGroups() =>
+            _context.ClassGroups.Select(c => c.Name);
 
-        public IEnumerable<string> GetAllRooms() {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<string> GetAllRooms() =>
+            _context.Rooms.Select(r => r.Name);
 
-        public IEnumerable<string> GetAllTeachers() {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<string> GetAllTeachers() =>
+            _context.Teachers.Select(t => t.Name);
 
         public List<string> GetDictionary(DataType type) {
             throw new NotImplementedException();

@@ -45,8 +45,8 @@ namespace Persistence {
             modelBuilder.Entity<Room>().HasIndex(r => r.Name).IsUnique();
 
             modelBuilder.Entity<Slot>().HasKey(s => s.Id);
-            modelBuilder.Entity<Slot>().Property(r => r.Name).IsRequired();
-            modelBuilder.Entity<Slot>().HasIndex(s => s.Name).IsUnique();
+            modelBuilder.Entity<Slot>().Property(r => r.Index).IsRequired();
+            modelBuilder.Entity<Slot>().HasIndex(s => s.Index).IsUnique();
 
             modelBuilder.Entity<Subject>().HasKey(s => s.Id);
             modelBuilder.Entity<Subject>().Property(t => t.Name).IsRequired();

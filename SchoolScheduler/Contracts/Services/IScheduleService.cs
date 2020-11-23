@@ -5,7 +5,7 @@ using Model;
 namespace Contracts.Services {
     public interface IScheduleService {
         ActivityEditViewModel GetActivity(int id);
-        ScheduleViewModel GetScheduleByGroup(string group);
+        ScheduleViewModel GetScheduleByGroup(string classGroup);
         ScheduleViewModel GetScheduleByRoom(string room);
         ScheduleViewModel GetScheduleByTeacher(string teacher);
 
