@@ -6,14 +6,16 @@ using Application;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Common;
+using Persistence;
 
 namespace WebClient.Controllers {
     public class DictionariesController : Controller {
         private readonly IDisctionariesService _disctionariesService;
+        private readonly ApplicationDbContext _context;
         public DictionariesController(IDisctionariesService disctionariesService) => _disctionariesService = disctionariesService;
-
         public IActionResult Index(string type) {
             try {
+
                 if (type is null)
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
                 ViewBag.Description = type;
@@ -22,7 +24,6 @@ namespace WebClient.Controllers {
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
-
         }
 
         public IActionResult Create(string type, string value) {
