@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Contracts.ViewModels;
 using Model;
 
@@ -9,8 +10,8 @@ namespace Contracts.Services {
         ScheduleViewModel GetScheduleByRoom(string room);
         ScheduleViewModel GetScheduleByTeacher(string teacher);
 
-        void CreateActivity(ActivityEditViewModel activity);
-        void EditActivity(int id, ActivityEditViewModel activity);
-        void DeleteActivity(int id);
+        Task CreateActivity(ActivityEditViewModel activity);
+        Task EditActivity(int id, ActivityEditViewModel activity);
+        Task DeleteActivity(int id);
     }
 }

@@ -43,7 +43,7 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
-        @if (ViewBag.Method == "Edit")
+        @if (@Model.Id != null)
         {
             <form asp-action="Delete" asp-route-id="@Model.Id" asp-route-teacher="@Model.Teacher">
                 <div class="form-group">

@@ -18,10 +18,10 @@ namespace WebClient.Controllers {
         public IActionResult Index(string name) {
             try {
                 if (string.IsNullOrEmpty(name))
-                    name = _disctionariesService.GetAllClassGroups().FirstOrDefault();
+                    name =  _disctionariesService.GetAllClassGroups().FirstOrDefault();
                 ViewBag.Description = name;
                 ViewBag.Name = "Group";
-                ViewBag.DropDownListElements = _disctionariesService.GetAllClassGroups();
+                ViewBag.DropDownListElements =  _disctionariesService.GetAllClassGroups();
                 return View("./Views/Schedule/Index.cshtml", _scheduleService.GetScheduleByGroup(name));
             }
             catch (Exception e) {
@@ -33,8 +33,10 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot);
-                ViewBag.Method = "Create";
-                return View("./Views/Schedule/EditForGroup.cshtml");
+                return View("./Views/Schedule/EditForGroup.cshtml", new ActivityEditViewModel(){
+                    Slot = slot,
+                    ClassGroup = helper
+                });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -42,12 +44,12 @@ namespace WebClient.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Create(ActivityEditViewModel activity) {
+        public async Task<IActionResult> Create(ActivityEditViewModel activity) {
             try {
                 if (activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                _scheduleService.CreateActivity(activity);
+                await _scheduleService.CreateActivity(activity);
                 return RedirectToAction("Index");
             }
             catch (Exception e) {
@@ -61,10 +63,9 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Error during http request");
                 var activity = _scheduleService.GetActivity(id.Value);
 
-                // ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
-                // ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
-                // ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot, id);
-                ViewBag.Method = "Edit";
+                ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
+                ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
+                ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot, id);
                 return View("./Views/Schedule/EditForGroup.cshtml", activity);
             }
             catch (Exception e) {
@@ -72,12 +73,12 @@ namespace WebClient.Controllers {
             }
         }
         [HttpPost]
-        public IActionResult Edit(int? id, ActivityEditViewModel activity) {
+        public async Task<IActionResult> Edit(int? id, ActivityEditViewModel activity) {
             try {
                 if (id is null || activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                _scheduleService.EditActivity(id.Value, activity);
+                await _scheduleService.EditActivity(id.Value, activity);
                 return RedirectToAction("Index");
             }
             catch (Exception e) {
@@ -85,12 +86,12 @@ namespace WebClient.Controllers {
             }
         }
         [HttpPost]
-        public IActionResult Delete(int? id, string group) {
+        public async Task<IActionResult> Delete(int? id, string group) {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                _scheduleService.DeleteActivity(id.Value);
+                await _scheduleService.DeleteActivity(id.Value);
                 return RedirectToAction("Index", new { name = group });
             }
             catch (Exception e) {
