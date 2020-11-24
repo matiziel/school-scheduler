@@ -1,6 +1,6 @@
 using System;
 
-namespace Contracts.ViewModels {
+namespace Contracts.ViewModels.Schedule {
     public class ScheduleViewModel {
         public ActivityIndexViewModel[] Slots { get; set; }
         public ScheduleViewModel() {

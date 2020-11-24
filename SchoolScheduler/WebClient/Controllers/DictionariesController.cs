@@ -11,15 +11,25 @@ using Persistence;
 namespace WebClient.Controllers {
     public class DictionariesController : Controller {
         private readonly IDisctionariesService _disctionariesService;
-        private readonly ApplicationDbContext _context;
         public DictionariesController(IDisctionariesService disctionariesService) => _disctionariesService = disctionariesService;
         public IActionResult Index(string type) {
             try {
-
                 if (type is null)
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
                 ViewBag.Description = type;
                 return View("./Views/Dictionaries/Index.cshtml", _disctionariesService.GetDictionary(GetValueFromString(type)));
+            }
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
+            }
+        }
+        public IActionResult Create(int id, string type) {
+            try {
+                if (type is null)
+                    return View("./Views/ErrorView.cshtml", "Value cannot be empty");
+
+                //_editDataService.AddKey(value, GetValueFromString(type));
+                return RedirectToAction("Index", new { type = type });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);

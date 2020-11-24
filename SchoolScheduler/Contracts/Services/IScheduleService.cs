@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Contracts.ViewModels;
+using Contracts.ViewModels.Schedule;
 using Model;
 
 namespace Contracts.Services {

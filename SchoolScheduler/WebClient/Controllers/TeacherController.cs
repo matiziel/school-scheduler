@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
-using Contracts.ViewModels;
+using Contracts.ViewModels.Schedule;
 
 namespace WebClient.Controllers {
     public class TeacherController : Controller {

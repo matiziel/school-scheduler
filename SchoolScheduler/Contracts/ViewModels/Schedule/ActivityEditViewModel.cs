@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Contracts.ViewModels {
+namespace Contracts.ViewModels.Schedule {
     public class ActivityEditViewModel {
         public int? Id { get; set; }
         [Required]

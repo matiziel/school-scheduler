@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Contracts.ViewModels {
-    public class DictionaryElementViewModel {
+namespace Contracts.ViewModels.Dictionaries {
+    public class DictionaryElementEditViewModel {
         public int? Id { get; set; }
         [Required]
         public string Name { get; set; }

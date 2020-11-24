@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.ViewModels;
+using Contracts.ViewModels.Schedule;
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Persistence;
+
 
 namespace Application {
     public class ScheduleService : IScheduleService {
