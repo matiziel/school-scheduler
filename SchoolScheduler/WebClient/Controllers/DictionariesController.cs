@@ -23,6 +23,16 @@ namespace WebClient.Controllers {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
+        public async Task<IActionResult> Edit(int id, string type) {
+            try {
+                if (type is null)
+                    return View("./Views/ErrorView.cshtml", "Value cannot be empty");
+                return View("./Views/Dictionaries/Edit.cshtml", await _disctionariesService.GetDictionaryElement(id, GetValueFromString(type)));
+            }
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
+            }
+        }
         public IActionResult Create(int id, string type) {
             try {
                 if (type is null)

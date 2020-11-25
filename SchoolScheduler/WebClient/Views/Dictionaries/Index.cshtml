@@ -1,10 +1,9 @@
-@model IEnumerable<string>
+@model IEnumerable<Contracts.ViewModels.Dictionaries.DictionaryIndexViewModel>
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Index";
 }
 
-@* <h1>@ViewBag.Name</h1> *@
 
 <div class="dropdown">
     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
@@ -20,29 +19,20 @@
         </div>
     </div>
     <br>
-    <form asp-action="Create" asp-route-type="@ViewBag.Description">
-        <div class="form-group">
-            <input class="form-control" name="value" />
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" />
-        </div>
-    </form>
     <table class="table">
         <tbody>
-            @foreach (string item in Model)
+            @foreach (var item in Model)
         {
             <tr>
                 <td>
-                    <label>@item</label>
-
+                    <label>@item.Name</label>
                 </td>
                 <td>
-                    <form asp-action="Delete" asp-route-value="@item" asp-route-type="@ViewBag.Description">
-                        <div class="form-group">
-                            <input type="submit" value="Delete" class="btn btn-danger" />
-                        </div>
-                    </form>
+                    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id"
+                        asp-route-type="@ViewBag.Description">Edit</a>
+                </td>
+                <td>
+                    <a asp-action="Delete" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

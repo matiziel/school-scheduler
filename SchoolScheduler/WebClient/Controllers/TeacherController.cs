@@ -17,7 +17,7 @@ namespace WebClient.Controllers {
         public IActionResult Index(string name) {
             try {
                 if (string.IsNullOrEmpty(name))
-                    name =  _disctionariesService.GetAllTeachers().FirstOrDefault();
+                    name = _disctionariesService.GetAllTeachers().FirstOrDefault();
                 ViewBag.Description = name;
                 ViewBag.Name = "Teacher";
                 ViewBag.DropDownListElements = _disctionariesService.GetAllTeachers();
@@ -32,6 +32,7 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot);
+                ViewBag.Method = "Create";
                 return View("./Views/Schedule/EditForTeacher.cshtml");
             }
             catch (Exception e) {
@@ -61,6 +62,7 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot, id);
+                ViewBag.Method = "Edit";
                 return View("./Views/Schedule/EditForTeacher.cshtml", activity);
             }
             catch (Exception e) {

@@ -33,6 +33,7 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot);
+                ViewBag.Method = "Create";
                 return View("./Views/Schedule/EditForRoom.cshtml");
             }
             catch (Exception e) {
@@ -64,6 +65,7 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot, id);
+                ViewBag.Method = "Edit";
                 return View("./Views/Schedule/EditForRoom.cshtml", activity);
             }
             catch (Exception e) {

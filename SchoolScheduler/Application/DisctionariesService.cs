@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Contracts.Services;
-using Contracts.ViewModels;
+using Contracts.ViewModels.Dictionaries;
 using Model;
 using Persistence;
 using Common;
@@ -15,6 +14,29 @@ namespace Application {
         private readonly ApplicationDbContext _context;
         public DisctionariesService(ApplicationDbContext context) =>
             _context = context;
+
+        public async Task<DictionaryElementEditViewModel> GetDictionaryElement(int id, DataType type) {
+            switch (type) {
+                case DataType.ClassGroup:
+                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
+                    return new DictionaryElementEditViewModel() { Id = classGroup.Id, Name = classGroup.Name, Comment = classGroup.Comment };
+                case DataType.Room:
+                    var room = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
+                    return new DictionaryElementEditViewModel() { Id = room.Id, Name = room.Name, Comment = room.Comment };
+                case DataType.Subject:
+                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
+                    return new DictionaryElementEditViewModel() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment };
+                case DataType.Teacher:
+                    var teacher = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
+                    return new DictionaryElementEditViewModel() { Id = teacher.Id, Name = teacher.Name, Comment = teacher.Comment };
+                default:
+                    throw new ArgumentException("Type of dictionary does not exist");
+            }
+        }
 
         public IEnumerable<string> GetAllClassGroups() =>
              _context.ClassGroups.Select(c => c.Name).ToList();
@@ -32,20 +54,18 @@ namespace Application {
             //     _context.SaveChanges();
             // }
         }
-        public IEnumerable<string> GetDictionary(DataType type) {
+        public IEnumerable<DictionaryIndexViewModel> GetDictionary(DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
-                    return GetAllClassGroups();
+                    return _context.ClassGroups.Select(c => new DictionaryIndexViewModel() { Id = c.Id, Name = c.Name }).ToList();
                 case DataType.Room:
-                    return GetAllRooms();
+                    return _context.Rooms.Select(r => new DictionaryIndexViewModel() { Id = r.Id, Name = r.Name }).ToList();
                 case DataType.Subject:
-                    return GetAllSubjects();
+                    return _context.Subjects.Select(s => new DictionaryIndexViewModel() { Id = s.Id, Name = s.Name }).ToList();
                 case DataType.Teacher:
-                    return GetAllTeachers();
-
+                    return _context.Teachers.Select(t => new DictionaryIndexViewModel() { Id = t.Id, Name = t.Name }).ToList();
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
-
             }
         }
 
