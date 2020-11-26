@@ -34,7 +34,10 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot);
                 ViewBag.Method = "Create";
-                return View("./Views/Schedule/EditForRoom.cshtml");
+                return View("./Views/Schedule/EditForRoom.cshtml", new ActivityEditViewModel() {
+                    Slot = slot,
+                    Room = helper
+                });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -55,12 +58,12 @@ namespace WebClient.Controllers {
             }
         }
 
-        public IActionResult Edit(int? id) {
+        public async Task<IActionResult> Edit(int? id) {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                var activity = _scheduleService.GetActivity(id.Value);
+                var activity = await _scheduleService.GetActivity(id.Value);
 
                 ViewBag.ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();

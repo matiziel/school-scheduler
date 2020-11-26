@@ -10,6 +10,9 @@
         aria-haspopup="true" aria-expanded="false">
         @ViewBag.Description
     </a>
+    <br><br>
+
+    <a asp-action="Create" class="btn btn-primary" asp-route-type="@ViewBag.Description">Create</a>
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         @foreach (string name in Enum.GetNames(typeof(Common.DataType)))

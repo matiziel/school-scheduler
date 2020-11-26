@@ -51,18 +51,18 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 await _scheduleService.CreateActivity(activity);
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { name = activity.ClassGroup });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
 
-        public IActionResult Edit(int? id) {
+        public async Task<IActionResult> Edit(int? id) {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-                var activity = _scheduleService.GetActivity(id.Value);
+                var activity = await _scheduleService.GetActivity(id.Value);
 
                 ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
@@ -81,7 +81,7 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 await _scheduleService.EditActivity(id.Value, activity);
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { name = activity.ClassGroup });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);

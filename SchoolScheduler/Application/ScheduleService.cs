@@ -15,8 +15,8 @@ namespace Application {
         public ScheduleService(ApplicationDbContext context) {
             _context = context;
         }
-        public ActivityEditViewModel GetActivity(int id) {
-            var activity = GetActivities().FirstOrDefault(a => a.Id == id);
+        public async Task<ActivityEditViewModel> GetActivity(int id) {
+            var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
             return new ActivityEditViewModel() {
                 Id = activity.Id,
                 Slot = activity.Slot.Index,

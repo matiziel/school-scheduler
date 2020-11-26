@@ -33,7 +33,10 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot);
                 ViewBag.Method = "Create";
-                return View("./Views/Schedule/EditForTeacher.cshtml");
+                return View("./Views/Schedule/EditForTeacher.cshtml", new ActivityEditViewModel() {
+                    Slot = slot,
+                    Teacher = helper
+                });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -41,11 +44,11 @@ namespace WebClient.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Create(ActivityEditViewModel activity) {
+        public async Task<IActionResult> Create(ActivityEditViewModel activity) {
             try {
                 if (activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request.");
-                _scheduleService.CreateActivity(activity);
+                await _scheduleService.CreateActivity(activity);
                 return RedirectToAction("Index", new { name = activity.Teacher });
             }
             catch (Exception e) {
@@ -53,11 +56,11 @@ namespace WebClient.Controllers {
             }
         }
 
-        public IActionResult Edit(int? id) {
+        public async Task<IActionResult> Edit(int? id) {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request.");
-                var activity = _scheduleService.GetActivity(id.Value);
+                var activity = await _scheduleService.GetActivity(id.Value);
 
                 ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
