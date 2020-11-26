@@ -10,7 +10,7 @@ namespace Contracts.Services {
         IEnumerable<string> GetAllRooms();
         IEnumerable<string> GetAllTeachers();
         IEnumerable<string> GetAllSubjects();
-        IEnumerable<DictionaryIndexViewModel> GetDictionary(DataType type);
+        Task<IEnumerable<DictionaryIndexViewModel>> GetDictionary(DataType type);
         IEnumerable<string> GetFreeClassGroupsBySlot(int slot, int? id = null);
         IEnumerable<string> GetFreeRoomsBySlot(int slot, int? id = null);
         IEnumerable<string> GetFreeTeachersBySlot(int slot, int? id = null);

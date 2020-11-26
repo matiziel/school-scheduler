@@ -7,33 +7,51 @@ using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Common;
 using Persistence;
+using Contracts.ViewModels.Dictionaries;
 
 namespace WebClient.Controllers {
     public class DictionariesController : Controller {
         private readonly IDisctionariesService _disctionariesService;
         public DictionariesController(IDisctionariesService disctionariesService) => _disctionariesService = disctionariesService;
-        public IActionResult Index(string type) {
+        public async Task<IActionResult> Index(string type) {
             try {
                 if (type is null)
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
                 ViewBag.Description = type;
-                return View("./Views/Dictionaries/Index.cshtml", _disctionariesService.GetDictionary(GetValueFromString(type)));
+                return View("./Views/Dictionaries/Index.cshtml", await _disctionariesService.GetDictionary(GetValueFromString(type)));
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
-        public async Task<IActionResult> Edit(int id, string type) {
+        public IActionResult Create(string type) {
             try {
                 if (type is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
-                return View("./Views/Dictionaries/Edit.cshtml", await _disctionariesService.GetDictionaryElement(id, GetValueFromString(type)));
+                ViewBag.Method = "Create";
+                ViewBag.Description = type;
+                return View("./Views/Dictionaries/Edit.cshtml", new DictionaryElementEditViewModel() { 
+
+                });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
-        public IActionResult Create(int id, string type) {
+        public async Task<IActionResult> Edit(int? id, string type) {
+            try {
+                if (id is null || type is null )
+                    return View("./Views/ErrorView.cshtml", "Value or id cannot be empty");
+                ViewBag.Method = "Edit";
+                ViewBag.Description = type;
+                return View("./Views/Dictionaries/Edit.cshtml", await _disctionariesService.GetDictionaryElement(id.Value, GetValueFromString(type)));
+            }
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
+            }
+        }
+        [HttpPost]
+        public IActionResult Edit(int id, string type, DictionaryElementEditViewModel element) {
             try {
                 if (type is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
@@ -46,22 +64,11 @@ namespace WebClient.Controllers {
             }
         }
 
-        public IActionResult Create(string type, string value) {
-            try {
-                if (type is null || value is null)
-                    return View("./Views/ErrorView.cshtml", "Value cannot be empty");
 
-                //_editDataService.AddKey(value, GetValueFromString(type));
-                return RedirectToAction("Index", new { type = type });
-            }
-            catch (Exception e) {
-                return View("./Views/ErrorView.cshtml", e.Message);
-            }
-        }
 
-        public IActionResult Delete(string type, string value) {
+        public IActionResult Delete(int? id, string type) {
             try {
-                if (type is null || value is null)
+                if (id is null || type is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
                 //_editDataService.DeleteKey(value, GetValueFromString(type));

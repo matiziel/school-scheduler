@@ -54,16 +54,20 @@ namespace Application {
             //     _context.SaveChanges();
             // }
         }
-        public IEnumerable<DictionaryIndexViewModel> GetDictionary(DataType type) {
+        public async Task<IEnumerable<DictionaryIndexViewModel>> GetDictionary(DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
-                    return _context.ClassGroups.Select(c => new DictionaryIndexViewModel() { Id = c.Id, Name = c.Name }).ToList();
+                    return await _context.ClassGroups
+                        .Select(c => new DictionaryIndexViewModel() { Id = c.Id, Name = c.Name }).ToListAsync();
                 case DataType.Room:
-                    return _context.Rooms.Select(r => new DictionaryIndexViewModel() { Id = r.Id, Name = r.Name }).ToList();
+                    return await _context.Rooms
+                        .Select(r => new DictionaryIndexViewModel() { Id = r.Id, Name = r.Name }).ToListAsync();
                 case DataType.Subject:
-                    return _context.Subjects.Select(s => new DictionaryIndexViewModel() { Id = s.Id, Name = s.Name }).ToList();
+                    return await _context.Subjects
+                        .Select(s => new DictionaryIndexViewModel() { Id = s.Id, Name = s.Name }).ToListAsync();
                 case DataType.Teacher:
-                    return _context.Teachers.Select(t => new DictionaryIndexViewModel() { Id = t.Id, Name = t.Name }).ToList();
+                    return await _context.Teachers
+                        .Select(t => new DictionaryIndexViewModel() { Id = t.Id, Name = t.Name }).ToListAsync();
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
             }
