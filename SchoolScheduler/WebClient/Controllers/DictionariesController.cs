@@ -31,8 +31,20 @@ namespace WebClient.Controllers {
                 ViewBag.Method = "Create";
                 ViewBag.Description = type;
                 return View("./Views/Dictionaries/Edit.cshtml", new DictionaryElementEditViewModel() { 
-
                 });
+            }
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
+            }
+        }
+        [HttpPost]
+        public IActionResult Create(string type, DictionaryElementEditViewModel element) {
+            try {
+                if (type is null || element is null)
+                    return View("./Views/ErrorView.cshtml", "Value cannot be empty");
+
+                //_editDataService.AddKey(value, GetValueFromString(type));
+                return RedirectToAction("Index", new { type = type });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -53,7 +65,7 @@ namespace WebClient.Controllers {
         [HttpPost]
         public IActionResult Edit(int id, string type, DictionaryElementEditViewModel element) {
             try {
-                if (type is null)
+                if (type is null || element is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
 
                 //_editDataService.AddKey(value, GetValueFromString(type));
