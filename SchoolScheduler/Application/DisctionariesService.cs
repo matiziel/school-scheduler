@@ -127,14 +127,6 @@ namespace Application {
         public Task RemoveKey(int id, DataType type) {
             throw new NotImplementedException();
         }
-        public void DeleteKey(string value, DataType type) {
-            // var dict = GetDictionary(type);
-            // if (dict.Contains(value)) {
-            //     dict.Remove(value);
-            //     RemoveFromActivities(value, type);
-            // }
-            // _context.SaveChanges();
-        }
         private void RemoveFromActivities(string value, DataType type) {
             // Func<Activity, bool> lambda;
 
