@@ -41,16 +41,24 @@ namespace Application {
             switch (type) {
                 case DataType.ClassGroup:
                     return await _context.ClassGroups
-                        .Select(c => new DictionaryIndexViewModel() { Id = c.Id, Name = c.Name }).ToListAsync();
+                        .Select(c => new DictionaryIndexViewModel() { Id = c.Id, Name = c.Name })
+                        .OrderBy(c => c.Name)
+                        .ToListAsync();
                 case DataType.Room:
                     return await _context.Rooms
-                        .Select(r => new DictionaryIndexViewModel() { Id = r.Id, Name = r.Name }).ToListAsync();
+                        .Select(r => new DictionaryIndexViewModel() { Id = r.Id, Name = r.Name })
+                        .OrderBy(c => c.Name)
+                        .ToListAsync();
                 case DataType.Subject:
                     return await _context.Subjects
-                        .Select(s => new DictionaryIndexViewModel() { Id = s.Id, Name = s.Name }).ToListAsync();
+                        .Select(s => new DictionaryIndexViewModel() { Id = s.Id, Name = s.Name })
+                        .OrderBy(c => c.Name)
+                        .ToListAsync();
                 case DataType.Teacher:
                     return await _context.Teachers
-                        .Select(t => new DictionaryIndexViewModel() { Id = t.Id, Name = t.Name }).ToListAsync();
+                        .Select(t => new DictionaryIndexViewModel() { Id = t.Id, Name = t.Name })
+                        .OrderBy(c => c.Name)
+                        .ToListAsync();
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
             }
