@@ -15,7 +15,7 @@ namespace Application {
         public DisctionariesService(ApplicationDbContext context) =>
             _context = context;
 
-        public async Task<DictionaryElementEditViewModel> GetDictionaryElement(int id, DataType type) {
+        public async Task<DictionaryElementEditViewModel> GetDictionaryElementAsync(int id, DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
                     var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
@@ -47,14 +47,27 @@ namespace Application {
         public IEnumerable<string> GetAllTeachers() =>
             _context.Teachers.Select(t => t.Name).ToList();
 
-        public void AddKey(string value, DataType type) {
-            // var dict = GetDictionary(type);
-            // if (!dict.Contains(value)) {
-            //     dict.Add(value);
-            //     _context.SaveChanges();
-            // }
+        public async Task AddKey(string value, string comment, DataType type) {
+            switch (type) {
+                case DataType.ClassGroup:
+                    await _context.ClassGroups.AddAsync(new ClassGroup(value, comment));
+                    break;
+                case DataType.Room:
+                    await _context.Rooms.AddAsync(new Room(value, comment));
+                    break;
+                case DataType.Subject:
+                    await _context.Subjects.AddAsync(new Subject(value, comment));
+                    break;
+                case DataType.Teacher:
+                    await _context.Teachers.AddAsync(new Teacher(value, comment));
+                    break;
+                default:
+                    throw new ArgumentException("Type of dictionary does not exist");
+            }
+            await _context.SaveChangesAsync();
+
         }
-        public async Task<IEnumerable<DictionaryIndexViewModel>> GetDictionary(DataType type) {
+        public async Task<IEnumerable<DictionaryIndexViewModel>> GetDictionaryAsync(DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
                     return await _context.ClassGroups

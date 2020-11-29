@@ -15,7 +15,7 @@ namespace Application {
         public ScheduleService(ApplicationDbContext context) {
             _context = context;
         }
-        public async Task<ActivityEditViewModel> GetActivity(int id) {
+        public async Task<ActivityEditViewModel> GetActivityAsync(int id) {
             var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
             return new ActivityEditViewModel() {
                 Id = activity.Id,
@@ -69,34 +69,34 @@ namespace Application {
             }
             return schedule;
         }
-        public async Task CreateActivity(ActivityEditViewModel activity) {
+        public async Task CreateActivityAsync(ActivityEditViewModel activity) {
             if (activity is null)
                 throw new ArgumentException("Activity does not exists");
 
             if (!ValidateActivityForCreate(activity))
                 throw new InvalidOperationException("One of values on this slot is occupied");
 
-            ClassGroup classGroup = _context.ClassGroups.FirstOrDefault(c => c.Name == activity.ClassGroup)
+            var classGroup = _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup)
                 ?? throw new InvalidOperationException(activity.ClassGroup + " class group does not exist in database");
 
-            Subject subject = _context.Subjects.FirstOrDefault(s => s.Name == activity.Subject)
+            var subject = _context.Subjects.FirstOrDefaultAsync(s => s.Name == activity.Subject)
                 ?? throw new InvalidOperationException(activity.Subject + " subject does not exist in database");
 
-            Teacher teacher = _context.Teachers.FirstOrDefault(t => t.Name == activity.Teacher)
+            var teacher = _context.Teachers.FirstOrDefaultAsync(t => t.Name == activity.Teacher)
                 ?? throw new InvalidOperationException(activity.Teacher + " teacher does not exist in database");
 
-            Slot slot = _context.Slots.FirstOrDefault(s => s.Index == activity.Slot)
+            var slot = _context.Slots.FirstOrDefaultAsync(s => s.Index == activity.Slot)
                 ?? throw new InvalidOperationException(activity.Slot + " slot does not exist in database");
 
-            Room room = _context.Rooms.FirstOrDefault(r => r.Name == activity.Room)
+            var room = _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room)
                 ?? throw new InvalidOperationException(activity.Teacher + " room does not exist in database");
 
-            _context.Activities.Add(new Activity {
-                ClassGroup = classGroup,
-                Subject = subject,
-                Teacher = teacher,
-                Slot = slot,
-                Room = room
+            await _context.Activities.AddAsync(new Activity {
+                ClassGroup = await classGroup,
+                Subject = await subject,
+                Teacher = await teacher,
+                Slot = await slot,
+                Room = await room
             });
             await _context.SaveChangesAsync();
         }
@@ -115,7 +115,7 @@ namespace Application {
                 )
             ).Count() == 0;
         }
-        public async Task EditActivity(int id, ActivityEditViewModel activity) {
+        public async Task EditActivityAsync(int id, ActivityEditViewModel activity) {
             var activityToEdit = GetActivities().FirstOrDefault(a => a.Id == id);
             if (activityToEdit is null)
                 throw new ArgumentException("Activity does not exist");
@@ -151,7 +151,7 @@ namespace Application {
                 GetActivities().Where(a => a.Id != id),
                 activity
             );
-        public async Task DeleteActivity(int id) {
+        public async Task DeleteActivityAsync(int id) {
             var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");

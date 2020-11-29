@@ -18,7 +18,7 @@ namespace WebClient.Controllers {
                 if (type is null)
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
                 ViewBag.Description = type;
-                return View("./Views/Dictionaries/Index.cshtml", await _disctionariesService.GetDictionary(GetValueFromString(type)));
+                return View("./Views/Dictionaries/Index.cshtml", await _disctionariesService.GetDictionaryAsync(GetValueFromString(type)));
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -56,7 +56,7 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Value or id cannot be empty");
                 ViewBag.Method = "Edit";
                 ViewBag.Description = type;
-                return View("./Views/Dictionaries/Edit.cshtml", await _disctionariesService.GetDictionaryElement(id.Value, GetValueFromString(type)));
+                return View("./Views/Dictionaries/Edit.cshtml", await _disctionariesService.GetDictionaryElementAsync(id.Value, GetValueFromString(type)));
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);

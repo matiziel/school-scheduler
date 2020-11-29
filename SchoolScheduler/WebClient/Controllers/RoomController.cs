@@ -50,7 +50,7 @@ namespace WebClient.Controllers {
                 if (activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                await _scheduleService.CreateActivity(activity);
+                await _scheduleService.CreateActivityAsync(activity);
                 return RedirectToAction("Index", new { name = activity.Room });
             }
             catch (Exception e) {
@@ -63,7 +63,7 @@ namespace WebClient.Controllers {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                var activity = await _scheduleService.GetActivity(id.Value);
+                var activity = await _scheduleService.GetActivityAsync(id.Value);
 
                 ViewBag.ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
@@ -81,7 +81,7 @@ namespace WebClient.Controllers {
                 if (id is null || activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                await _scheduleService.EditActivity(id.Value, activity);
+                await _scheduleService.EditActivityAsync(id.Value, activity);
                 return RedirectToAction("Index", new { name = activity.Room });
             }
             catch (Exception e) {
@@ -94,7 +94,7 @@ namespace WebClient.Controllers {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                await _scheduleService.DeleteActivity(id.Value);
+                await _scheduleService.DeleteActivityAsync(id.Value);
                 return RedirectToAction("Index", new { name = room });
             }
             catch (Exception e) {

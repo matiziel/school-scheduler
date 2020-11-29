@@ -5,13 +5,13 @@ using Model;
 
 namespace Contracts.Services {
     public interface IScheduleService {
-        Task<ActivityEditViewModel> GetActivity(int id);
+        Task<ActivityEditViewModel> GetActivityAsync(int id);
         ScheduleViewModel GetScheduleByGroup(string classGroup);
         ScheduleViewModel GetScheduleByRoom(string room);
         ScheduleViewModel GetScheduleByTeacher(string teacher);
 
-        Task CreateActivity(ActivityEditViewModel activity);
-        Task EditActivity(int id, ActivityEditViewModel activity);
-        Task DeleteActivity(int id);
+        Task CreateActivityAsync(ActivityEditViewModel activity);
+        Task EditActivityAsync(int id, ActivityEditViewModel activity);
+        Task DeleteActivityAsync(int id);
     }
 }
