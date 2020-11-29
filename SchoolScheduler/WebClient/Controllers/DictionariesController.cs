@@ -30,7 +30,7 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
                 ViewBag.Method = "Create";
                 ViewBag.Description = type;
-                return View("./Views/Dictionaries/Edit.cshtml", new DictionaryElementEditViewModel() { 
+                return View("./Views/Dictionaries/Edit.cshtml", new DictionaryElementEditViewModel() {
                 });
             }
             catch (Exception e) {
@@ -52,7 +52,7 @@ namespace WebClient.Controllers {
         }
         public async Task<IActionResult> Edit(int? id, string type) {
             try {
-                if (id is null || type is null )
+                if (id is null || type is null)
                     return View("./Views/ErrorView.cshtml", "Value or id cannot be empty");
                 ViewBag.Method = "Edit";
                 ViewBag.Description = type;
@@ -63,12 +63,12 @@ namespace WebClient.Controllers {
             }
         }
         [HttpPost]
-        public IActionResult Edit(int id, string type, DictionaryElementEditViewModel element) {
+        public async Task<IActionResult> Edit(int id, string type, DictionaryElementEditViewModel element) {
             try {
                 if (type is null || element is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
 
-                //_editDataService.AddKey(value, GetValueFromString(type));
+                await _disctionariesService.UpdateKey(element, GetValueFromString(type));
                 return RedirectToAction("Index", new { type = type });
             }
             catch (Exception e) {
@@ -76,14 +76,12 @@ namespace WebClient.Controllers {
             }
         }
 
-
-
-        public IActionResult Delete(int? id, string type) {
+        public async Task<IActionResult> Delete(int? id, string type) {
             try {
                 if (id is null || type is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                //_editDataService.DeleteKey(value, GetValueFromString(type));
+                await _disctionariesService.RemoveKey(id.Value, GetValueFromString(type));
                 return RedirectToAction("Index", new { type = type });
             }
             catch (Exception e) {
