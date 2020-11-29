@@ -22,50 +22,20 @@ namespace Application {
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
                     return new DictionaryElementEditViewModel() { Id = classGroup.Id, Name = classGroup.Name, Comment = classGroup.Comment };
                 case DataType.Room:
-                    var room = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
-                        ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
+                    var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id)
+                        ?? throw new ArgumentException("Room with id: " + id + " does not exist");
                     return new DictionaryElementEditViewModel() { Id = room.Id, Name = room.Name, Comment = room.Comment };
                 case DataType.Subject:
                     var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id)
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
                     return new DictionaryElementEditViewModel() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment };
                 case DataType.Teacher:
-                    var teacher = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
-                        ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
+                    var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == id)
+                        ?? throw new ArgumentException("Teacher with id: " + id + " does not exist");
                     return new DictionaryElementEditViewModel() { Id = teacher.Id, Name = teacher.Name, Comment = teacher.Comment };
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
             }
-        }
-
-        public IEnumerable<string> GetAllClassGroups() =>
-             _context.ClassGroups.Select(c => c.Name).ToList();
-        public IEnumerable<string> GetAllRooms() =>
-            _context.Rooms.Select(r => r.Name).ToList();
-        public IEnumerable<string> GetAllSubjects() =>
-            _context.Subjects.Select(s => s.Name).ToList();
-        public IEnumerable<string> GetAllTeachers() =>
-            _context.Teachers.Select(t => t.Name).ToList();
-
-        public async Task AddKey(string value, string comment, DataType type) {
-            switch (type) {
-                case DataType.ClassGroup:
-                    await _context.ClassGroups.AddAsync(new ClassGroup(value, comment));
-                    break;
-                case DataType.Room:
-                    await _context.Rooms.AddAsync(new Room(value, comment));
-                    break;
-                case DataType.Subject:
-                    await _context.Subjects.AddAsync(new Subject(value, comment));
-                    break;
-                case DataType.Teacher:
-                    await _context.Teachers.AddAsync(new Teacher(value, comment));
-                    break;
-                default:
-                    throw new ArgumentException("Type of dictionary does not exist");
-            }
-            await _context.SaveChangesAsync();
-
         }
         public async Task<IEnumerable<DictionaryIndexViewModel>> GetDictionaryAsync(DataType type) {
             switch (type) {
@@ -86,6 +56,77 @@ namespace Application {
             }
         }
 
+        public IEnumerable<string> GetAllClassGroups() =>
+             _context.ClassGroups.Select(c => c.Name).ToList();
+        public IEnumerable<string> GetAllRooms() =>
+            _context.Rooms.Select(r => r.Name).ToList();
+        public IEnumerable<string> GetAllSubjects() =>
+            _context.Subjects.Select(s => s.Name).ToList();
+        public IEnumerable<string> GetAllTeachers() =>
+            _context.Teachers.Select(t => t.Name).ToList();
+
+        public async Task AddKey(DictionaryElementEditViewModel element, DataType type) {
+            switch (type) {
+                case DataType.ClassGroup:
+                    await _context.ClassGroups.AddAsync(new ClassGroup(element.Name, element.Comment));
+                    break;
+                case DataType.Room:
+                    await _context.Rooms.AddAsync(new Room(element.Name, element.Comment));
+                    break;
+                case DataType.Subject:
+                    await _context.Subjects.AddAsync(new Subject(element.Name, element.Comment));
+                    break;
+                case DataType.Teacher:
+                    await _context.Teachers.AddAsync(new Teacher(element.Name, element.Comment));
+                    break;
+                default:
+                    throw new ArgumentException("Type of dictionary does not exist");
+            }
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException) {
+                throw new InvalidOperationException("Element with this name already exists");
+            }
+        }
+        public async Task UpdateKey(DictionaryElementEditViewModel element, DataType type) {
+            switch (type) {
+                case DataType.ClassGroup:
+                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
+                        ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
+                    classGroup.Update(element.Name, element.Comment);
+                    _context.ClassGroups.Update(classGroup);
+                    break;
+                case DataType.Room:
+                    var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == element.Id.Value)
+                        ?? throw new ArgumentException("Room with id: " + element.Id.Value + " does not exist");
+                    room.Update(element.Name, element.Comment);
+                    _context.Rooms.Update(room);
+                    break;
+                case DataType.Subject:
+                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
+                        ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
+                    subject.Update(element.Name, element.Comment);
+                    _context.Subjects.Update(subject);
+                    break;
+                case DataType.Teacher:
+                    var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == element.Id.Value)
+                        ?? throw new ArgumentException("Teacher with id: " + element.Id.Value + " does not exist");
+                    teacher.Update(element.Name, element.Comment);
+                    _context.Teachers.Update(teacher);
+                    break;
+            }
+            try {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException) {
+                throw new InvalidOperationException("Element with this name already exists");
+            }
+        }
+
+        public Task RemoveKey(int id, DataType type) {
+            throw new NotImplementedException();
+        }
         public void DeleteKey(string value, DataType type) {
             // var dict = GetDictionary(type);
             // if (dict.Contains(value)) {
@@ -139,5 +180,8 @@ namespace Application {
             else
                 return activities.Where(a => a.Slot.Index == slot && a.Id != id.Value);
         }
+
+
+
     }
 }

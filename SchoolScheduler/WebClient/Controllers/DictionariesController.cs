@@ -38,12 +38,12 @@ namespace WebClient.Controllers {
             }
         }
         [HttpPost]
-        public IActionResult Create(string type, DictionaryElementEditViewModel element) {
+        public async Task<IActionResult> Create(string type, DictionaryElementEditViewModel element) {
             try {
                 if (type is null || element is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
 
-                //_editDataService.AddKey(value, GetValueFromString(type));
+                await _disctionariesService.AddKey(element, GetValueFromString(type));
                 return RedirectToAction("Index", new { type = type });
             }
             catch (Exception e) {

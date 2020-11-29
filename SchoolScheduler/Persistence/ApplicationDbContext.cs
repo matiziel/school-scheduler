@@ -20,12 +20,12 @@ namespace Persistence {
                 .HasOne(a => a.Room)
                 .WithMany(r => r.Activities)
                 .IsRequired();
-            
+
             modelBuilder.Entity<Activity>()
                 .HasOne(a => a.Slot)
                 .WithMany(s => s.Activities)
                 .IsRequired();
-            
+
             modelBuilder.Entity<Activity>()
                  .HasOne(a => a.Subject)
                  .WithMany(s => s.Activities)

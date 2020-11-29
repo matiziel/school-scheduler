@@ -10,6 +10,10 @@ namespace Model {
             Name = name;
             Comment = comment;
         }
+        public void Update(string name, string comment) {
+            Name = name;
+            Comment = comment;
+        }
 
     }
 }
