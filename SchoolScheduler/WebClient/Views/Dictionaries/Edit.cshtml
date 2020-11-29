@@ -4,6 +4,7 @@
     ViewData["Title"] = ViewBag.Method;
 }
 <hr />
+<h2>@ViewBag.Method @ViewBag.Description</h2>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="@ViewBag.Method" asp-route-type="@ViewBag.Description">
@@ -24,15 +25,12 @@
         </form>
         @if (@Model.Id != null)
         {
-            <form asp-action="Delete" asp-route-id="@Model.Id" asp-route-type="@ViewBag.Description">
-                <div class="form-group">
-                    <input type="submit" value="Delete" class="btn btn-danger" />
-                </div>
-            </form>
+            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id"
+                asp-route-type="@ViewBag.Description">Delete</a>
         }
         </div>
     </div>
 
     <div>
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" asp-route-type="@ViewBag.Description">Back to List</a>
     </div>

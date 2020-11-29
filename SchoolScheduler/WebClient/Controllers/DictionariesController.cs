@@ -79,9 +79,21 @@ namespace WebClient.Controllers {
         public async Task<IActionResult> Delete(int? id, string type) {
             try {
                 if (id is null || type is null)
-                    return View("./Views/ErrorView.cshtml", "Error during http request");
+                    return View("./Views/ErrorView.cshtml", "Value or id cannot be empty");
+                ViewBag.Description = type;
+                return View("./Views/Dictionaries/Delete.cshtml", await _disctionariesService.GetDictionaryElementAsync(id.Value, GetValueFromString(type)));
+            }
+            catch (Exception e) {
+                return View("./Views/ErrorView.cshtml", e.Message);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, string type) {
+            try {
+                if (type is null)
+                    return View("./Views/ErrorView.cshtml", "Value cannot be empty");
 
-                await _disctionariesService.RemoveKey(id.Value, GetValueFromString(type));
+                await _disctionariesService.RemoveKey(id, GetValueFromString(type));
                 return RedirectToAction("Index", new { type = type });
             }
             catch (Exception e) {

@@ -65,13 +65,13 @@ namespace Application {
         }
 
         public IEnumerable<string> GetAllClassGroups() =>
-             _context.ClassGroups.Select(c => c.Name).ToList();
+             _context.ClassGroups.Select(c => c.Name).OrderBy(c => c).ToList();
         public IEnumerable<string> GetAllRooms() =>
-            _context.Rooms.Select(r => r.Name).ToList();
+            _context.Rooms.Select(r => r.Name).OrderBy(r => r).ToList();
         public IEnumerable<string> GetAllSubjects() =>
-            _context.Subjects.Select(s => s.Name).ToList();
+            _context.Subjects.Select(s => s.Name).OrderBy(s => s).ToList();
         public IEnumerable<string> GetAllTeachers() =>
-            _context.Teachers.Select(t => t.Name).ToList();
+            _context.Teachers.Select(t => t.Name).OrderBy(t => t).ToList();
 
         public async Task AddKey(DictionaryElementEditViewModel element, DataType type) {
             switch (type) {
@@ -123,6 +123,8 @@ namespace Application {
                     teacher.Update(element.Name, element.Comment);
                     _context.Teachers.Update(teacher);
                     break;
+                default:
+                    throw new ArgumentException("Type of dictionary does not exist");
             }
             try {
                 await _context.SaveChangesAsync();
@@ -132,27 +134,49 @@ namespace Application {
             }
         }
 
-        public Task RemoveKey(int id, DataType type) {
-            throw new NotImplementedException();
+        public async Task RemoveKey(int id, DataType type) {
+            RemoveFromActivities(id, type);
+            switch (type) {
+                case DataType.ClassGroup:
+                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.ClassGroups.Remove(classGroup);
+                    break;
+                case DataType.Room:
+                    var room = await _context.Rooms.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.Rooms.Remove(room);
+                    break;
+                case DataType.Subject:
+                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.Subjects.Remove(subject);
+                    break;
+                case DataType.Teacher:
+                    var teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.Teachers.Remove(teacher);
+                    break;
+                default:
+                    throw new ArgumentException("Type of dictionary does not exist");
+            }
+            await _context.SaveChangesAsync();
         }
-        private void RemoveFromActivities(string value, DataType type) {
-            // Func<Activity, bool> lambda;
-
-            // if (type == DataType.Group)
-            //     lambda = a => a.Group == value;
-            // else if (type == DataType.Class)
-            //     lambda = a => a.Class == value;
-            // else if (type == DataType.Teacher)
-            //     lambda = a => a.Teacher == value;
-            // else if (type == DataType.Room)
-            //     lambda = a => a.Room == value;
-            // else
-            //     throw new ArgumentException("Type of dictionary does not exist");
-
-            // var activitiesIdToRemove = _context.Schedule.Activities.Where(lambda).Select(a => a.Id);
-            // _context.Schedule.Activities.RemoveAll(a => activitiesIdToRemove.Contains(a.Id));
-
-            // _context.SaveChanges();
+        private void RemoveFromActivities(int id, DataType type) {
+            IEnumerable<Activity> activities;
+            switch (type) {
+                case DataType.ClassGroup:
+                    activities = _context.Activities.Include(a => a.ClassGroup).Where(a => a.ClassGroup.Id == id);
+                    break;
+                case DataType.Room:
+                    activities = _context.Activities.Include(a => a.Room).Where(a => a.Room.Id == id);
+                    break;
+                case DataType.Subject:
+                    activities = _context.Activities.Include(a => a.Subject).Where(a => a.Subject.Id == id);
+                    break;
+                case DataType.Teacher:
+                    activities = _context.Activities.Include(a => a.Teacher).Where(a => a.Teacher.Id == id);
+                    break;
+                default:
+                    throw new ArgumentException("Type of dictionary does not exist");
+            }
+            _context.Activities.RemoveRange(activities);
         }
         public IEnumerable<string> GetFreeClassGroupsBySlot(int slot, int? id = null) {
             var groups = GetAllClassGroups();
