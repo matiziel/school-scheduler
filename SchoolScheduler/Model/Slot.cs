@@ -6,6 +6,11 @@ namespace Model {
         public int Index { get; set; }
         public string Comment { get; set; }
         public ICollection<Activity> Activities { get; set; }
+        public Slot(int index, string comment) {
+            Index = index;
+            Comment = comment;
+        }
+        
 
     }
 }

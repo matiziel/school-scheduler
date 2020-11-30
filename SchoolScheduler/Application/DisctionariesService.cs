@@ -133,7 +133,6 @@ namespace Application {
                 throw new InvalidOperationException("Element with this name already exists");
             }
         }
-
         public async Task RemoveKey(int id, DataType type) {
             RemoveFromActivities(id, type);
             switch (type) {
@@ -204,8 +203,5 @@ namespace Application {
             else
                 return activities.Where(a => a.Slot.Index == slot && a.Id != id.Value);
         }
-
-
-
     }
 }
