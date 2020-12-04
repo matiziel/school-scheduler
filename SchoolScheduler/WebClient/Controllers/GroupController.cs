@@ -85,7 +85,7 @@ namespace WebClient.Controllers {
                     await _scheduleService.EditActivityAsync(id.Value, activity);
                     return RedirectToAction("Index", new { name = activity.ClassGroup });
                 }
-                return RedirectToAction("Index", new { id = id.Value });
+                return RedirectToAction("Edit", new { id = id.Value });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
