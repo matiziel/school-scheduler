@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace WebClient.Migrations
 {
@@ -12,8 +11,8 @@ namespace WebClient.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
                     Comment = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -26,8 +25,8 @@ namespace WebClient.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
                     Comment = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -40,8 +39,8 @@ namespace WebClient.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Index = table.Column<int>(nullable: false),
                     Comment = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -54,8 +53,8 @@ namespace WebClient.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
                     Comment = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -68,9 +67,8 @@ namespace WebClient.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
                     Comment = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -83,7 +81,7 @@ namespace WebClient.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoomId = table.Column<int>(nullable: false),
                     ClassGroupId = table.Column<int>(nullable: false),
                     SubjectId = table.Column<int>(nullable: false),
@@ -149,6 +147,36 @@ namespace WebClient.Migrations
                 name: "IX_Activities_TeacherId",
                 table: "Activities",
                 column: "TeacherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassGroups_Name",
+                table: "ClassGroups",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_Name",
+                table: "Rooms",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Slots_Index",
+                table: "Slots",
+                column: "Index",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subjects_Name",
+                table: "Subjects",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teachers_Name",
+                table: "Teachers",
+                column: "Name",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

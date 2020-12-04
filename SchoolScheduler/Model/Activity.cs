@@ -8,5 +8,6 @@ namespace Model {
         public Subject Subject { get; set; }
         public Slot Slot { get; set; }
         public Teacher Teacher { get; set; }
+        public byte[] Timestamp { get; set; }
     }
 }
