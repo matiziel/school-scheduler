@@ -49,9 +49,11 @@ namespace WebClient.Controllers {
             try {
                 if (activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-
-                await _scheduleService.CreateActivityAsync(activity);
-                return RedirectToAction("Index", new { name = activity.Room });
+                if (ModelState.IsValid) {
+                    await _scheduleService.CreateActivityAsync(activity);
+                    return RedirectToAction("Index", new { name = activity.Room });
+                }
+                return RedirectToAction("Create", new { slot = activity.Slot, helper = activity.Room });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -80,9 +82,11 @@ namespace WebClient.Controllers {
             try {
                 if (id is null || activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-
-                await _scheduleService.EditActivityAsync(id.Value, activity);
-                return RedirectToAction("Index", new { name = activity.Room });
+                if (ModelState.IsValid) {
+                    await _scheduleService.EditActivityAsync(id.Value, activity);
+                    return RedirectToAction("Index", new { name = activity.Room });
+                }
+                return RedirectToAction("Edit", new { id = id.Value });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);

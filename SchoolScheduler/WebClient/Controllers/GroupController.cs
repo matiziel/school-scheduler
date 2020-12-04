@@ -18,10 +18,10 @@ namespace WebClient.Controllers {
         public IActionResult Index(string name) {
             try {
                 if (string.IsNullOrEmpty(name))
-                    name =  _disctionariesService.GetAllClassGroups().FirstOrDefault();
+                    name = _disctionariesService.GetAllClassGroups().FirstOrDefault();
                 ViewBag.Description = name;
                 ViewBag.Name = "Group";
-                ViewBag.DropDownListElements =  _disctionariesService.GetAllClassGroups();
+                ViewBag.DropDownListElements = _disctionariesService.GetAllClassGroups();
                 return View("./Views/Schedule/Index.cshtml", _scheduleService.GetScheduleByGroup(name));
             }
             catch (Exception e) {
@@ -34,7 +34,7 @@ namespace WebClient.Controllers {
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot);
                 ViewBag.Method = "Create";
-                return View("./Views/Schedule/EditForGroup.cshtml", new ActivityEditViewModel(){
+                return View("./Views/Schedule/EditForGroup.cshtml", new ActivityEditViewModel() {
                     Slot = slot,
                     ClassGroup = helper
                 });
@@ -49,9 +49,11 @@ namespace WebClient.Controllers {
             try {
                 if (activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-
-                await _scheduleService.CreateActivityAsync(activity);
-                return RedirectToAction("Index", new { name = activity.ClassGroup });
+                if (ModelState.IsValid) {
+                    await _scheduleService.CreateActivityAsync(activity);
+                    return RedirectToAction("Index", new { name = activity.ClassGroup });
+                }
+                return RedirectToAction("Create", new { slot = activity.Slot, helper = activity.ClassGroup });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -79,9 +81,11 @@ namespace WebClient.Controllers {
             try {
                 if (id is null || activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-
-                await _scheduleService.EditActivityAsync(id.Value, activity);
-                return RedirectToAction("Index", new { name = activity.ClassGroup });
+                if (ModelState.IsValid) {
+                    await _scheduleService.EditActivityAsync(id.Value, activity);
+                    return RedirectToAction("Index", new { name = activity.ClassGroup });
+                }
+                return RedirectToAction("Index", new { id = id.Value });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);

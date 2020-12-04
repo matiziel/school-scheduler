@@ -42,9 +42,11 @@ namespace WebClient.Controllers {
             try {
                 if (type is null || element is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
-
-                await _disctionariesService.AddKey(element, GetValueFromString(type));
-                return RedirectToAction("Index", new { type = type });
+                if (ModelState.IsValid) {
+                    await _disctionariesService.AddKey(element, GetValueFromString(type));
+                    return RedirectToAction("Index", new { type = type });
+                }
+                return RedirectToAction("Create", new { type = type });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -67,9 +69,11 @@ namespace WebClient.Controllers {
             try {
                 if (type is null || element is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
-
-                await _disctionariesService.UpdateKey(element, GetValueFromString(type));
-                return RedirectToAction("Index", new { type = type });
+                if (ModelState.IsValid) {
+                    await _disctionariesService.UpdateKey(element, GetValueFromString(type));
+                    return RedirectToAction("Index", new { type = type });
+                }
+                return RedirectToAction("Edit", new { id = id, type = type });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
