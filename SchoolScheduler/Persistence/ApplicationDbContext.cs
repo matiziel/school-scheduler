@@ -27,14 +27,14 @@ namespace Persistence {
                 .IsRequired();
 
             modelBuilder.Entity<Activity>()
-                 .HasOne(a => a.Subject)
-                 .WithMany(s => s.Activities)
-                 .IsRequired();
+                .HasOne(a => a.Subject)
+                .WithMany(s => s.Activities)
+                .IsRequired();
 
             modelBuilder.Entity<Activity>()
-                 .HasOne(a => a.Teacher)
-                 .WithMany(t => t.Activities)
-                 .IsRequired();
+                .HasOne(a => a.Teacher)
+                .WithMany(t => t.Activities)
+                .IsRequired();
 
             modelBuilder.Entity<Activity>().Property(a => a.Timestamp)
                 .IsRowVersion();

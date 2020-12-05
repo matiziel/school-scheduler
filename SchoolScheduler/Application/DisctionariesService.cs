@@ -90,12 +90,8 @@ namespace Application {
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
             }
-            try {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException) {
-                throw new InvalidOperationException("Element with this name already exists");
-            }
+            await _context.SaveChangesAsync();
+
         }
         public async Task UpdateKey(DictionaryElementEditViewModel element, DataType type) {
             switch (type) {
@@ -126,12 +122,7 @@ namespace Application {
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
             }
-            try {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException) {
-                throw new InvalidOperationException("Element with this name already exists");
-            }
+            await _context.SaveChangesAsync();
         }
         public async Task RemoveKey(int id, DataType type) {
             RemoveFromActivities(id, type);

@@ -23,7 +23,8 @@ namespace Application {
                 ClassGroup = activity.ClassGroup.Name,
                 Room = activity.Room.Name,
                 Subject = activity.Subject.Name,
-                Teacher = activity.Teacher.Name
+                Teacher = activity.Teacher.Name,
+                Timestamp = activity.Timestamp
             };
         }
         private IQueryable<Activity> GetActivities() {
@@ -90,7 +91,7 @@ namespace Application {
 
             var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room)
                 ?? throw new InvalidOperationException(activity.Teacher + " room does not exist in database");
-
+            
             await _context.Activities.AddAsync(new Activity {
                 ClassGroup = classGroup,
                 Subject = subject,
@@ -145,6 +146,9 @@ namespace Application {
                 activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room)
                     ?? throw new InvalidOperationException(activity.Room + " room does not exist in database");
 
+            activityToEdit.Timestamp = activity.Timestamp;
+
+            _context.Entry(activityToEdit).Property("Timestamp").OriginalValue = activity.Timestamp;
             _context.Activities.Update(activityToEdit);
             await _context.SaveChangesAsync();
         }

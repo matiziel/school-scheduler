@@ -6,5 +6,7 @@ namespace Contracts.ViewModels.Dictionaries {
         [Required]
         public string Name { get; set; }
         public string Comment { get; set; }
+        [Timestamp]
+        public byte[] Timestamp { get; set; }
     }
 }
