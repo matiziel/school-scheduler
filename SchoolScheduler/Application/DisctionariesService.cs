@@ -20,19 +20,19 @@ namespace Application {
                 case DataType.ClassGroup:
                     var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = classGroup.Id, Name = classGroup.Name, Comment = classGroup.Comment };
+                    return new DictionaryElementEditViewModel() { Id = classGroup.Id, Name = classGroup.Name, Comment = classGroup.Comment, Timestamp = classGroup.Timestamp };
                 case DataType.Room:
                     var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id)
                         ?? throw new ArgumentException("Room with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = room.Id, Name = room.Name, Comment = room.Comment };
+                    return new DictionaryElementEditViewModel() { Id = room.Id, Name = room.Name, Comment = room.Comment, Timestamp = room.Timestamp };
                 case DataType.Subject:
                     var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id)
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment };
+                    return new DictionaryElementEditViewModel() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment, Timestamp = subject.Timestamp };
                 case DataType.Teacher:
                     var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == id)
                         ?? throw new ArgumentException("Teacher with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = teacher.Id, Name = teacher.Name, Comment = teacher.Comment };
+                    return new DictionaryElementEditViewModel() { Id = teacher.Id, Name = teacher.Name, Comment = teacher.Comment, Timestamp = teacher.Timestamp };
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
             }

@@ -91,7 +91,7 @@ namespace Application {
 
             var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room)
                 ?? throw new InvalidOperationException(activity.Teacher + " room does not exist in database");
-            
+
             await _context.Activities.AddAsync(new Activity {
                 ClassGroup = classGroup,
                 Subject = subject,
@@ -146,8 +146,6 @@ namespace Application {
                 activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room)
                     ?? throw new InvalidOperationException(activity.Room + " room does not exist in database");
 
-            activityToEdit.Timestamp = activity.Timestamp;
-
             _context.Entry(activityToEdit).Property("Timestamp").OriginalValue = activity.Timestamp;
             _context.Activities.Update(activityToEdit);
             await _context.SaveChangesAsync();
@@ -157,10 +155,12 @@ namespace Application {
                 GetActivities().Where(a => a.Id != id),
                 activity
             );
-        public async Task DeleteActivityAsync(int id) {
+        public async Task DeleteActivityAsync(int id, byte[] timestamp) {
             var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
+            activity.Timestamp = timestamp;
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
+            // _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
             _context.Remove(activity);
             await _context.SaveChangesAsync();
         }

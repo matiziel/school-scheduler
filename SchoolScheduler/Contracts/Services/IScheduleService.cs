@@ -12,6 +12,6 @@ namespace Contracts.Services {
 
         Task CreateActivityAsync(ActivityEditViewModel activity);
         Task EditActivityAsync(int id, ActivityEditViewModel activity);
-        Task DeleteActivityAsync(int id);
+        Task DeleteActivityAsync(int id, byte[] timestamp);
     }
 }
