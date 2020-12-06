@@ -11,18 +11,12 @@ using Microsoft.EntityFrameworkCore;
 namespace WebClient.Controllers {
     public class GroupController : Controller {
         private readonly IScheduleService _scheduleService;
-        private readonly IDisctionariesService _disctionariesService;
-        public GroupController(IScheduleService scheduleService, IDisctionariesService editDataService) {
+        public GroupController(IScheduleService scheduleService) {
             _scheduleService = scheduleService;
-            _disctionariesService = editDataService;
         }
         public IActionResult Index(string name) {
             try {
-                if (string.IsNullOrEmpty(name))
-                    name = _disctionariesService.GetAllClassGroups().FirstOrDefault();
-                ViewBag.Description = name;
                 ViewBag.Name = "Group";
-                ViewBag.DropDownListElements = _disctionariesService.GetAllClassGroups();
                 return View("./Views/Schedule/Index.cshtml", _scheduleService.GetScheduleByGroup(name));
             }
             catch (Exception e) {
@@ -31,14 +25,8 @@ namespace WebClient.Controllers {
         }
         public IActionResult Create(int slot, string helper) {
             try {
-                ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot);
-                ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
-                ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot);
                 ViewBag.Method = "Create";
-                return View("./Views/Schedule/EditForGroup.cshtml", new ActivityEditViewModel() {
-                    Slot = slot,
-                    ClassGroup = helper
-                });
+                return View(_scheduleService.GetEmptyActivityByGroup(slot, helper));
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -46,7 +34,7 @@ namespace WebClient.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ActivityEditViewModel activity) {
+        public async Task<IActionResult> Create(ActivityViewModel activity) {
             try {
                 if (activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
@@ -65,20 +53,16 @@ namespace WebClient.Controllers {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-                var activity = await _scheduleService.GetActivityAsync(id.Value);
-                
-                ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
-                ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
-                ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot, id);
+                var activity = await _scheduleService.GetActivityByGroupAsync(id.Value);
                 ViewBag.Method = "Edit";
-                return View("./Views/Schedule/EditForGroup.cshtml", activity);
+                return View(activity);
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(int? id, ActivityEditViewModel activity) {
+        public async Task<IActionResult> Edit(int? id, ActivityViewModel activity) {
             try {
                 if (id is null || activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
@@ -100,7 +84,6 @@ namespace WebClient.Controllers {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-
                 await _scheduleService.DeleteActivityAsync(id.Value, timestamp);
                 return RedirectToAction("Index", new { name = group });
             }

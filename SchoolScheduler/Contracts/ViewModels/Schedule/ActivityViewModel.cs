@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Contracts.ViewModels.Schedule {
-    public class ActivityEditViewModel {
+    public class ActivityViewModel {
         public int? Id { get; set; }
         [Required]
         public int Slot { get; set; }

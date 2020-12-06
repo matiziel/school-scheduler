@@ -12,19 +12,81 @@ using Persistence;
 namespace Application {
     public class ScheduleService : IScheduleService {
         private readonly ApplicationDbContext _context;
-        public ScheduleService(ApplicationDbContext context) {
+        private readonly IDisctionariesService _disctionariesService;
+        public ScheduleService(ApplicationDbContext context, IDisctionariesService disctionariesService) {
             _context = context;
+            _disctionariesService = disctionariesService;
         }
-        public async Task<ActivityEditViewModel> GetActivityAsync(int id) {
+        public async Task<ActivityByGroupEditViewModel> GetActivityByGroupAsync(int id) {
             var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
-            return new ActivityEditViewModel() {
+            return new ActivityByGroupEditViewModel() {
                 Id = activity.Id,
                 Slot = activity.Slot.Index,
                 ClassGroup = activity.ClassGroup.Name,
                 Room = activity.Room.Name,
                 Subject = activity.Subject.Name,
                 Teacher = activity.Teacher.Name,
-                Timestamp = activity.Timestamp
+                Timestamp = activity.Timestamp,
+                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot.Index, id),
+                ListOfClasses = _disctionariesService.GetAllSubjects(),
+                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot.Index, id),
+            };
+        }
+        public ActivityByGroupEditViewModel GetEmptyActivityByGroup(int slot, string group) {
+            return new ActivityByGroupEditViewModel() {
+                Slot = slot,
+                ClassGroup = group,
+                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot),
+                ListOfClasses = _disctionariesService.GetAllSubjects(),
+                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot)
+            };
+        }
+        public async Task<ActivityByRoomEditViewModel> GetActivityByRoomAsync(int id) {
+            var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
+            return new ActivityByRoomEditViewModel() {
+                Id = activity.Id,
+                Slot = activity.Slot.Index,
+                ClassGroup = activity.ClassGroup.Name,
+                Room = activity.Room.Name,
+                Subject = activity.Subject.Name,
+                Teacher = activity.Teacher.Name,
+                Timestamp = activity.Timestamp,
+                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot.Index, id),
+                ListOfClasses = _disctionariesService.GetAllSubjects(),
+                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot.Index, id),
+            };
+        }
+        public ActivityByRoomEditViewModel GetEmptyActivityByRoom(int slot, string room) {
+            return new ActivityByRoomEditViewModel() {
+                Slot = slot,
+                Room = room,
+                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot),
+                ListOfClasses = _disctionariesService.GetAllSubjects(),
+                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot)
+            };
+        }
+        public async Task<ActivityByTeacherEditViewModel> GetActivityByTeacherAsync(int id) {
+            var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
+            return new ActivityByTeacherEditViewModel() {
+                Id = activity.Id,
+                Slot = activity.Slot.Index,
+                ClassGroup = activity.ClassGroup.Name,
+                Room = activity.Room.Name,
+                Subject = activity.Subject.Name,
+                Teacher = activity.Teacher.Name,
+                Timestamp = activity.Timestamp,
+                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot.Index, id),
+                ListOfClasses = _disctionariesService.GetAllSubjects(),
+                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot.Index, id),
+            };
+        }
+        public ActivityByTeacherEditViewModel GetEmptyActivityByTeacher(int slot, string teacher) {
+            return new ActivityByTeacherEditViewModel() {
+                Slot = slot,
+                Teacher = teacher,
+                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot),
+                ListOfClasses = _disctionariesService.GetAllSubjects(),
+                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot)
             };
         }
         private IQueryable<Activity> GetActivities() {
@@ -36,6 +98,10 @@ namespace Application {
                 .Include(a => a.Subject);
         }
         public ScheduleViewModel GetScheduleByGroup(string classGroup) {
+            var names = _disctionariesService.GetAllClassGroups();
+            if (classGroup is null)
+                classGroup = names.FirstOrDefault();
+
             var activitiesByGroup = GetActivities().Where(a => a.ClassGroup.Name == classGroup);
             var schedule = new ScheduleViewModel();
             foreach (var item in activitiesByGroup) {
@@ -44,10 +110,15 @@ namespace Application {
                     schedule.Slots[item.Slot.Index].Title = item.Room.Name + " " + item.Subject.Name;
                 }
             }
+            schedule.Names = names;
+            schedule.Name = classGroup;
             return schedule;
         }
 
         public ScheduleViewModel GetScheduleByRoom(string room) {
+            var names = _disctionariesService.GetAllRooms();
+            if (room is null)
+                room = names.FirstOrDefault();
             var activitiesByGroup = GetActivities().Where(a => a.Room.Name == room);
             var schedule = new ScheduleViewModel();
             foreach (var item in activitiesByGroup) {
@@ -56,10 +127,15 @@ namespace Application {
                     schedule.Slots[item.Slot.Index].Title = item.ClassGroup.Name;
                 }
             }
+            schedule.Names = names;
+            schedule.Name = room;
             return schedule;
         }
 
         public ScheduleViewModel GetScheduleByTeacher(string teacher) {
+            var names = _disctionariesService.GetAllTeachers();
+            if (teacher is null)
+                teacher = names.FirstOrDefault();
             var activitiesByGroup = GetActivities().Where(a => a.Teacher.Name == teacher);
             var schedule = new ScheduleViewModel();
             foreach (var item in activitiesByGroup) {
@@ -68,9 +144,11 @@ namespace Application {
                     schedule.Slots[item.Slot.Index].Title = item.Room.Name + " " + item.Subject.Name + " " + item.ClassGroup.Name;
                 }
             }
+            schedule.Names = names;
+            schedule.Name = teacher;
             return schedule;
         }
-        public async Task CreateActivityAsync(ActivityEditViewModel activity) {
+        public async Task CreateActivityAsync(ActivityViewModel activity) {
             if (activity is null)
                 throw new ArgumentException("Activity does not exists");
 
@@ -102,14 +180,14 @@ namespace Application {
             await _context.SaveChangesAsync();
         }
 
-        private bool ValidateActivityForCreate(ActivityEditViewModel activity) {
+        private bool ValidateActivityForCreate(ActivityViewModel activity) {
             return ValidateActivity(
                 GetActivities(),
                 activity
             );
         }
 
-        private bool ValidateActivity(IEnumerable<Activity> activities, ActivityEditViewModel activity) {
+        private bool ValidateActivity(IEnumerable<Activity> activities, ActivityViewModel activity) {
             return activities.Where(a =>
                 a.Slot.Index == activity.Slot && (
                     a.Teacher.Name == activity.Teacher ||
@@ -118,7 +196,7 @@ namespace Application {
                 )
             ).Count() == 0;
         }
-        public async Task EditActivityAsync(int id, ActivityEditViewModel activity) {
+        public async Task EditActivityAsync(int id, ActivityViewModel activity) {
             var activityToEdit = GetActivities().FirstOrDefault(a => a.Id == id);
             if (activityToEdit is null)
                 throw new ArgumentException("Activity does not exist");
@@ -150,17 +228,15 @@ namespace Application {
             _context.Activities.Update(activityToEdit);
             await _context.SaveChangesAsync();
         }
-        private bool ValidateActivityForEdit(int id, ActivityEditViewModel activity) =>
+        private bool ValidateActivityForEdit(int id, ActivityViewModel activity) =>
             ValidateActivity(
                 GetActivities().Where(a => a.Id != id),
                 activity
             );
         public async Task DeleteActivityAsync(int id, byte[] timestamp) {
             var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
-            activity.Timestamp = timestamp;
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
-            // _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
             _context.Remove(activity);
             await _context.SaveChangesAsync();
         }

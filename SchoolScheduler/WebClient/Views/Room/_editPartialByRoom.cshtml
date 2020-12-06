@@ -1,9 +1,10 @@
-@model Contracts.ViewModels.Schedule.ActivityEditViewModel
+@model Contracts.ViewModels.Schedule.ActivityByRoomEditViewModel
+
 @{
     ViewData["Title"] = ViewBag.Method;
 }
 
-<h1>@Model.Teacher</h1>
+<h1>@Model.Room</h1>
 
 <h4>@Common.SlotToTermMapper.GetTerm(Model.Slot).Item1</h4>
 <h4>@Common.SlotToTermMapper.GetTerm(Model.Slot).Item2</h4>
@@ -21,46 +22,32 @@
                 <span asp-validation-for="Slot" class="text-danger"></span>
             </div>
             <div class="form-group hide-form">
-                <input asp-for="Teacher" class="form-control" type="hidden" />
-                <span asp-validation-for="Teacher" class="text-danger"></span>
+                <input asp-for="Room" class="form-control" type="hidden" />
+                <span asp-validation-for="Room" class="text-danger"></span>
             </div>
-
 
             <div class="form-group">
                 <label asp-for="ClassGroup" class="control-label"></label>
                 <select asp-for="ClassGroup" class="form-control"
-                    asp-items="@(new SelectList(@ViewBag.ListOfGroups))"></select>
+                    asp-items="@(new SelectList(@Model.ListOfGroups))"></select>
                 <span asp-validation-for="ClassGroup" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Room" class="control-label"></label>
-                <select asp-for="Room" class="form-control"
-                    asp-items="@(new SelectList(@ViewBag.ListOfRooms))"></select>
-                <span asp-validation-for="Room" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Subject" class="control-label"></label>
                 <select asp-for="Subject" class="form-control"
-                    asp-items="@(new SelectList(@ViewBag.ListOfClasses))"></select>
+                    asp-items="@(new SelectList(@Model.ListOfClasses))"></select>
                 <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Teacher" class="control-label"></label>
+                <select asp-for="Teacher" class="form-control"
+                    asp-items="@(new SelectList(@Model.ListOfTeachers))"></select>
+                <span asp-validation-for="Teacher" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
-        @if (@Model.Id != null)
-        {
-            <form asp-action="Delete" asp-route-id="@Model.Id" asp-route-teacher="@Model.Teacher"
-                asp-route-timestamp="@Model.Timestamp">
-                <div class="form-group">
-                    <input type="submit" value="Delete" class="btn btn-danger" />
-                </div>
-            </form>
-        }
-
         </div>
-    </div>
-
-    <div>
-        <a asp-action="Index" asp-route-name="@Model.Teacher">Back to List</a>
     </div>

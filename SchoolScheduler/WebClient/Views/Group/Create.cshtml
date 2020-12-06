@@ -1,0 +1,5 @@
+@model Contracts.ViewModels.Schedule.ActivityByGroupEditViewModel
+@await Html.PartialAsync("_editPartialByGroup.cshtml", Model)
+    <div>
+        <a asp-action="Index" asp-route-name="@Model.ClassGroup">Back to List</a>
+    </div>

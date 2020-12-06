@@ -9,11 +9,11 @@
 <div class="dropdown">
     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        @ViewBag.Description
+        @Model.Name
     </a>
 
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-        @foreach (string item in ViewBag.DropDownListElements)
+        @foreach (string item in Model.Names)
         {
             <a asp-action="Index" asp-route-name="@item" class="dropdown-item">@item</a>
         }
@@ -46,7 +46,8 @@
                     <td>
                         @if (Model.Slots[slotNumber].Id is null)
                         {
-                            <a asp-action="Create" asp-route-slot="@slotNumber" asp-route-helper="@ViewBag.Description" type="button" class="btn btn-secondary btn-block">
+                            <a asp-action="Create" asp-route-slot="@slotNumber" asp-route-helper="@Model.Name" type="button"
+                                class="btn btn-secondary btn-block">
                                 @Model.Slots[slotNumber].Title</a>
                         }
                         else
