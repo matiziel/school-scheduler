@@ -6,6 +6,7 @@ using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Contracts.ViewModels.Schedule;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebClient.Controllers {
     public class RoomController : Controller {
@@ -88,17 +89,20 @@ namespace WebClient.Controllers {
                 }
                 return RedirectToAction("Edit", new { id = id.Value });
             }
+            catch (DbUpdateConcurrencyException) {
+                return View("./Views/ErrorView.cshtml", "Someone has already update this activity");
+            }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(int? id, string room) {
+        public async Task<IActionResult> Delete(int? id, string room, byte[] timestamp) {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                await _scheduleService.DeleteActivityAsync(id.Value);
+                await _scheduleService.DeleteActivityAsync(id.Value, timestamp);
                 return RedirectToAction("Index", new { name = room });
             }
             catch (Exception e) {

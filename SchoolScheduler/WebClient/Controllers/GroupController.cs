@@ -6,6 +6,7 @@ using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Contracts.ViewModels.Schedule;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebClient.Controllers {
     public class GroupController : Controller {
@@ -65,7 +66,7 @@ namespace WebClient.Controllers {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
                 var activity = await _scheduleService.GetActivityAsync(id.Value);
-
+                
                 ViewBag.ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot, id);
                 ViewBag.ListOfClasses = _disctionariesService.GetAllSubjects();
                 ViewBag.ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot, id);
@@ -87,17 +88,20 @@ namespace WebClient.Controllers {
                 }
                 return RedirectToAction("Edit", new { id = id.Value });
             }
+            catch (DbUpdateConcurrencyException) {
+                return View("./Views/ErrorView.cshtml", "Someone has already update this activity");
+            }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(int? id, string group) {
+        public async Task<IActionResult> Delete(int? id, string group, byte[] timestamp) {
             try {
                 if (id is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
 
-                await _scheduleService.DeleteActivityAsync(id.Value);
+                await _scheduleService.DeleteActivityAsync(id.Value, timestamp);
                 return RedirectToAction("Index", new { name = group });
             }
             catch (Exception e) {

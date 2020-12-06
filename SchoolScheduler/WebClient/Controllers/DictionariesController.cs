@@ -75,6 +75,7 @@ namespace WebClient.Controllers {
                 }
                 return RedirectToAction("Edit", new { id = id, type = type });
             }
+            
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
