@@ -6,28 +6,22 @@ namespace Contracts.Services {
         private readonly IScheduleService _scheduleService;
         public GroupService(IScheduleService scheduleService) =>
             _scheduleService = scheduleService;
-        public async Task CreateActivityAsync(ActivityViewModel activity) {
+        public async Task CreateActivityAsync(ActivityViewModel activity) =>
             await _scheduleService.CreateActivityAsync(activity);
-        }
 
-        public async Task DeleteActivityAsync(int id, byte[] timestamp) {
+        public async Task DeleteActivityAsync(int id, byte[] timestamp) =>
             await _scheduleService.DeleteActivityAsync(id, timestamp);
-        }
 
-        public async Task EditActivityAsync(int id, ActivityViewModel activity) {
+        public async Task EditActivityAsync(int id, ActivityViewModel activity) =>
             await _scheduleService.EditActivityAsync(id, activity);
-        }
 
-        public async Task<ActivityByGroupEditViewModel> GetActivityAsync(int id) {
-            return await _scheduleService.GetActivityByGroupAsync(id);
-        }
+        public async Task<ActivityByGroupEditViewModel> GetActivityAsync(int id) =>
+            await _scheduleService.GetActivityByGroupAsync(id);
 
-        public ActivityByGroupEditViewModel GetEmptyActivity(int slot, string group) {
-            return _scheduleService.GetEmptyActivityByGroup(slot, group);
-        }
+        public ActivityByGroupEditViewModel GetEmptyActivity(int slot, string group) =>
+            _scheduleService.GetEmptyActivityByGroup(slot, group);
 
-        public ScheduleViewModel GetSchedule(string classGroup) {
-            return _scheduleService.GetScheduleByGroup(classGroup);
-        }
+        public ScheduleViewModel GetSchedule(string classGroup) =>
+            _scheduleService.GetScheduleByGroup(classGroup);
     }
 }
