@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Common;
 using Persistence;
 using Contracts.ViewModels.Dictionaries;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebClient.Controllers {
     public class DictionariesController : Controller {
@@ -58,7 +59,7 @@ namespace WebClient.Controllers {
                     return View("./Views/ErrorView.cshtml", "Value or id cannot be empty");
                 ViewBag.Method = "Edit";
                 ViewBag.Description = type;
-                return View("./Views/Dictionaries/Edit.cshtml", await _disctionariesService.GetDictionaryElementAsync(id.Value, GetValueFromString(type)));
+                return View(await _disctionariesService.GetDictionaryElementAsync(id.Value, GetValueFromString(type)));
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
@@ -75,7 +76,9 @@ namespace WebClient.Controllers {
                 }
                 return RedirectToAction("Edit", new { id = id, type = type });
             }
-            
+            catch (DbUpdateConcurrencyException) {
+                return View("./Views/ErrorView.cshtml", "Someone has already update this element");
+            }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }

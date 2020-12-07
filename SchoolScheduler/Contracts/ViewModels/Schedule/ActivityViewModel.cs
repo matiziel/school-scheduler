@@ -15,5 +15,6 @@ namespace Contracts.ViewModels.Schedule {
         public string Teacher { get; set; }
         [Timestamp]
         public byte[] Timestamp { get; set; }
+        public string ArgumentHelper { get; set; }
     }
 }

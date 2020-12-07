@@ -98,29 +98,29 @@ namespace Application {
                 case DataType.ClassGroup:
                     var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
                         ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
-                    _context.Entry(classGroup).Property("Timestamp").OriginalValue = element.Timestamp;
                     classGroup.Update(element.Name, element.Comment);
+                    _context.Entry(classGroup).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.ClassGroups.Update(classGroup);
                     break;
                 case DataType.Room:
                     var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == element.Id.Value)
                         ?? throw new ArgumentException("Room with id: " + element.Id.Value + " does not exist");
-                    _context.Entry(room).Property("Timestamp").OriginalValue = element.Timestamp;
                     room.Update(element.Name, element.Comment);
+                    _context.Entry(room).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Rooms.Update(room);
                     break;
                 case DataType.Subject:
                     var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
                         ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
-                    _context.Entry(subject).Property("Timestamp").OriginalValue = element.Timestamp;
                     subject.Update(element.Name, element.Comment);
+                    _context.Entry(subject).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Subjects.Update(subject);
                     break;
                 case DataType.Teacher:
                     var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == element.Id.Value)
                         ?? throw new ArgumentException("Teacher with id: " + element.Id.Value + " does not exist");
-                    _context.Entry(teacher).Property("Timestamp").OriginalValue = element.Timestamp;
                     teacher.Update(element.Name, element.Comment);
+                    _context.Entry(teacher).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Teachers.Update(teacher);
                     break;
                 default:

@@ -13,5 +13,6 @@ namespace Contracts.ViewModels.Schedule {
         }
         public IEnumerable<string> Names { get; set; }
         public string Name { get; set; }
+        public string Type { get; set; }
     }
 }

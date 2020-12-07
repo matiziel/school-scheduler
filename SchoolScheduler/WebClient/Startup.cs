@@ -33,6 +33,9 @@ namespace WebClient {
             );
             services.AddTransient<IDisctionariesService, DisctionariesService>();
             services.AddTransient<IScheduleService, ScheduleService>();
+            services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IRoomService, RoomService>();
+            services.AddTransient<ITeacherService, TeacherService>();
             services.AddControllersWithViews();
         }
 

@@ -1,6 +1,6 @@
 @model Contracts.ViewModels.Schedule.ActivityByRoomEditViewModel
 @await Html.PartialAsync("_editPartialByRoom.cshtml", Model)
-<form asp-action="Delete" asp-route-id="@Model.Id" asp-route-room="@Model.Room" asp-route-timestamp="@Model.Timestamp">
+<form asp-action="Delete" asp-route-id="@Model.Id" asp-route-name="@Model.Room" asp-route-timestamp="@Model.Timestamp">
     <div class="form-group">
         <input type="submit" value="Delete" class="btn btn-danger" />
     </div>

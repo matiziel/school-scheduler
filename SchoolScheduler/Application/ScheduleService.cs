@@ -27,6 +27,7 @@ namespace Application {
                 Subject = activity.Subject.Name,
                 Teacher = activity.Teacher.Name,
                 Timestamp = activity.Timestamp,
+                ArgumentHelper = activity.ClassGroup.Name,
                 ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot.Index, id),
                 ListOfClasses = _disctionariesService.GetAllSubjects(),
                 ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot.Index, id),
@@ -36,6 +37,7 @@ namespace Application {
             return new ActivityByGroupEditViewModel() {
                 Slot = slot,
                 ClassGroup = group,
+                ArgumentHelper = group,
                 ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot),
                 ListOfClasses = _disctionariesService.GetAllSubjects(),
                 ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot)
@@ -51,6 +53,7 @@ namespace Application {
                 Subject = activity.Subject.Name,
                 Teacher = activity.Teacher.Name,
                 Timestamp = activity.Timestamp,
+                ArgumentHelper = activity.Room.Name,
                 ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot.Index, id),
                 ListOfClasses = _disctionariesService.GetAllSubjects(),
                 ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot.Index, id),
@@ -60,6 +63,7 @@ namespace Application {
             return new ActivityByRoomEditViewModel() {
                 Slot = slot,
                 Room = room,
+                ArgumentHelper = room,
                 ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot),
                 ListOfClasses = _disctionariesService.GetAllSubjects(),
                 ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot)
@@ -75,6 +79,7 @@ namespace Application {
                 Subject = activity.Subject.Name,
                 Teacher = activity.Teacher.Name,
                 Timestamp = activity.Timestamp,
+                ArgumentHelper = activity.Teacher.Name,
                 ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot.Index, id),
                 ListOfClasses = _disctionariesService.GetAllSubjects(),
                 ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot.Index, id),
@@ -84,6 +89,7 @@ namespace Application {
             return new ActivityByTeacherEditViewModel() {
                 Slot = slot,
                 Teacher = teacher,
+                ArgumentHelper = teacher,
                 ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot),
                 ListOfClasses = _disctionariesService.GetAllSubjects(),
                 ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot)
@@ -112,6 +118,7 @@ namespace Application {
             }
             schedule.Names = names;
             schedule.Name = classGroup;
+            schedule.Type = "Group";
             return schedule;
         }
 
@@ -129,6 +136,7 @@ namespace Application {
             }
             schedule.Names = names;
             schedule.Name = room;
+            schedule.Type = "Room";
             return schedule;
         }
 
@@ -146,6 +154,7 @@ namespace Application {
             }
             schedule.Names = names;
             schedule.Name = teacher;
+            schedule.Type = "Teacher";
             return schedule;
         }
         public async Task CreateActivityAsync(ActivityViewModel activity) {
@@ -234,9 +243,10 @@ namespace Application {
                 activity
             );
         public async Task DeleteActivityAsync(int id, byte[] timestamp) {
-            var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
+            var activity = _context.Activities.AsNoTracking().FirstOrDefault(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
+            _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
             _context.Remove(activity);
             await _context.SaveChangesAsync();
         }
