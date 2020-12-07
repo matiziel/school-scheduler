@@ -129,7 +129,6 @@ namespace Application {
             await _context.SaveChangesAsync();
         }
         public async Task RemoveKey(int id, DataType type) {
-            RemoveFromActivities(id, type);
             switch (type) {
                 case DataType.ClassGroup:
                     var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id);
@@ -151,26 +150,6 @@ namespace Application {
                     throw new ArgumentException("Type of dictionary does not exist");
             }
             await _context.SaveChangesAsync();
-        }
-        private void RemoveFromActivities(int id, DataType type) {
-            IEnumerable<Activity> activities;
-            switch (type) {
-                case DataType.ClassGroup:
-                    activities = _context.Activities.Include(a => a.ClassGroup).Where(a => a.ClassGroup.Id == id);
-                    break;
-                case DataType.Room:
-                    activities = _context.Activities.Include(a => a.Room).Where(a => a.Room.Id == id);
-                    break;
-                case DataType.Subject:
-                    activities = _context.Activities.Include(a => a.Subject).Where(a => a.Subject.Id == id);
-                    break;
-                case DataType.Teacher:
-                    activities = _context.Activities.Include(a => a.Teacher).Where(a => a.Teacher.Id == id);
-                    break;
-                default:
-                    throw new ArgumentException("Type of dictionary does not exist");
-            }
-            _context.Activities.RemoveRange(activities);
         }
         public IEnumerable<string> GetFreeClassGroupsBySlot(int slot, int? id = null) {
             var groups = GetAllClassGroups();

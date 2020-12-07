@@ -246,7 +246,8 @@ namespace Application {
             var activity = _context.Activities.AsNoTracking().FirstOrDefault(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
-            _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
+            // _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
+            activity.Timestamp = timestamp;
             _context.Remove(activity);
             await _context.SaveChangesAsync();
         }

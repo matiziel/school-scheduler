@@ -14,27 +14,32 @@ namespace Persistence {
             modelBuilder.Entity<Activity>()
                 .HasOne(a => a.ClassGroup)
                 .WithMany(c => c.Activities)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Activity>()
                 .HasOne(a => a.Room)
                 .WithMany(r => r.Activities)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Activity>()
                 .HasOne(a => a.Slot)
                 .WithMany(s => s.Activities)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Activity>()
                 .HasOne(a => a.Subject)
                 .WithMany(s => s.Activities)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Activity>()
                 .HasOne(a => a.Teacher)
                 .WithMany(t => t.Activities)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Activity>().Property(a => a.Timestamp)
                 .IsRowVersion();
