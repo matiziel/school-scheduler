@@ -113,7 +113,7 @@ namespace Application {
             foreach (var item in activitiesByGroup) {
                 if (item.Slot.Id < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
-                    schedule.Slots[item.Slot.Index].Title = item.Room.Name + " " + item.Subject.Name;
+                    schedule.Slots[item.Slot.Index].Title = item.GetTitleForGroups();
                 }
             }
             schedule.Names = names;
@@ -131,7 +131,7 @@ namespace Application {
             foreach (var item in activitiesByGroup) {
                 if (item.Slot.Id < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
-                    schedule.Slots[item.Slot.Index].Title = item.ClassGroup.Name;
+                    schedule.Slots[item.Slot.Index].Title = item.GetTitleForRooms();
                 }
             }
             schedule.Names = names;
@@ -149,7 +149,7 @@ namespace Application {
             foreach (var item in activitiesByGroup) {
                 if (item.Slot.Id < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
-                    schedule.Slots[item.Slot.Index].Title = item.Room.Name + " " + item.Subject.Name + " " + item.ClassGroup.Name;
+                    schedule.Slots[item.Slot.Index].Title = item.GetTitleForTeachers();
                 }
             }
             schedule.Names = names;

@@ -18,5 +18,14 @@ namespace Model {
             Slot = slot ?? throw new ArgumentException("Slot cannot be empty");
             Room = room ?? throw new ArgumentException("Room cannot be empty");
         }
+        public string GetTitleForTeachers() {
+            return Room.Name + " " + Subject.Name + " " + ClassGroup.Name;
+        }
+        public string GetTitleForGroups() {
+            return Room.Name + " " + Subject.Name;
+        }
+        public string GetTitleForRooms() {
+            return ClassGroup.Name;
+        }
     }
 }
