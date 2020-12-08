@@ -13,7 +13,7 @@ namespace Contracts.Services {
         IEnumerable<string> GetAllSubjects();
         Task AddKey(DictionaryElementEditViewModel element, DataType type);
         Task UpdateKey(DictionaryElementEditViewModel element, DataType type);
-        Task RemoveKey(int id, DataType type);
+        Task RemoveKey(int id, byte[] timestamp, DataType type);
         IEnumerable<string> GetFreeClassGroupsBySlot(int slot, int? id = null);
         IEnumerable<string> GetFreeRoomsBySlot(int slot, int? id = null);
         IEnumerable<string> GetFreeTeachersBySlot(int slot, int? id = null);

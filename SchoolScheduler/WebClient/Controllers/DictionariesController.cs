@@ -89,20 +89,24 @@ namespace WebClient.Controllers {
                 if (id is null || type is null)
                     return View("./Views/ErrorView.cshtml", "Value or id cannot be empty");
                 ViewBag.Description = type;
-                return View("./Views/Dictionaries/Delete.cshtml", await _disctionariesService.GetDictionaryElementAsync(id.Value, GetValueFromString(type)));
+                var element = await _disctionariesService.GetDictionaryElementAsync(id.Value, GetValueFromString(type));
+                return View("./Views/Dictionaries/Delete.cshtml", new DictionaryElementDeleteViewModel() { Id = element.Id.Value, Timestamp = element.Timestamp, Name = element.Name });
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(int id, string type) {
+        public async Task<IActionResult> Delete(string type, DictionaryElementDeleteViewModel element) {
             try {
                 if (type is null)
                     return View("./Views/ErrorView.cshtml", "Value cannot be empty");
 
-                await _disctionariesService.RemoveKey(id, GetValueFromString(type));
+                await _disctionariesService.RemoveKey(element.Id, element.Timestamp, GetValueFromString(type));
                 return RedirectToAction("Index", new { type = type });
+            }
+            catch (DbUpdateConcurrencyException) {
+                return View("./Views/ErrorView.cshtml", "Someone has already update this element");
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);

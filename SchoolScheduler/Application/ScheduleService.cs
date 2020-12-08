@@ -164,28 +164,13 @@ namespace Application {
             if (!ValidateActivityForCreate(activity))
                 throw new InvalidOperationException("One of values on this slot is occupied");
 
-            var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup)
-                ?? throw new InvalidOperationException(activity.ClassGroup + " class group does not exist in database");
+            var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup);
+            var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == activity.Subject);
+            var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Name == activity.Teacher);
+            var slot = await _context.Slots.FirstOrDefaultAsync(s => s.Index == activity.Slot);
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room);
 
-            var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == activity.Subject)
-                ?? throw new InvalidOperationException(activity.Subject + " subject does not exist in database");
-
-            var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Name == activity.Teacher)
-                ?? throw new InvalidOperationException(activity.Teacher + " teacher does not exist in database");
-
-            var slot = await _context.Slots.FirstOrDefaultAsync(s => s.Index == activity.Slot)
-                ?? throw new InvalidOperationException(activity.Slot + " slot does not exist in database");
-
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room)
-                ?? throw new InvalidOperationException(activity.Teacher + " room does not exist in database");
-
-            await _context.Activities.AddAsync(new Activity {
-                ClassGroup = classGroup,
-                Subject = subject,
-                Teacher = teacher,
-                Slot = slot,
-                Room = room
-            });
+            await _context.Activities.AddAsync(new Activity(room, classGroup, subject, slot, teacher));
             await _context.SaveChangesAsync();
         }
 
@@ -243,12 +228,11 @@ namespace Application {
                 activity
             );
         public async Task DeleteActivityAsync(int id, byte[] timestamp) {
-            var activity = _context.Activities.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
-            // _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
-            activity.Timestamp = timestamp;
-            _context.Remove(activity);
+            _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
+            _context.Activities.Remove(activity);
             await _context.SaveChangesAsync();
         }
     }

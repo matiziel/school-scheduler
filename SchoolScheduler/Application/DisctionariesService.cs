@@ -128,22 +128,26 @@ namespace Application {
             }
             await _context.SaveChangesAsync();
         }
-        public async Task RemoveKey(int id, DataType type) {
+        public async Task RemoveKey(int id, byte[] timestamp, DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
                     var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.Entry(classGroup).Property("Timestamp").OriginalValue = timestamp;
                     _context.ClassGroups.Remove(classGroup);
                     break;
                 case DataType.Room:
                     var room = await _context.Rooms.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.Entry(room).Property("Timestamp").OriginalValue = timestamp;
                     _context.Rooms.Remove(room);
                     break;
                 case DataType.Subject:
                     var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.Entry(subject).Property("Timestamp").OriginalValue = timestamp;
                     _context.Subjects.Remove(subject);
                     break;
                 case DataType.Teacher:
                     var teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Id == id);
+                    _context.Entry(teacher).Property("Timestamp").OriginalValue = timestamp;
                     _context.Teachers.Remove(teacher);
                     break;
                 default:

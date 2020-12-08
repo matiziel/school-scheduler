@@ -9,8 +9,8 @@ using Contracts.ViewModels.Schedule;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebClient.Controllers {
-    public class GenericController<IService, ViewModel> 
-        : Controller where IService : IBaseService<ViewModel> where ViewModel : ActivityViewModel   {
+    public class GenericController<IService, ViewModel>
+        : Controller where IService : IBaseService<ViewModel> where ViewModel : ActivityViewModel {
         private readonly IService _service;
         public GenericController(IService scheduleService) {
             _service = scheduleService;
@@ -80,12 +80,15 @@ namespace WebClient.Controllers {
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(int? id, string name, byte[] timestamp) {
+        public async Task<IActionResult> Delete(int? id, ActivityDeleteViewModel activity) {
             try {
-                if (id is null)
+                if (id is null || activity is null)
                     return View("./Views/ErrorView.cshtml", "Error during http request");
-                await _service.DeleteActivityAsync(id.Value, timestamp);
-                return RedirectToAction("Index", new { name = name });
+                await _service.DeleteActivityAsync(id.Value, activity.Timestamp);
+                return RedirectToAction("Index", new { name = activity.Name });
+            }
+            catch (DbUpdateConcurrencyException) {
+                return View("./Views/ErrorView.cshtml", "Someone has already update this activity");
             }
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
