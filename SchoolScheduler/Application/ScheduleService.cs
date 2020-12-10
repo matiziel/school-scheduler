@@ -195,6 +195,7 @@ namespace Application {
             if (activityToEdit is null)
                 throw new ArgumentException("Activity does not exist");
 
+            //TODO think about throwing exception while slot in viewmodel is different from value from db 
             if (!ValidateActivityForEdit(id, activity))
                 throw new InvalidOperationException("One of values on this slot is occupied");
 
@@ -209,10 +210,6 @@ namespace Application {
             if (activityToEdit.Teacher.Name != activity.Teacher)
                 activityToEdit.Teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Name == activity.Teacher)
                     ?? throw new InvalidOperationException(activity.Teacher + " teacher does not exist in database");
-
-            if (activityToEdit.Slot.Index != activity.Slot)
-                activityToEdit.Slot = await _context.Slots.FirstOrDefaultAsync(c => c.Index == activity.Slot)
-                    ?? throw new InvalidOperationException(activity.Slot + " slot does not exist in database");
 
             if (activityToEdit.Room.Name != activity.Room)
                 activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room)

@@ -11,25 +11,32 @@ namespace UnitTests {
                 .Options;
 
             ApplicationDbContext context = new ApplicationDbContext(options);
+            //context.Database.EnsureDeleted();
 
             context.Teachers.Add(new Teacher("kowalski", ""));
             context.Teachers.Add(new Teacher("nowak", ""));
             context.Teachers.Add(new Teacher("mazurek", ""));
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 45; i++) {
                 context.Slots.Add(new Slot(i, ""));
             }
             context.Rooms.Add(new Room("111", ""));
             context.Rooms.Add(new Room("112", ""));
             context.Rooms.Add(new Room("113", ""));
+            context.Rooms.Add(new Room("114", ""));
+
 
             context.Subjects.Add(new Subject("eng", ""));
             context.Subjects.Add(new Subject("phys", ""));
             context.Subjects.Add(new Subject("mat", ""));
+            context.Subjects.Add(new Subject("esp", ""));
+
 
             context.ClassGroups.Add(new ClassGroup("1a", ""));
             context.ClassGroups.Add(new ClassGroup("2a", ""));
             context.ClassGroups.Add(new ClassGroup("3a", ""));
+            context.ClassGroups.Add(new ClassGroup("4a", ""));
+
 
             context.SaveChanges();
 
