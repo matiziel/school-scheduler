@@ -6,7 +6,6 @@ using System.Linq;
 using Model;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using Contracts.Services;
 
 namespace UnitTests.ScheduleServicesTests {
     public class UpdateData_CheckCorrectPaths {
@@ -103,6 +102,5 @@ namespace UnitTests.ScheduleServicesTests {
                 Assert.Null(activity);
             }
         }
-
     }
 }
