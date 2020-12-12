@@ -12,8 +12,8 @@ using Persistence;
 namespace Application {
     public class ScheduleService : IScheduleService {
         private readonly ApplicationDbContext _context;
-        private readonly IDisctionariesService _disctionariesService;
-        public ScheduleService(ApplicationDbContext context, IDisctionariesService disctionariesService) {
+        private readonly IDictionariesService _disctionariesService;
+        public ScheduleService(ApplicationDbContext context, IDictionariesService disctionariesService) {
             _context = context;
             _disctionariesService = disctionariesService;
         }

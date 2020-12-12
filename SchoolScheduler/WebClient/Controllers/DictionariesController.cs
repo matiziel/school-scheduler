@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebClient.Controllers {
     public class DictionariesController : Controller {
-        private readonly IDisctionariesService _disctionariesService;
-        public DictionariesController(IDisctionariesService disctionariesService) => _disctionariesService = disctionariesService;
+        private readonly IDictionariesService _disctionariesService;
+        public DictionariesController(IDictionariesService disctionariesService) => _disctionariesService = disctionariesService;
         public async Task<IActionResult> Index(string type) {
             try {
                 if (type is null)

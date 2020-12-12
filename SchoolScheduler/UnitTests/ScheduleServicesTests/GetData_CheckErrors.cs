@@ -25,7 +25,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(3000)]
         public async Task GetActivityByGroupAsync_GiveIncorrectId_ThrowsArgumentException(int id) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.GetActivityByGroupAsync(id));
 
@@ -37,7 +37,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(3000)]
         public async Task GetActivityByRoomAsync_GiveIncorrectId_ThrowsArgumentException(int id) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.GetActivityByRoomAsync(id));
 
@@ -49,7 +49,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(3000)]
         public async Task GetActivityByTeacherAsync_GiveIncorrectId_ThrowsArgumentException(int id) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.GetActivityByTeacherAsync(id));
 

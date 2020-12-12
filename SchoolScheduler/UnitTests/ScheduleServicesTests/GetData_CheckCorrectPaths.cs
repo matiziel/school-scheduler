@@ -21,7 +21,7 @@ namespace UnitTests.ScheduleServicesTests {
         [Fact]
         public async Task GetActivityByGroupAsync_ReturnCorrectViewModel() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var activity = GetActivities(context).FirstOrDefault();
                 var activityViewModel = await service.GetActivityByGroupAsync(activity.Id);
                 Assert.Equal(activity.Id, activityViewModel.Id);
@@ -39,7 +39,7 @@ namespace UnitTests.ScheduleServicesTests {
         [Fact]
         public async Task GetActivityByRoomAsync_ReturnCorrectViewModel() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var activity = GetActivities(context).FirstOrDefault();
                 var activityViewModel = await service.GetActivityByRoomAsync(activity.Id);
                 Assert.Equal(activity.Id, activityViewModel.Id);
@@ -57,7 +57,7 @@ namespace UnitTests.ScheduleServicesTests {
         [Fact]
         public async Task GetActivityByTeacherAsync_ReturnCorrectViewModel() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var activity = GetActivities(context).FirstOrDefault();
                 var activityViewModel = await service.GetActivityByTeacherAsync(activity.Id);
                 Assert.Equal(activity.Id, activityViewModel.Id);
@@ -78,7 +78,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(4, "2a")]
         public void GetEmptyActivityByGroup_ReturnCorrectViewModel(int slot, string group) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var activityViewModel = service.GetEmptyActivityByGroup(slot, group);
                 Assert.Equal(slot, activityViewModel.Slot);
                 Assert.Equal(group, activityViewModel.ClassGroup);
@@ -94,7 +94,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(4, "113")]
         public void GetEmptyActivityByRoom_ReturnCorrectViewModel(int slot, string room) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var activityViewModel = service.GetEmptyActivityByRoom(slot, room);
                 Assert.Equal(room, activityViewModel.Room);
                 Assert.Equal(slot, activityViewModel.Slot);
@@ -110,7 +110,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(4, "mazurek")]
         public void GetEmptyActivityByTeacher_ReturnCorrectViewModel(int slot, string teacher) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var activityViewModel = service.GetEmptyActivityByTeacher(slot, teacher);
                 Assert.Equal(slot, activityViewModel.Slot);
                 Assert.Equal(teacher, activityViewModel.Teacher);
@@ -125,7 +125,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("2a", "112 phys", 1)]
         public void GetScheduleByGroup_ReturnCorrectViewModel(string group, string title, int index) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var scheduleViewModel = service.GetScheduleByGroup(group);
                 Assert.Equal(title, scheduleViewModel.Slots[index].Title);
                 Assert.Equal("Group", scheduleViewModel.Type);
@@ -138,7 +138,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("112", "2a", 1)]
         public void GetScheduleByRoom_ReturnCorrectViewModel(string room, string title, int index) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var scheduleViewModel = service.GetScheduleByRoom(room);
                 Assert.Equal(title, scheduleViewModel.Slots[index].Title);
                 Assert.Equal("Room", scheduleViewModel.Type);
@@ -151,7 +151,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("nowak", "112 phys 2a", 1)]
         public void GetScheduleByTeacher_ReturnCorrectViewModel(string teacher, string title, int index) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 var scheduleViewModel = service.GetScheduleByTeacher(teacher);
                 Assert.Equal(title, scheduleViewModel.Slots[index].Title);
                 Assert.Equal("Teacher", scheduleViewModel.Type);

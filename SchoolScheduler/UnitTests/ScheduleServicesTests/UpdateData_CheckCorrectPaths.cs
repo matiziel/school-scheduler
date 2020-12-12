@@ -35,7 +35,7 @@ namespace UnitTests.ScheduleServicesTests {
                     Subject = subject,
                     Teacher = teacher
                 };
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 await service.CreateActivityAsync(activityViewModel);
                 var activity = GetActivities(context).FirstOrDefault(
                     a => a.Teacher.Name == teacher &&
@@ -70,7 +70,7 @@ namespace UnitTests.ScheduleServicesTests {
                     Subject = subject,
                     Teacher = teacher
                 };
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 await service.EditActivityAsync(activity.Id, activityViewModel);
                 var activityToCheck = GetActivities(context).FirstOrDefault(
                     a =>
@@ -96,7 +96,7 @@ namespace UnitTests.ScheduleServicesTests {
                         a.Teacher.Name == teacher &&
                         a.ClassGroup.Name == classgroup
                     );
-                var service = new ScheduleService(context, new DisctionariesService(context));
+                var service = new ScheduleService(context, new DictionariesService(context));
                 await service.DeleteActivityAsync(activityToDelete.Id, activityToDelete.Timestamp);
                 var activity = context.Activities.FirstOrDefault(a => a.Id == activityToDelete.Id);
                 Assert.Null(activity);

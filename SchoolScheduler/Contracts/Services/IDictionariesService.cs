@@ -4,7 +4,7 @@ using Common;
 using System.Threading.Tasks;
 
 namespace Contracts.Services {
-    public interface IDisctionariesService {
+    public interface IDictionariesService {
         Task<DictionaryElementEditViewModel> GetDictionaryElementAsync(int id, DataType type);
         Task<IEnumerable<DictionaryIndexViewModel>> GetDictionaryAsync(DataType type);
         IEnumerable<string> GetAllClassGroups();

@@ -31,7 +31,7 @@ namespace WebClient {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly("WebClient"))
             );
-            services.AddTransient<IDisctionariesService, DisctionariesService>();
+            services.AddTransient<IDictionariesService, DictionariesService>();
             services.AddTransient<IScheduleService, ScheduleService>();
             services.AddTransient<IGroupService, GroupService>();
             services.AddTransient<IRoomService, RoomService>();

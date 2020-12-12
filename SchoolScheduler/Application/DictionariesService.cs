@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Application {
-    public class DisctionariesService : IDisctionariesService {
+    public class DictionariesService : IDictionariesService {
         private readonly ApplicationDbContext _context;
-        public DisctionariesService(ApplicationDbContext context) =>
+        public DictionariesService(ApplicationDbContext context) =>
             _context = context;
 
         public async Task<DictionaryElementEditViewModel> GetDictionaryElementAsync(int id, DataType type) {
