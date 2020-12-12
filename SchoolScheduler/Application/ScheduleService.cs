@@ -19,6 +19,8 @@ namespace Application {
         }
         public async Task<ActivityByGroupEditViewModel> GetActivityByGroupAsync(int id) {
             var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
+            if(activity is null)
+                throw new ArgumentException("Activity does not exist");
             return new ActivityByGroupEditViewModel() {
                 Id = activity.Id,
                 Slot = activity.Slot.Index,
@@ -45,6 +47,8 @@ namespace Application {
         }
         public async Task<ActivityByRoomEditViewModel> GetActivityByRoomAsync(int id) {
             var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
+            if (activity is null)
+                throw new ArgumentException("Activity does not exist");
             return new ActivityByRoomEditViewModel() {
                 Id = activity.Id,
                 Slot = activity.Slot.Index,
@@ -71,6 +75,8 @@ namespace Application {
         }
         public async Task<ActivityByTeacherEditViewModel> GetActivityByTeacherAsync(int id) {
             var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
+            if (activity is null)
+                throw new ArgumentException("Activity does not exist");
             return new ActivityByTeacherEditViewModel() {
                 Id = activity.Id,
                 Slot = activity.Slot.Index,
@@ -191,6 +197,9 @@ namespace Application {
             ).Count() == 0;
         }
         public async Task EditActivityAsync(int id, ActivityViewModel activity) {
+            if (activity is null)
+                throw new ArgumentException("Activity does not exist");
+
             var activityToEdit = GetActivities().FirstOrDefault(a => a.Id == id);
             if (activityToEdit is null)
                 throw new ArgumentException("Activity does not exist");
@@ -201,19 +210,19 @@ namespace Application {
 
             if (activityToEdit.ClassGroup.Name != activity.ClassGroup)
                 activityToEdit.ClassGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup)
-                    ?? throw new InvalidOperationException(activity.ClassGroup + " class does not exist in database");
+                    ?? throw new ArgumentException(activity.ClassGroup + " class does not exist in database");
 
             if (activityToEdit.Subject.Name != activity.Subject)
                 activityToEdit.Subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Name == activity.Subject)
-                    ?? throw new InvalidOperationException(activity.Subject + " subject not exist in database");
+                    ?? throw new ArgumentException(activity.Subject + " subject not exist in database");
 
             if (activityToEdit.Teacher.Name != activity.Teacher)
                 activityToEdit.Teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Name == activity.Teacher)
-                    ?? throw new InvalidOperationException(activity.Teacher + " teacher does not exist in database");
+                    ?? throw new ArgumentException(activity.Teacher + " teacher does not exist in database");
 
             if (activityToEdit.Room.Name != activity.Room)
                 activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room)
-                    ?? throw new InvalidOperationException(activity.Room + " room does not exist in database");
+                    ?? throw new ArgumentException(activity.Room + " room does not exist in database");
 
             _context.Entry(activityToEdit).Property("Timestamp").OriginalValue = activity.Timestamp;
             _context.Activities.Update(activityToEdit);

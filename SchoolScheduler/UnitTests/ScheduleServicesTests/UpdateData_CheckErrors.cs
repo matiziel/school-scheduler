@@ -37,16 +37,9 @@ namespace UnitTests.ScheduleServicesTests {
         public async Task CreateActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
             string teacher, string room, string subject, string classGroup, int slot) {
             using (var context = PrepareData.GetDbContext()) {
-                var activityViewModel = new ActivityViewModel() {
-                    ClassGroup = classGroup,
-                    Room = room,
-                    Slot = slot,
-                    Subject = subject,
-                    Teacher = teacher
-                };
                 var service = new ScheduleService(context, new DisctionariesService(context));
                 await Assert.ThrowsAsync<InvalidOperationException>(
-                    async () => await service.CreateActivityAsync(activityViewModel));
+                    async () => await service.CreateActivityAsync(GetViewModelToCreate(teacher, room, subject, classGroup, slot)));
             }
         }
         [Theory]
@@ -60,19 +53,82 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("kowalski", "113", "eng", "xxx", 13)]
         [InlineData("kowalski", "111", "phys", "2a", 76)]
         public async Task CreateActivityAsync_WhenOneOfValuesIsNullOrDoesNotExist_CheckArgumentException(
-    string teacher, string room, string subject, string classGroup, int slot) {
+            string teacher, string room, string subject, string classGroup, int slot) {
             using (var context = PrepareData.GetDbContext()) {
-                var activityViewModel = new ActivityViewModel() {
-                    ClassGroup = classGroup,
-                    Room = room,
-                    Slot = slot,
-                    Subject = subject,
-                    Teacher = teacher
-                };
+
                 var service = new ScheduleService(context, new DisctionariesService(context));
                 await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.CreateActivityAsync(activityViewModel));
+                    async () => await service.CreateActivityAsync(GetViewModelToCreate(teacher, room, subject, classGroup, slot)));
             }
+        }
+        private ActivityViewModel GetViewModelToCreate(
+            string teacher, string room, string subject, string classGroup, int slot) {
+
+            return new ActivityViewModel() {
+                ClassGroup = classGroup,
+                Room = room,
+                Slot = slot,
+                Subject = subject,
+                Teacher = teacher
+            };
+        }
+        [Fact]
+        public async Task EditActivityAsync_WhenActivityViewModelIsNull_CheckThrows() {
+            using (var context = PrepareData.GetDbContext()) {
+                var service = new ScheduleService(context, new DisctionariesService(context));
+                await Assert.ThrowsAsync<ArgumentException>(
+                    async () => await service.EditActivityAsync(1, null));
+            }
+        }
+        [Theory]
+        [InlineData("kowalski", "112", "eng", "3a")]
+        [InlineData("nowak", "114", "phys", "1a")]
+        [InlineData("mazurek", "111", "esp", "2a")]
+        [InlineData("kowalski", "111", "esp", "1a")]
+        public async Task EditActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
+            string teacher, string room, string subject, string classGroup) {
+
+            using (var context = PrepareData.GetDbContext()) {
+                var activityViewModel = GetViewModelToEdit(teacher, room, subject, classGroup, context);
+                var service = new ScheduleService(context, new DisctionariesService(context));
+                await Assert.ThrowsAsync<InvalidOperationException>(
+                    async () => await service.EditActivityAsync(activityViewModel.Id.Value, activityViewModel));
+            }
+        }
+        [Theory]
+        [InlineData("asddas", "114", "esp", "4a")]
+        [InlineData("clarkson", "fsfdsf", "esp", "5a")]
+        [InlineData("may", "115", "sdfsdg", "6a")]
+        [InlineData("hammond", "116", "esp", "sdfsg")]
+        [InlineData(null, "117", "esp", "7a")]
+        [InlineData("nowak", null, "esp", "6a")]
+        [InlineData("clarkson", "112", null, "7a")]
+        [InlineData("may", "117", "esp", null)]
+        public async Task EditActivityAsync_WhenOneOfValuesIsIncorrect_CheckThrowsArgumentException(
+            string teacher, string room, string subject, string classGroup) {
+
+            using (var context = PrepareData.GetDbContext()) {
+                var activityViewModel = GetViewModelToEdit(teacher, room, subject, classGroup, context);
+                var service = new ScheduleService(context, new DisctionariesService(context));
+                await Assert.ThrowsAsync<ArgumentException>(
+                    async () => await service.EditActivityAsync(activityViewModel.Id.Value, activityViewModel));
+            }
+        }
+        private ActivityViewModel GetViewModelToEdit(
+            string teacher, string room, string subject, string classGroup, ApplicationDbContext context) {
+
+            var activity = context.Activities.Include(a => a.Slot).Include(a => a.Room)
+                    .FirstOrDefault(a => a.Slot.Index == 0 && a.Room.Name == "113");
+            int id = activity.Id;
+            int slot = activity.Slot.Index;
+            return new ActivityViewModel() {
+                Id = id,
+                ClassGroup = classGroup,
+                Room = room,
+                Slot = slot,
+                Subject = subject,
+                Teacher = teacher
+            };
         }
         [Theory]
         [InlineData(10000)]
