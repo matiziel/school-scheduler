@@ -74,6 +74,8 @@ namespace Application {
             _context.Teachers.Select(t => t.Name).OrderBy(t => t).ToList();
 
         public async Task AddKey(DictionaryElementEditViewModel element, DataType type) {
+            if (!ValidateName(type, element.Name))
+                throw new InvalidOperationException($"{type.ToString()} with name: {element.Name} has already exist");
             switch (type) {
                 case DataType.ClassGroup:
                     await _context.ClassGroups.AddAsync(new ClassGroup(element.Name, element.Comment));
@@ -91,13 +93,50 @@ namespace Application {
                     throw new ArgumentException("Type of dictionary does not exist");
             }
             await _context.SaveChangesAsync();
-
+        }
+        private bool ValidateName(DataType type, string name, int? id = null) {
+            switch (type) {
+                case DataType.ClassGroup:
+                    IQueryable<ClassGroup> classGroups = _context.ClassGroups;
+                    if (id != null)
+                        classGroups = classGroups.Where(d => d.Id != id);
+                    if (classGroups.FirstOrDefault(d => d.Name == name) != null)
+                        return false;
+                    break;
+                case DataType.Room:
+                    IQueryable<Room> rooms = _context.Rooms;
+                    if (id != null)
+                        rooms = rooms.Where(d => d.Id != id);
+                    if (rooms.FirstOrDefault(r => r.Name == name) != null)
+                        return false;
+                    break;
+                case DataType.Subject:
+                    IQueryable<Subject> subjects = _context.Subjects;
+                    if (id != null)
+                        subjects = subjects.Where(d => d.Id != id);
+                    if (subjects.FirstOrDefault(d => d.Name == name) != null)
+                        return false;
+                    break;
+                case DataType.Teacher:
+                    IQueryable<Teacher> teachers = _context.Teachers;
+                    if (id != null)
+                        teachers = teachers.Where(d => d.Id != id);
+                    if (teachers.FirstOrDefault(d => d.Name == name) != null)
+                        return false;
+                    break;
+                default:
+                    return false;
+            }
+            return true;
         }
         public async Task UpdateKey(DictionaryElementEditViewModel element, DataType type) {
+            if(!ValidateName(type, element.Name, element.Id.Value))
+                throw new InvalidOperationException($"{type.ToString()} with name: {element.Name} has already exist");
             switch (type) {
                 case DataType.ClassGroup:
                     var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
                         ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
+
                     classGroup.Update(element.Name, element.Comment);
                     _context.Entry(classGroup).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.ClassGroups.Update(classGroup);
@@ -105,6 +144,7 @@ namespace Application {
                 case DataType.Room:
                     var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == element.Id.Value)
                         ?? throw new ArgumentException("Room with id: " + element.Id.Value + " does not exist");
+
                     room.Update(element.Name, element.Comment);
                     _context.Entry(room).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Rooms.Update(room);
@@ -112,6 +152,7 @@ namespace Application {
                 case DataType.Subject:
                     var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
                         ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
+
                     subject.Update(element.Name, element.Comment);
                     _context.Entry(subject).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Subjects.Update(subject);
@@ -119,6 +160,7 @@ namespace Application {
                 case DataType.Teacher:
                     var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == element.Id.Value)
                         ?? throw new ArgumentException("Teacher with id: " + element.Id.Value + " does not exist");
+
                     teacher.Update(element.Name, element.Comment);
                     _context.Entry(teacher).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Teachers.Update(teacher);
@@ -131,22 +173,26 @@ namespace Application {
         public async Task RemoveKey(int id, byte[] timestamp, DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
-                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id);
+                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new InvalidOperationException("Element has already been deleted");
                     _context.Entry(classGroup).Property("Timestamp").OriginalValue = timestamp;
                     _context.ClassGroups.Remove(classGroup);
                     break;
                 case DataType.Room:
-                    var room = await _context.Rooms.FirstOrDefaultAsync(c => c.Id == id);
+                    var room = await _context.Rooms.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new InvalidOperationException("Element has already been deleted");
                     _context.Entry(room).Property("Timestamp").OriginalValue = timestamp;
                     _context.Rooms.Remove(room);
                     break;
                 case DataType.Subject:
-                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id);
+                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new InvalidOperationException("Element has already been deleted");
                     _context.Entry(subject).Property("Timestamp").OriginalValue = timestamp;
                     _context.Subjects.Remove(subject);
                     break;
                 case DataType.Teacher:
-                    var teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Id == id);
+                    var teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Id == id)
+                        ?? throw new InvalidOperationException("Element has already been deleted");
                     _context.Entry(teacher).Property("Timestamp").OriginalValue = timestamp;
                     _context.Teachers.Remove(teacher);
                     break;
@@ -155,6 +201,7 @@ namespace Application {
             }
             await _context.SaveChangesAsync();
         }
+        
         public IEnumerable<string> GetFreeClassGroupsBySlot(int slot, int? id = null) {
             var groups = GetAllClassGroups();
             var occupiedGroups = GetActivitiesBySlot(slot, id).Select(a => a.ClassGroup.Name);

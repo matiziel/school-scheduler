@@ -2,16 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Model;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace UnitTests {
     public class PrepareData {
         public static ApplicationDbContext GetDbContext() {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "Test")
-                .Options;
+            var options = CreateNewContextOptions();
+            var context = new ApplicationDbContext(options);
 
-            ApplicationDbContext context = new ApplicationDbContext(options);
-            //context.Database.EnsureDeleted();
 
             context.Teachers.Add(new Teacher("kowalski", ""));
             context.Teachers.Add(new Teacher("nowak", ""));
@@ -77,6 +75,20 @@ namespace UnitTests {
             context.SaveChanges();
             return context;
         }
-    }
 
+        private static DbContextOptions<ApplicationDbContext> CreateNewContextOptions() {
+            // Create a fresh service provider, and therefore a fresh 
+            // InMemory database instance.
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
+
+            // Create a new options instance telling the context to use an
+            // InMemory database and the new service provider.
+            var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            builder.UseInMemoryDatabase(databaseName: "Test").UseInternalServiceProvider(serviceProvider);
+
+            return builder.Options;
+        }
+    }
 }

@@ -10,6 +10,7 @@ using Contracts.Services;
 
 namespace UnitTests.ScheduleServicesTests {
     public class GetData_CheckCorrectPaths {
+        
         private IQueryable<Activity> GetActivities(ApplicationDbContext context) {
             return context.Activities
                 .Include(a => a.Slot)

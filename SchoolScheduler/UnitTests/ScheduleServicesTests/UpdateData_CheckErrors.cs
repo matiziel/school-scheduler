@@ -20,7 +20,7 @@ namespace UnitTests.ScheduleServicesTests {
         }
 
         [Fact]
-        public async Task CreateActivityAsync_WhenActivityViewModelIsNull_CheckThrows() {
+        public async Task CreateActivityAsync_WhenActivityViewModelIsNull_CheckThrowsArgumentException() {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new ScheduleService(context, new DictionariesService(context));
                 await Assert.ThrowsAsync<ArgumentException>(

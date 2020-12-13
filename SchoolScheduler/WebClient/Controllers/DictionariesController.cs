@@ -52,6 +52,7 @@ namespace WebClient.Controllers {
             catch (Exception e) {
                 return View("./Views/ErrorView.cshtml", e.Message);
             }
+
         }
         public async Task<IActionResult> Edit(int? id, string type) {
             try {
