@@ -1,16 +1,25 @@
 using System.Collections.Generic;
-using Contracts.ViewModels;
+using System.Threading.Tasks;
+using Contracts.ViewModels.Schedule;
 using Model;
 
 namespace Contracts.Services {
     public interface IScheduleService {
-        Activity GetActivity(int id);
-        ScheduleViewModel GetScheduleByGroup(string group);
+        Task<ActivityByGroupEditViewModel> GetActivityByGroupAsync(int id);
+        ActivityByGroupEditViewModel GetEmptyActivityByGroup(int slot, string group);
+        
+        Task<ActivityByRoomEditViewModel> GetActivityByRoomAsync(int id);
+        ActivityByRoomEditViewModel GetEmptyActivityByRoom(int slot, string room);
+
+        Task<ActivityByTeacherEditViewModel> GetActivityByTeacherAsync(int id);
+        ActivityByTeacherEditViewModel GetEmptyActivityByTeacher(int slot, string teacher);
+
+        ScheduleViewModel GetScheduleByGroup(string classGroup);
         ScheduleViewModel GetScheduleByRoom(string room);
         ScheduleViewModel GetScheduleByTeacher(string teacher);
 
-        void CreateActivity(Activity activity);
-        void EditActivity(int id, Activity activity);
-        void DeleteActivity(int id);
+        Task CreateActivityAsync(ActivityViewModel activity);
+        Task EditActivityAsync(int id, ActivityViewModel activity);
+        Task DeleteActivityAsync(int id, byte[] timestamp);
     }
 }

@@ -11,6 +11,10 @@ using Microsoft.Extensions.Hosting;
 using Contracts.Services;
 using Application;
 using Persistence;
+using Microsoft.EntityFrameworkCore;
+
+
+
 
 namespace WebClient {
     public class Startup {
@@ -22,9 +26,16 @@ namespace WebClient {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddTransient<DbContext>();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("WebClient"))
+            );
+            services.AddTransient<IDictionariesService, DictionariesService>();
             services.AddTransient<IScheduleService, ScheduleService>();
-            services.AddTransient<IEditDataService, EditDataService>();
+            services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IRoomService, RoomService>();
+            services.AddTransient<ITeacherService, TeacherService>();
             services.AddControllersWithViews();
         }
 

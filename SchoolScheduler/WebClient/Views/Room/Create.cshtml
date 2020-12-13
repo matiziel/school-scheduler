@@ -1,0 +1,5 @@
+@model Contracts.ViewModels.Schedule.ActivityByRoomEditViewModel
+@await Html.PartialAsync("_editPartialByRoom.cshtml", Model)
+<div>
+    <a asp-action="Index" asp-route-name="@Model.Teacher">Back to List</a>
+</div>
