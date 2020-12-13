@@ -63,7 +63,6 @@ namespace Application {
                     throw new ArgumentException("Type of dictionary does not exist");
             }
         }
-
         public IEnumerable<string> GetAllClassGroups() =>
              _context.ClassGroups.Select(c => c.Name).OrderBy(c => c).ToList();
         public IEnumerable<string> GetAllRooms() =>
