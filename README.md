@@ -2,19 +2,20 @@
 
 
 Simple app to make school schedule.<br/>
-Requirements:<br/>
+
+## requirements
 .NET Core 5.0<br/>
 SQL Server<br/>
 
 
 
-#launch guide
+### launch guide
 ```bash
 $ cd ./school-scheduler/SchoolScheduler/WebClient
 $ dotnet run
 ```
 
-#unit test launch guide
+### unit test launch guide
 ```bash
 $ cd ./school-scheduler/SchoolScheduler/UnitTests
 $ dotnet test
