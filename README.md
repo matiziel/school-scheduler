@@ -3,7 +3,7 @@
 
 Simple app to make school schedule.<br/>
 
-## requirements
+### requirements
 .NET Core 5.0<br/>
 SQL Server<br/>
 
