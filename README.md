@@ -1,7 +1,8 @@
 # school-scheduler
 
 
-Simple app to make school schedule powered by ASP.NET Core MVC.<br/>
+Simple app to make school schedule powered by ASP.NET Core MVC with handling optimistic concurrency.<br/>
+
 
 ### requirements
 .NET Core 5.0<br/>
