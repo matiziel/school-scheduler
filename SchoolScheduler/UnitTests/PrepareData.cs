@@ -87,7 +87,6 @@ namespace UnitTests {
             // InMemory database and the new service provider.
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
             builder.UseInMemoryDatabase(databaseName: "Test").UseInternalServiceProvider(serviceProvider);
-
             return builder.Options;
         }
     }
