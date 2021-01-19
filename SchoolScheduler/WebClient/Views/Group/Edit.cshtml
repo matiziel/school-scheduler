@@ -1,6 +1,0 @@
-@model Contracts.ViewModels.Schedule.ActivityByGroupEditViewModel
-@await Html.PartialAsync("_editPartialByGroup.cshtml", Model)
-@await Html.PartialAsync("../Shared/_deletePartial.cshtml", new Contracts.ViewModels.Schedule.ActivityDeleteViewModel() { Id = Model.Id.Value, Name = Model.ClassGroup, Timestamp = Model.Timestamp})
-<div>
-    <a asp-action="Index" asp-route-name="@Model.ClassGroup">Back to List</a>
-</div>
