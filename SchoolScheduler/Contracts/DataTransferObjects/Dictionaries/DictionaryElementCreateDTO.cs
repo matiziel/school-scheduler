@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Contracts.DataTransferObjects.Dictionaries {
-    public class DictionaryIndexViewModel {
-        public int Id { get; set; }
+    public class DictionaryElementCreateDTO {
         [Required]
         public string Name { get; set; }
+        public string Comment { get; set; }
+
     }
 }

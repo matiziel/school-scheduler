@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 namespace WebClient.Controllers {
+    
     [ApiController]
     [Route("api/[controller]")]
     public class DictionariesController : ControllerBase {
@@ -20,7 +21,7 @@ namespace WebClient.Controllers {
             _disctionariesService = disctionariesService;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DictionaryIndexViewModel>>> Get(string type) {
+        public async Task<ActionResult<IEnumerable<DictionaryReadDTO>>> Get(string type) {
             try {
                 if (type is null)
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();

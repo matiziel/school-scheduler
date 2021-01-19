@@ -12,93 +12,22 @@ using Persistence;
 namespace Application {
     public class ScheduleService : IScheduleService {
         private readonly ApplicationDbContext _context;
-        private readonly IDictionariesService _disctionariesService;
-        public ScheduleService(ApplicationDbContext context, IDictionariesService disctionariesService) {
+
+        public ScheduleService(ApplicationDbContext context) {
             _context = context;
-            _disctionariesService = disctionariesService;
         }
-        public async Task<ActivityByGroupEditViewModel> GetActivityByGroupAsync(int id) {
-            var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
-            if(activity is null)
-                throw new ArgumentException("Activity does not exist");
-            return new ActivityByGroupEditViewModel() {
-                Id = activity.Id,
-                Slot = activity.Slot.Index,
-                ClassGroup = activity.ClassGroup.Name,
-                Room = activity.Room.Name,
-                Subject = activity.Subject.Name,
-                Teacher = activity.Teacher.Name,
-                Timestamp = activity.Timestamp,
-                ArgumentHelper = activity.ClassGroup.Name,
-                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot.Index, id),
-                ListOfClasses = _disctionariesService.GetAllSubjects(),
-                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot.Index, id),
-            };
-        }
-        public ActivityByGroupEditViewModel GetEmptyActivityByGroup(int slot, string group) {
-            return new ActivityByGroupEditViewModel() {
-                Slot = slot,
-                ClassGroup = group,
-                ArgumentHelper = group,
-                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot),
-                ListOfClasses = _disctionariesService.GetAllSubjects(),
-                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot)
-            };
-        }
-        public async Task<ActivityByRoomEditViewModel> GetActivityByRoomAsync(int id) {
+        public async Task<ActivityEditDTO> GetActivity(int id) {
             var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
-            return new ActivityByRoomEditViewModel() {
+            return new ActivityEditDTO() {
                 Id = activity.Id,
                 Slot = activity.Slot.Index,
                 ClassGroup = activity.ClassGroup.Name,
                 Room = activity.Room.Name,
                 Subject = activity.Subject.Name,
                 Teacher = activity.Teacher.Name,
-                Timestamp = activity.Timestamp,
-                ArgumentHelper = activity.Room.Name,
-                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot.Index, id),
-                ListOfClasses = _disctionariesService.GetAllSubjects(),
-                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(activity.Slot.Index, id),
-            };
-        }
-        public ActivityByRoomEditViewModel GetEmptyActivityByRoom(int slot, string room) {
-            return new ActivityByRoomEditViewModel() {
-                Slot = slot,
-                Room = room,
-                ArgumentHelper = room,
-                ListOfTeachers = _disctionariesService.GetFreeTeachersBySlot(slot),
-                ListOfClasses = _disctionariesService.GetAllSubjects(),
-                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot)
-            };
-        }
-        public async Task<ActivityByTeacherEditViewModel> GetActivityByTeacherAsync(int id) {
-            var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
-            if (activity is null)
-                throw new ArgumentException("Activity does not exist");
-            return new ActivityByTeacherEditViewModel() {
-                Id = activity.Id,
-                Slot = activity.Slot.Index,
-                ClassGroup = activity.ClassGroup.Name,
-                Room = activity.Room.Name,
-                Subject = activity.Subject.Name,
-                Teacher = activity.Teacher.Name,
-                Timestamp = activity.Timestamp,
-                ArgumentHelper = activity.Teacher.Name,
-                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(activity.Slot.Index, id),
-                ListOfClasses = _disctionariesService.GetAllSubjects(),
-                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(activity.Slot.Index, id),
-            };
-        }
-        public ActivityByTeacherEditViewModel GetEmptyActivityByTeacher(int slot, string teacher) {
-            return new ActivityByTeacherEditViewModel() {
-                Slot = slot,
-                Teacher = teacher,
-                ArgumentHelper = teacher,
-                ListOfRooms = _disctionariesService.GetFreeRoomsBySlot(slot),
-                ListOfClasses = _disctionariesService.GetAllSubjects(),
-                ListOfGroups = _disctionariesService.GetFreeClassGroupsBySlot(slot)
+                Timestamp = activity.Timestamp
             };
         }
         private IQueryable<Activity> GetActivities() {
@@ -109,61 +38,48 @@ namespace Application {
                 .Include(a => a.ClassGroup)
                 .Include(a => a.Subject);
         }
-        public ScheduleViewModel GetScheduleByGroup(string classGroup) {
-            var names = _disctionariesService.GetAllClassGroups();
-            if (classGroup is null)
-                classGroup = names.FirstOrDefault();
-
+        public ScheduleDTO GetScheduleByGroup(string classGroup) {
             var activitiesByGroup = GetActivities().Where(a => a.ClassGroup.Name == classGroup);
-            var schedule = new ScheduleViewModel();
+            var schedule = new ScheduleDTO();
             foreach (var item in activitiesByGroup) {
                 if (item.Slot.Id < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
                     schedule.Slots[item.Slot.Index].Title = item.GetTitleForGroups();
                 }
             }
-            schedule.Names = names;
             schedule.Name = classGroup;
             schedule.Type = "Group";
             return schedule;
         }
 
-        public ScheduleViewModel GetScheduleByRoom(string room) {
-            var names = _disctionariesService.GetAllRooms();
-            if (room is null)
-                room = names.FirstOrDefault();
+        public ScheduleDTO GetScheduleByRoom(string room) {
             var activitiesByGroup = GetActivities().Where(a => a.Room.Name == room);
-            var schedule = new ScheduleViewModel();
+            var schedule = new ScheduleDTO();
             foreach (var item in activitiesByGroup) {
                 if (item.Slot.Id < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
                     schedule.Slots[item.Slot.Index].Title = item.GetTitleForRooms();
                 }
             }
-            schedule.Names = names;
             schedule.Name = room;
             schedule.Type = "Room";
             return schedule;
         }
 
-        public ScheduleViewModel GetScheduleByTeacher(string teacher) {
-            var names = _disctionariesService.GetAllTeachers();
-            if (teacher is null)
-                teacher = names.FirstOrDefault();
+        public ScheduleDTO GetScheduleByTeacher(string teacher) {
             var activitiesByGroup = GetActivities().Where(a => a.Teacher.Name == teacher);
-            var schedule = new ScheduleViewModel();
+            var schedule = new ScheduleDTO();
             foreach (var item in activitiesByGroup) {
                 if (item.Slot.Id < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
                     schedule.Slots[item.Slot.Index].Title = item.GetTitleForTeachers();
                 }
             }
-            schedule.Names = names;
             schedule.Name = teacher;
             schedule.Type = "Teacher";
             return schedule;
         }
-        public async Task CreateActivityAsync(ActivityViewModel activity) {
+        public async Task CreateActivityAsync(ActivityCreateDTO activity) {
             if (activity is null)
                 throw new ArgumentException("Activity does not exists");
 
@@ -180,14 +96,14 @@ namespace Application {
             await _context.SaveChangesAsync();
         }
 
-        private bool ValidateActivityForCreate(ActivityViewModel activity) {
+        private bool ValidateActivityForCreate(ActivityCreateDTO activity) {
             return ValidateActivity(
                 GetActivities(),
                 activity
             );
         }
 
-        private bool ValidateActivity(IEnumerable<Activity> activities, ActivityViewModel activity) {
+        private bool ValidateActivity(IEnumerable<Activity> activities, ActivityBaseDTO activity) {
             return activities.Where(a =>
                 a.Slot.Index == activity.Slot && (
                     a.Teacher.Name == activity.Teacher ||
@@ -196,7 +112,7 @@ namespace Application {
                 )
             ).Count() == 0;
         }
-        public async Task EditActivityAsync(int id, ActivityViewModel activity) {
+        public async Task EditActivityAsync(int id, ActivityEditDTO activity) {
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
 
@@ -204,7 +120,7 @@ namespace Application {
             if (activityToEdit is null)
                 throw new ArgumentException("Activity does not exist");
 
-            //TODO think about throwing exception while slot in viewmodel is different from value from db 
+            //TODO think about throwing exception while slot in dto is different from value from db 
             if (!ValidateActivityForEdit(id, activity))
                 throw new InvalidOperationException("One of values on this slot is occupied");
 
@@ -228,16 +144,16 @@ namespace Application {
             _context.Activities.Update(activityToEdit);
             await _context.SaveChangesAsync();
         }
-        private bool ValidateActivityForEdit(int id, ActivityViewModel activity) =>
+        private bool ValidateActivityForEdit(int id, ActivityEditDTO activity) =>
             ValidateActivity(
                 GetActivities().Where(a => a.Id != id),
                 activity
             );
-        public async Task DeleteActivityAsync(int id, byte[] timestamp) {
+        public async Task DeleteActivityAsync(int id, ActivityDeleteDTO activityDTO) {
             var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
-            _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
+            _context.Entry(activity).Property("Timestamp").OriginalValue = activityDTO.Timestamp;
             _context.Activities.Remove(activity);
             await _context.SaveChangesAsync();
         }

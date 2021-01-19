@@ -28,15 +28,15 @@ namespace UnitTests.ScheduleServicesTests {
             string teacher, string room, string subject, string classGroup, int slot) {
 
             using (var context = PrepareData.GetDbContext()) {
-                var activityViewModel = new ActivityViewModel() {
+                var activityDTO = new ActivityCreateDTO() {
                     ClassGroup = classGroup,
                     Room = room,
                     Slot = slot,
                     Subject = subject,
                     Teacher = teacher
                 };
-                var service = new ScheduleService(context, new DictionariesService(context));
-                await service.CreateActivityAsync(activityViewModel);
+                var service = new ScheduleService(context);
+                await service.CreateActivityAsync(activityDTO);
                 var activity = GetActivities(context).FirstOrDefault(
                     a => a.Teacher.Name == teacher &&
                         a.Subject.Name == subject &&
@@ -62,7 +62,7 @@ namespace UnitTests.ScheduleServicesTests {
                 var activity = context.Activities.Include(a => a.Slot).FirstOrDefault();
                 int id = activity.Id;
                 int slot = activity.Slot.Index;
-                var activityViewModel = new ActivityViewModel() {
+                var activityDTO = new ActivityEditDTO() {
                     Id = id,
                     ClassGroup = classGroup,
                     Room = room,
@@ -70,8 +70,8 @@ namespace UnitTests.ScheduleServicesTests {
                     Subject = subject,
                     Teacher = teacher
                 };
-                var service = new ScheduleService(context, new DictionariesService(context));
-                await service.EditActivityAsync(activity.Id, activityViewModel);
+                var service = new ScheduleService(context);
+                await service.EditActivityAsync(activity.Id, activityDTO);
                 var activityToCheck = GetActivities(context).FirstOrDefault(
                     a =>
                         a.Id == id &&
@@ -96,8 +96,8 @@ namespace UnitTests.ScheduleServicesTests {
                         a.Teacher.Name == teacher &&
                         a.ClassGroup.Name == classgroup
                     );
-                var service = new ScheduleService(context, new DictionariesService(context));
-                await service.DeleteActivityAsync(activityToDelete.Id, activityToDelete.Timestamp);
+                var service = new ScheduleService(context);
+                await service.DeleteActivityAsync(activityToDelete.Id, new ActivityDeleteDTO() { Timestamp = activityToDelete.Timestamp });
                 var activity = context.Activities.FirstOrDefault(a => a.Id == activityToDelete.Id);
                 Assert.Null(activity);
             }

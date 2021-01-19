@@ -15,48 +15,48 @@ namespace Application {
         public DictionariesService(ApplicationDbContext context) =>
             _context = context;
 
-        public async Task<DictionaryElementEditViewModel> GetDictionaryElementAsync(int id, DataType type) {
+        public async Task<DictionaryElementEditDTO> GetDictionaryElementAsync(int id, DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
                     var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = classGroup.Id, Name = classGroup.Name, Comment = classGroup.Comment, Timestamp = classGroup.Timestamp };
+                    return new DictionaryElementEditDTO() { Id = classGroup.Id, Name = classGroup.Name, Comment = classGroup.Comment, Timestamp = classGroup.Timestamp };
                 case DataType.Room:
                     var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id)
                         ?? throw new ArgumentException("Room with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = room.Id, Name = room.Name, Comment = room.Comment, Timestamp = room.Timestamp };
+                    return new DictionaryElementEditDTO() { Id = room.Id, Name = room.Name, Comment = room.Comment, Timestamp = room.Timestamp };
                 case DataType.Subject:
                     var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id)
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment, Timestamp = subject.Timestamp };
+                    return new DictionaryElementEditDTO() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment, Timestamp = subject.Timestamp };
                 case DataType.Teacher:
                     var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == id)
                         ?? throw new ArgumentException("Teacher with id: " + id + " does not exist");
-                    return new DictionaryElementEditViewModel() { Id = teacher.Id, Name = teacher.Name, Comment = teacher.Comment, Timestamp = teacher.Timestamp };
+                    return new DictionaryElementEditDTO() { Id = teacher.Id, Name = teacher.Name, Comment = teacher.Comment, Timestamp = teacher.Timestamp };
                 default:
                     throw new ArgumentException("Type of dictionary does not exist");
             }
         }
-        public async Task<IEnumerable<DictionaryIndexViewModel>> GetDictionaryAsync(DataType type) {
+        public async Task<IEnumerable<DictionaryReadDTO>> GetDictionaryAsync(DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
                     return await _context.ClassGroups
-                        .Select(c => new DictionaryIndexViewModel() { Id = c.Id, Name = c.Name })
+                        .Select(c => new DictionaryReadDTO() { Id = c.Id, Name = c.Name })
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 case DataType.Room:
                     return await _context.Rooms
-                        .Select(r => new DictionaryIndexViewModel() { Id = r.Id, Name = r.Name })
+                        .Select(r => new DictionaryReadDTO() { Id = r.Id, Name = r.Name })
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 case DataType.Subject:
                     return await _context.Subjects
-                        .Select(s => new DictionaryIndexViewModel() { Id = s.Id, Name = s.Name })
+                        .Select(s => new DictionaryReadDTO() { Id = s.Id, Name = s.Name })
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 case DataType.Teacher:
                     return await _context.Teachers
-                        .Select(t => new DictionaryIndexViewModel() { Id = t.Id, Name = t.Name })
+                        .Select(t => new DictionaryReadDTO() { Id = t.Id, Name = t.Name })
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 default:
@@ -72,7 +72,7 @@ namespace Application {
         public IEnumerable<string> GetAllTeachers() =>
             _context.Teachers.Select(t => t.Name).OrderBy(t => t).ToList();
 
-        public async Task AddKey(DictionaryElementEditViewModel element, DataType type) {
+        public async Task AddKey(DictionaryElementCreateDTO element, DataType type) {
             if (!ValidateName(type, element.Name))
                 throw new InvalidOperationException($"{type.ToString()} with name: {element.Name} has already exist");
             switch (type) {
@@ -128,37 +128,37 @@ namespace Application {
             }
             return true;
         }
-        public async Task UpdateKey(DictionaryElementEditViewModel element, DataType type) {
-            if(!ValidateName(type, element.Name, element.Id.Value))
+        public async Task UpdateKey(DictionaryElementEditDTO element, DataType type) {
+            if(!ValidateName(type, element.Name, element.Id))
                 throw new InvalidOperationException($"{type.ToString()} with name: {element.Name} has already exist");
             switch (type) {
                 case DataType.ClassGroup:
-                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
-                        ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
+                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == element.Id)
+                        ?? throw new ArgumentException("Class group with id: " + element.Id + " does not exist");
 
                     classGroup.Update(element.Name, element.Comment);
                     _context.Entry(classGroup).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.ClassGroups.Update(classGroup);
                     break;
                 case DataType.Room:
-                    var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == element.Id.Value)
-                        ?? throw new ArgumentException("Room with id: " + element.Id.Value + " does not exist");
+                    var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == element.Id)
+                        ?? throw new ArgumentException("Room with id: " + element.Id + " does not exist");
 
                     room.Update(element.Name, element.Comment);
                     _context.Entry(room).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Rooms.Update(room);
                     break;
                 case DataType.Subject:
-                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == element.Id.Value)
-                        ?? throw new ArgumentException("Class group with id: " + element.Id.Value + " does not exist");
+                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == element.Id)
+                        ?? throw new ArgumentException("Class group with id: " + element.Id + " does not exist");
 
                     subject.Update(element.Name, element.Comment);
                     _context.Entry(subject).Property("Timestamp").OriginalValue = element.Timestamp;
                     _context.Subjects.Update(subject);
                     break;
                 case DataType.Teacher:
-                    var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == element.Id.Value)
-                        ?? throw new ArgumentException("Teacher with id: " + element.Id.Value + " does not exist");
+                    var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == element.Id)
+                        ?? throw new ArgumentException("Teacher with id: " + element.Id + " does not exist");
 
                     teacher.Update(element.Name, element.Comment);
                     _context.Entry(teacher).Property("Timestamp").OriginalValue = element.Timestamp;

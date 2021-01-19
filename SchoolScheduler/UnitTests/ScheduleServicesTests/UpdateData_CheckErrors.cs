@@ -20,9 +20,9 @@ namespace UnitTests.ScheduleServicesTests {
         }
 
         [Fact]
-        public async Task CreateActivityAsync_WhenActivityViewModelIsNull_CheckThrowsArgumentException() {
+        public async Task CreateActivityAsync_WhenActivityDTOIsNull_CheckThrowsArgumentException() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DictionariesService(context));
+                var service = new ScheduleService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.CreateActivityAsync(null));
             }
@@ -37,9 +37,9 @@ namespace UnitTests.ScheduleServicesTests {
         public async Task CreateActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
             string teacher, string room, string subject, string classGroup, int slot) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DictionariesService(context));
+                var service = new ScheduleService(context);
                 await Assert.ThrowsAsync<InvalidOperationException>(
-                    async () => await service.CreateActivityAsync(GetViewModelToCreate(teacher, room, subject, classGroup, slot)));
+                    async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
             }
         }
         [Theory]
@@ -56,15 +56,15 @@ namespace UnitTests.ScheduleServicesTests {
             string teacher, string room, string subject, string classGroup, int slot) {
             using (var context = PrepareData.GetDbContext()) {
 
-                var service = new ScheduleService(context, new DictionariesService(context));
+                var service = new ScheduleService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.CreateActivityAsync(GetViewModelToCreate(teacher, room, subject, classGroup, slot)));
+                    async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
             }
         }
-        private ActivityViewModel GetViewModelToCreate(
+        private ActivityCreateDTO GetDTOToCreate(
             string teacher, string room, string subject, string classGroup, int slot) {
 
-            return new ActivityViewModel() {
+            return new ActivityCreateDTO() {
                 ClassGroup = classGroup,
                 Room = room,
                 Slot = slot,
@@ -73,9 +73,9 @@ namespace UnitTests.ScheduleServicesTests {
             };
         }
         [Fact]
-        public async Task EditActivityAsync_WhenActivityViewModelIsNull_CheckThrows() {
+        public async Task EditActivityAsync_WhenActivityDTOIsNull_CheckThrows() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DictionariesService(context));
+                var service = new ScheduleService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.EditActivityAsync(1, null));
             }
@@ -89,10 +89,10 @@ namespace UnitTests.ScheduleServicesTests {
             string teacher, string room, string subject, string classGroup) {
 
             using (var context = PrepareData.GetDbContext()) {
-                var activityViewModel = GetViewModelToEdit(teacher, room, subject, classGroup, context);
-                var service = new ScheduleService(context, new DictionariesService(context));
+                var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
+                var service = new ScheduleService(context);
                 await Assert.ThrowsAsync<InvalidOperationException>(
-                    async () => await service.EditActivityAsync(activityViewModel.Id.Value, activityViewModel));
+                    async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
             }
         }
         [Theory]
@@ -108,20 +108,20 @@ namespace UnitTests.ScheduleServicesTests {
             string teacher, string room, string subject, string classGroup) {
 
             using (var context = PrepareData.GetDbContext()) {
-                var activityViewModel = GetViewModelToEdit(teacher, room, subject, classGroup, context);
-                var service = new ScheduleService(context, new DictionariesService(context));
+                var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
+                var service = new ScheduleService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.EditActivityAsync(activityViewModel.Id.Value, activityViewModel));
+                    async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
             }
         }
-        private ActivityViewModel GetViewModelToEdit(
+        private ActivityEditDTO GetDTOToEdit(
             string teacher, string room, string subject, string classGroup, ApplicationDbContext context) {
 
             var activity = context.Activities.Include(a => a.Slot).Include(a => a.Room)
                     .FirstOrDefault(a => a.Slot.Index == 0 && a.Room.Name == "113");
             int id = activity.Id;
             int slot = activity.Slot.Index;
-            return new ActivityViewModel() {
+            return new ActivityEditDTO() {
                 Id = id,
                 ClassGroup = classGroup,
                 Room = room,
@@ -136,7 +136,7 @@ namespace UnitTests.ScheduleServicesTests {
         public async Task DeleteActivityAsync_CheckThrowsInNull(int id) {
 
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context, new DictionariesService(context));
+                var service = new ScheduleService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.DeleteActivityAsync(id, null));
             }

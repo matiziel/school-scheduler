@@ -58,7 +58,7 @@ namespace UnitTests.DictionariesServiceTests {
             DataType type, string name) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
-                var dictionaryElement = new DictionaryElementEditViewModel() {
+                var dictionaryElement = new DictionaryElementCreateDTO() {
                     Name = name
                 };
                 await Assert.ThrowsAsync<InvalidOperationException>(
@@ -73,7 +73,7 @@ namespace UnitTests.DictionariesServiceTests {
         public async Task UpdateKey_EditElementWhichNotExists_ThrowsArgumentException(DataType type) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
-                var dictionaryElement = new DictionaryElementEditViewModel() {
+                var dictionaryElement = new DictionaryElementEditDTO() {
                     Id = 1000
                 };
                 await Assert.ThrowsAsync<ArgumentException>(
@@ -90,7 +90,7 @@ namespace UnitTests.DictionariesServiceTests {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
                 var element = GetDictionaryElement(context, type, name);
-                var dictionaryElement = new DictionaryElementEditViewModel() {
+                var dictionaryElement = new DictionaryElementEditDTO() {
                     Id = element.Item1,
                     Name = newName
                 };

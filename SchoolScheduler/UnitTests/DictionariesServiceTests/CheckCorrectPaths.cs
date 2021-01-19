@@ -20,9 +20,9 @@ namespace UnitTests.DictionariesServiceTests {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
                 var dictionaryElement = GetDictionaryElement(context, type, name);
-                var dictionaryElementViewModel = await service.GetDictionaryElementAsync(dictionaryElement.Item1, type);
-                Assert.Equal(dictionaryElement.Item1, dictionaryElementViewModel.Id);
-                Assert.Equal(dictionaryElement.Item2, dictionaryElementViewModel.Name);
+                var dictionaryElementDTO = await service.GetDictionaryElementAsync(dictionaryElement.Item1, type);
+                Assert.Equal(dictionaryElement.Item1, dictionaryElementDTO.Id);
+                Assert.Equal(dictionaryElement.Item2, dictionaryElementDTO.Name);
             }
         }
         private ValueTuple<int, string> GetDictionaryElement(ApplicationDbContext context, DataType type, string name) {
@@ -60,8 +60,8 @@ namespace UnitTests.DictionariesServiceTests {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
                 int size = GetSizeOfDictionary(context, type);
-                var dictionaryIndexViewModel = await service.GetDictionaryAsync(type);
-                Assert.Equal(size, dictionaryIndexViewModel.Count());
+                var dictionaryIndexDTO = await service.GetDictionaryAsync(type);
+                Assert.Equal(size, dictionaryIndexDTO.Count());
             }
         }
         public int GetSizeOfDictionary(ApplicationDbContext context, DataType type) {
@@ -86,7 +86,7 @@ namespace UnitTests.DictionariesServiceTests {
         public async Task AddKeyTest(DataType type) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
-                var dictionaryElement = new DictionaryElementEditViewModel() {
+                var dictionaryElement = new DictionaryElementCreateDTO() {
                     Name = "elo"
                 };
                 await service.AddKey(dictionaryElement, type);
@@ -103,7 +103,7 @@ namespace UnitTests.DictionariesServiceTests {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
                 var element = GetDictionaryElement(context, type, name);
-                var dictionaryElement = new DictionaryElementEditViewModel() {
+                var dictionaryElement = new DictionaryElementEditDTO() {
                     Id = element.Item1,
                     Name = "elo"
                 };
