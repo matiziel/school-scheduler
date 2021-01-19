@@ -22,7 +22,7 @@ namespace UnitTests.ScheduleServicesTests {
         [Fact]
         public async Task CreateActivityAsync_WhenActivityDTOIsNull_CheckThrowsArgumentException() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.CreateActivityAsync(null));
             }
@@ -37,7 +37,7 @@ namespace UnitTests.ScheduleServicesTests {
         public async Task CreateActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
             string teacher, string room, string subject, string classGroup, int slot) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<InvalidOperationException>(
                     async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
             }
@@ -56,7 +56,7 @@ namespace UnitTests.ScheduleServicesTests {
             string teacher, string room, string subject, string classGroup, int slot) {
             using (var context = PrepareData.GetDbContext()) {
 
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
             }
@@ -75,7 +75,7 @@ namespace UnitTests.ScheduleServicesTests {
         [Fact]
         public async Task EditActivityAsync_WhenActivityDTOIsNull_CheckThrows() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.EditActivityAsync(1, null));
             }
@@ -90,7 +90,7 @@ namespace UnitTests.ScheduleServicesTests {
 
             using (var context = PrepareData.GetDbContext()) {
                 var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<InvalidOperationException>(
                     async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
             }
@@ -109,7 +109,7 @@ namespace UnitTests.ScheduleServicesTests {
 
             using (var context = PrepareData.GetDbContext()) {
                 var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
             }
@@ -136,7 +136,7 @@ namespace UnitTests.ScheduleServicesTests {
         public async Task DeleteActivityAsync_CheckThrowsInNull(int id) {
 
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.DeleteActivityAsync(id, null));
             }

@@ -35,7 +35,7 @@ namespace UnitTests.ScheduleServicesTests {
                     Subject = subject,
                     Teacher = teacher
                 };
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await service.CreateActivityAsync(activityDTO);
                 var activity = GetActivities(context).FirstOrDefault(
                     a => a.Teacher.Name == teacher &&
@@ -70,7 +70,7 @@ namespace UnitTests.ScheduleServicesTests {
                     Subject = subject,
                     Teacher = teacher
                 };
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await service.EditActivityAsync(activity.Id, activityDTO);
                 var activityToCheck = GetActivities(context).FirstOrDefault(
                     a =>
@@ -96,7 +96,7 @@ namespace UnitTests.ScheduleServicesTests {
                         a.Teacher.Name == teacher &&
                         a.ClassGroup.Name == classgroup
                     );
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await service.DeleteActivityAsync(activityToDelete.Id, new ActivityDeleteDTO() { Timestamp = activityToDelete.Timestamp });
                 var activity = context.Activities.FirstOrDefault(a => a.Id == activityToDelete.Id);
                 Assert.Null(activity);

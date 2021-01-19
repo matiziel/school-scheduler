@@ -25,7 +25,7 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(3000)]
         public async Task GetActivityByGroupAsync_GiveIncorrectId_ThrowsArgumentException(int id) {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 await Assert.ThrowsAsync<ArgumentException>(
                     async () => await service.GetActivity(id));
 

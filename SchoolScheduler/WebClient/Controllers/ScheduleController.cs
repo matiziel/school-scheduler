@@ -45,56 +45,5 @@ namespace WebClient.Controllers {
                 return NotFound();
             }
         }
-
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ActivityCreateDTO activity) {
-            try {
-                if (activity is null)
-                    return NotFound();
-                if (ModelState.IsValid) {
-                    await _scheduleService.CreateActivityAsync(activity);
-                    return Ok();
-                }
-                else {
-                    return BadRequest();
-                }
-            }
-            catch (Exception) {
-                return BadRequest();
-            }
-        }
-        [HttpPut]
-        public async Task<ActionResult> Put([FromQuery] int? id, [FromBody] ActivityEditDTO activity) {
-            try {
-                if (id is null || activity is null)
-                    return NotFound();
-                if (ModelState.IsValid) {
-                    await _scheduleService.EditActivityAsync(id.Value, activity);
-                    return Ok();
-                }
-                return BadRequest();
-            }
-            catch (DbUpdateConcurrencyException) {
-                return BadRequest();
-            }
-            catch (Exception) {
-                return NotFound();
-            }
-        }
-        [HttpPost]
-        public async Task<ActionResult> Delete([FromQuery] int? id, [FromBody] ActivityDeleteDTO activity) {
-            try {
-                if (id is null || activity is null)
-                    NotFound();
-                await _scheduleService.DeleteActivityAsync(id.Value, activity);
-                return Ok();
-            }
-            catch (DbUpdateConcurrencyException) {
-                return BadRequest();
-            }
-            catch (Exception) {
-                return BadRequest();
-            }
-        }
     }
 }

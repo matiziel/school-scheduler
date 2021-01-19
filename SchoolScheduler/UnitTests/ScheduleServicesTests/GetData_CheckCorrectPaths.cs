@@ -22,7 +22,7 @@ namespace UnitTests.ScheduleServicesTests {
         [Fact]
         public async Task GetActivityAsync_ReturnCorrectDTO() {
             using (var context = PrepareData.GetDbContext()) {
-                var service = new ScheduleService(context);
+                var service = new ActivitiesService(context);
                 var activity = GetActivities(context).FirstOrDefault();
                 var activityDTO = await service.GetActivity(activity.Id);
                 Assert.Equal(activity.Id, activityDTO.Id);
