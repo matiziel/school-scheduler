@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Contracts.ViewModels.Dictionaries;
+using Contracts.DataTransferObjects.Dictionaries;
 using Common;
 using System.Threading.Tasks;
 

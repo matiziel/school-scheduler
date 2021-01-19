@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model;
-using Contracts.ViewModels.Schedule;
+using Contracts.DataTransferObjects.Schedule;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebClient.Controllers {

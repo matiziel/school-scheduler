@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Contracts.ViewModels.Schedule {
+namespace Contracts.DataTransferObjects.Schedule {
     public class ScheduleViewModel {
         public ActivityIndexViewModel[] Slots { get; set; }
         public ScheduleViewModel() {

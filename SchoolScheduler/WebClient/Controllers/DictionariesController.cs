@@ -7,7 +7,7 @@ using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Common;
 using Persistence;
-using Contracts.ViewModels.Dictionaries;
+using Contracts.DataTransferObjects.Dictionaries;
 using Microsoft.EntityFrameworkCore;
 
 

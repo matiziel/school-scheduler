@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Contracts.Services;
-using Contracts.ViewModels.Dictionaries;
+using Contracts.DataTransferObjects.Dictionaries;
 using Model;
 using Persistence;
 using Common;

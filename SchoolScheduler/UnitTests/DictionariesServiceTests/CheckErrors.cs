@@ -7,7 +7,7 @@ using Persistence;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Contracts.ViewModels.Dictionaries;
+using Contracts.DataTransferObjects.Dictionaries;
 
 namespace UnitTests.DictionariesServiceTests {
     public class CheckErrors {

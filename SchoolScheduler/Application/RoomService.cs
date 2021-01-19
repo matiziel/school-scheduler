@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.ViewModels.Schedule;
+using Contracts.DataTransferObjects.Schedule;
 
 namespace Application {
     public class RoomService : IRoomService {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Contracts.ViewModels.Schedule {
+namespace Contracts.DataTransferObjects.Schedule {
     public class ActivityViewModel {
         public int? Id { get; set; }
         [Required]

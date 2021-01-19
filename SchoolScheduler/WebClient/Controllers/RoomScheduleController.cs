@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model;
-using Contracts.ViewModels.Schedule;
 using Microsoft.EntityFrameworkCore;
+using Contracts.DataTransferObjects.Schedule;
 
 namespace WebClient.Controllers {
     [Route("api/schedule/room")]
