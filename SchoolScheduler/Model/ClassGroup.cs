@@ -16,5 +16,6 @@ namespace Model {
             Name = name;
             Comment = comment;
         }
+
     }
 }
