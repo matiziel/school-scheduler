@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Contracts.DataTransferObjects.Schedule;
+using Contracts.DataTransferObjects.Activities;
 
 namespace Contracts.Services {
     public interface IActivitiesService {

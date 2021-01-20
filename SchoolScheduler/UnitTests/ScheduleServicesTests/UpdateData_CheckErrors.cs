@@ -1,7 +1,7 @@
 using Xunit;
 using Application;
 using Persistence;
-using Contracts.DataTransferObjects.Schedule;
+using Contracts.DataTransferObjects.Activities;
 using System.Linq;
 using Model;
 using Microsoft.EntityFrameworkCore;

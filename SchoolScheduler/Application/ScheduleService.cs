@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.DataTransferObjects.Schedule;
+using Contracts.DataTransferObjects.Activities;
+
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Persistence;

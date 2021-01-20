@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Contracts.DataTransferObjects.Schedule {
+namespace Contracts.DataTransferObjects.Activities {
     public class ActivityBaseDTO {
 
         [Required]

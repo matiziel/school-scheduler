@@ -32,6 +32,8 @@ namespace WebClient {
             );
             services.AddTransient<IDictionariesService, DictionariesService>();
             services.AddTransient<IScheduleService, ScheduleService>();
+            services.AddTransient<IActivitiesService, ActivitiesService>();
+
             services.AddControllers();
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebClient", Version = "v1" });

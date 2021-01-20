@@ -31,6 +31,7 @@ namespace WebClient.Controllers {
                 return BadRequest();
             }
         }
+        [HttpGet("free")]
         [HttpGet]
         public async Task<ActionResult<DictionaryReadDTO>> Get([FromQuery] int id, [FromQuery] string type) {
             try {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model;
-using Contracts.DataTransferObjects.Schedule;
+using Contracts.DataTransferObjects.Activities;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebClient.Controllers {
@@ -19,7 +19,7 @@ namespace WebClient.Controllers {
         }
 
         [HttpGet]
-        public ActionResult<ScheduleDTO> Get([FromQuery] int id) {
+        public ActionResult<ActivityEditDTO> Get([FromQuery] int id) {
             try {
                 return Ok(_activitiesService.GetActivity(id));
             }
@@ -63,7 +63,7 @@ namespace WebClient.Controllers {
                 return NotFound();
             }
         }
-        [HttpPost]
+        [HttpDelete]
         public async Task<ActionResult> Delete([FromQuery] int? id, [FromBody] ActivityDeleteDTO activity) {
             try {
                 if (id is null || activity is null)

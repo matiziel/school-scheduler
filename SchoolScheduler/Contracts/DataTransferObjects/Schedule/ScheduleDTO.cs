@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Contracts.DataTransferObjects.Activities;
 
 namespace Contracts.DataTransferObjects.Schedule {
     public class ScheduleDTO {

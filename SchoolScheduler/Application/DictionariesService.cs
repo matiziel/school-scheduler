@@ -63,14 +63,6 @@ namespace Application {
                     throw new ArgumentException("Type of dictionary does not exist");
             }
         }
-        public IEnumerable<string> GetAllClassGroups() =>
-             _context.ClassGroups.Select(c => c.Name).OrderBy(c => c).ToList();
-        public IEnumerable<string> GetAllRooms() =>
-            _context.Rooms.Select(r => r.Name).OrderBy(r => r).ToList();
-        public IEnumerable<string> GetAllSubjects() =>
-            _context.Subjects.Select(s => s.Name).OrderBy(s => s).ToList();
-        public IEnumerable<string> GetAllTeachers() =>
-            _context.Teachers.Select(t => t.Name).OrderBy(t => t).ToList();
 
         public async Task AddKey(DictionaryElementCreateDTO element, DataType type) {
             if (!ValidateName(type, element.Name))
@@ -129,7 +121,7 @@ namespace Application {
             return true;
         }
         public async Task UpdateKey(DictionaryElementEditDTO element, DataType type) {
-            if(!ValidateName(type, element.Name, element.Id))
+            if (!ValidateName(type, element.Name, element.Id))
                 throw new InvalidOperationException($"{type.ToString()} with name: {element.Name} has already exist");
             switch (type) {
                 case DataType.ClassGroup:
@@ -200,22 +192,33 @@ namespace Application {
             }
             await _context.SaveChangesAsync();
         }
-        
+        public IEnumerable<string> GetAllSubjects() =>
+            _context.Subjects.Select(s => s.Name).OrderBy(s => s).ToList();
+
         public IEnumerable<string> GetFreeClassGroupsBySlot(int slot, int? id = null) {
             var groups = GetAllClassGroups();
             var occupiedGroups = GetActivitiesBySlot(slot, id).Select(a => a.ClassGroup.Name);
             return groups.Where(g => !occupiedGroups.Contains(g));
         }
+        private IEnumerable<string> GetAllClassGroups() =>
+            _context.ClassGroups.Select(c => c.Name).OrderBy(c => c).ToList();
+
         public IEnumerable<string> GetFreeRoomsBySlot(int slot, int? id = null) {
             var rooms = GetAllRooms();
             var occupiedRooms = GetActivitiesBySlot(slot, id).Select(a => a.Room.Name);
             return rooms.Where(r => !occupiedRooms.Contains(r));
         }
+        private IEnumerable<string> GetAllRooms() =>
+            _context.Rooms.Select(r => r.Name).OrderBy(r => r).ToList();
+
         public IEnumerable<string> GetFreeTeachersBySlot(int slot, int? id = null) {
             var teachers = GetAllTeachers();
             var occupiedTeachers = GetActivitiesBySlot(slot, id).Select(a => a.Teacher.Name);
             return teachers.Where(t => !occupiedTeachers.Contains(t));
         }
+        private IEnumerable<string> GetAllTeachers() =>
+            _context.Teachers.Select(t => t.Name).OrderBy(t => t).ToList();
+
         private IEnumerable<Activity> GetActivitiesBySlot(int slot, int? id) {
             var activities = _context.Activities
                 .Include(a => a.Slot)
