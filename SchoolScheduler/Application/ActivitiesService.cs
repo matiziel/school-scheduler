@@ -18,7 +18,7 @@ namespace Application {
             _context = context;
         }
         public async Task<ActivityEditDTO> GetActivity(int id) {
-            var activity = await GetActivities().FirstOrDefaultAsync(a => a.Id == id);
+            var activity = await GetActivities().AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
             return new ActivityEditDTO() {

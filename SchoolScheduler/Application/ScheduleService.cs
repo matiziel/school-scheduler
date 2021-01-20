@@ -24,7 +24,8 @@ namespace Application {
                 .Include(a => a.Teacher)
                 .Include(a => a.Room)
                 .Include(a => a.ClassGroup)
-                .Include(a => a.Subject);
+                .Include(a => a.Subject)
+                .AsNoTracking();
         }
         public ScheduleDTO GetScheduleByGroup(string classGroup) {
             var activitiesByGroup = GetActivities().Where(a => a.ClassGroup.Name == classGroup);

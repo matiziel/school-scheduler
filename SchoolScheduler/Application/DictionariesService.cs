@@ -18,19 +18,19 @@ namespace Application {
         public async Task<DictionaryElementEditDTO> GetDictionaryElementAsync(int id, DataType type) {
             switch (type) {
                 case DataType.ClassGroup:
-                    var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Id == id)
+                    var classGroup = await _context.ClassGroups.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id)
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
                     return new DictionaryElementEditDTO() { Id = classGroup.Id, Name = classGroup.Name, Comment = classGroup.Comment, Timestamp = classGroup.Timestamp };
                 case DataType.Room:
-                    var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id)
+                    var room = await _context.Rooms.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id)
                         ?? throw new ArgumentException("Room with id: " + id + " does not exist");
                     return new DictionaryElementEditDTO() { Id = room.Id, Name = room.Name, Comment = room.Comment, Timestamp = room.Timestamp };
                 case DataType.Subject:
-                    var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == id)
+                    var subject = await _context.Subjects.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id)
                         ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
                     return new DictionaryElementEditDTO() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment, Timestamp = subject.Timestamp };
                 case DataType.Teacher:
-                    var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == id)
+                    var teacher = await _context.Teachers.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id)
                         ?? throw new ArgumentException("Teacher with id: " + id + " does not exist");
                     return new DictionaryElementEditDTO() { Id = teacher.Id, Name = teacher.Name, Comment = teacher.Comment, Timestamp = teacher.Timestamp };
                 default:
@@ -42,21 +42,25 @@ namespace Application {
                 case DataType.ClassGroup:
                     return await _context.ClassGroups
                         .Select(c => new DictionaryReadDTO() { Id = c.Id, Name = c.Name })
+                        .AsNoTracking()
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 case DataType.Room:
                     return await _context.Rooms
                         .Select(r => new DictionaryReadDTO() { Id = r.Id, Name = r.Name })
+                        .AsNoTracking()
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 case DataType.Subject:
                     return await _context.Subjects
                         .Select(s => new DictionaryReadDTO() { Id = s.Id, Name = s.Name })
+                        .AsNoTracking()
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 case DataType.Teacher:
                     return await _context.Teachers
                         .Select(t => new DictionaryReadDTO() { Id = t.Id, Name = t.Name })
+                        .AsNoTracking()
                         .OrderBy(c => c.Name)
                         .ToListAsync();
                 default:
@@ -88,28 +92,28 @@ namespace Application {
         private bool ValidateName(DataType type, string name, int? id = null) {
             switch (type) {
                 case DataType.ClassGroup:
-                    IQueryable<ClassGroup> classGroups = _context.ClassGroups;
+                    IQueryable<ClassGroup> classGroups = _context.ClassGroups.AsNoTracking();
                     if (id != null)
                         classGroups = classGroups.Where(d => d.Id != id);
                     if (classGroups.FirstOrDefault(d => d.Name == name) != null)
                         return false;
                     break;
                 case DataType.Room:
-                    IQueryable<Room> rooms = _context.Rooms;
+                    IQueryable<Room> rooms = _context.Rooms.AsNoTracking();
                     if (id != null)
                         rooms = rooms.Where(d => d.Id != id);
                     if (rooms.FirstOrDefault(r => r.Name == name) != null)
                         return false;
                     break;
                 case DataType.Subject:
-                    IQueryable<Subject> subjects = _context.Subjects;
+                    IQueryable<Subject> subjects = _context.Subjects.AsNoTracking();
                     if (id != null)
                         subjects = subjects.Where(d => d.Id != id);
                     if (subjects.FirstOrDefault(d => d.Name == name) != null)
                         return false;
                     break;
                 case DataType.Teacher:
-                    IQueryable<Teacher> teachers = _context.Teachers;
+                    IQueryable<Teacher> teachers = _context.Teachers.AsNoTracking();
                     if (id != null)
                         teachers = teachers.Where(d => d.Id != id);
                     if (teachers.FirstOrDefault(d => d.Name == name) != null)
@@ -193,7 +197,7 @@ namespace Application {
             await _context.SaveChangesAsync();
         }
         public IEnumerable<string> GetAllSubjects() =>
-            _context.Subjects.Select(s => s.Name).OrderBy(s => s).ToList();
+            _context.Subjects.Select(s => s.Name).AsNoTracking().OrderBy(s => s).ToList();
 
         public IEnumerable<string> GetFreeClassGroupsBySlot(int slot, int? id = null) {
             var groups = GetAllClassGroups();
@@ -224,7 +228,8 @@ namespace Application {
                 .Include(a => a.Slot)
                 .Include(a => a.ClassGroup)
                 .Include(a => a.Room)
-                .Include(a => a.Teacher);
+                .Include(a => a.Teacher)
+                .AsNoTracking();
             if (id is null)
                 return activities.Where(a => a.Slot.Index == slot);
             else
