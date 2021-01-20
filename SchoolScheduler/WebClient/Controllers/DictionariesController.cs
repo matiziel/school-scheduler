@@ -58,7 +58,7 @@ namespace WebClient.Controllers {
                 return BadRequest();
             }
         }
-        [HttpGet("groups")]
+        [HttpGet("subjects")]
         public ActionResult<IEnumerable<string>> GetSubjects() {
             try {
                 return Ok(_disctionariesService.GetAllSubjects());
@@ -95,7 +95,7 @@ namespace WebClient.Controllers {
 
         }
         [HttpPut]
-        public async Task<IActionResult> Edit([FromQuery] int id,[FromQuery] string type, [FromBody] DictionaryElementEditDTO element) {
+        public async Task<IActionResult> Edit([FromQuery] int id, [FromQuery] string type, [FromBody] DictionaryElementEditDTO element) {
             try {
                 if (type is null || element is null)
                     return NotFound();
@@ -113,7 +113,7 @@ namespace WebClient.Controllers {
             }
         }
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string type,[FromBody] DictionaryElementDeleteDTO element) {
+        public async Task<IActionResult> Delete([FromQuery] string type, [FromBody] DictionaryElementDeleteDTO element) {
             try {
                 if (type is null)
                     return NotFound();
