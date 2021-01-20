@@ -31,7 +31,42 @@ namespace WebClient.Controllers {
                 return BadRequest();
             }
         }
-        [HttpGet("free")]
+        [HttpGet("rooms/{slot}")]
+        public ActionResult<IEnumerable<string>> GetRooms(int slot, [FromQuery] int? id) {
+            try {
+                return Ok(_disctionariesService.GetFreeRoomsBySlot(slot, id));
+            }
+            catch (Exception) {
+                return BadRequest();
+            }
+        }
+        [HttpGet("groups/{slot}")]
+        public ActionResult<IEnumerable<string>> GetClassGroups(int slot, [FromQuery] int? id) {
+            try {
+                return Ok(_disctionariesService.GetFreeClassGroupsBySlot(slot, id));
+            }
+            catch (Exception) {
+                return BadRequest();
+            }
+        }
+        [HttpGet("teachers/{slot}")]
+        public ActionResult<IEnumerable<string>> GetTeachers(int slot, [FromQuery] int? id) {
+            try {
+                return Ok(_disctionariesService.GetFreeRoomsBySlot(slot, id));
+            }
+            catch (Exception) {
+                return BadRequest();
+            }
+        }
+        [HttpGet("groups")]
+        public ActionResult<IEnumerable<string>> GetSubjects() {
+            try {
+                return Ok(_disctionariesService.GetAllSubjects());
+            }
+            catch (Exception) {
+                return BadRequest();
+            }
+        }
         [HttpGet]
         public async Task<ActionResult<DictionaryReadDTO>> Get([FromQuery] int id, [FromQuery] string type) {
             try {
@@ -59,7 +94,7 @@ namespace WebClient.Controllers {
             }
 
         }
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> Edit([FromQuery] int id,[FromQuery] string type, [FromBody] DictionaryElementEditDTO element) {
             try {
                 if (type is null || element is null)
@@ -77,7 +112,7 @@ namespace WebClient.Controllers {
                 return NotFound();
             }
         }
-        [HttpPost]
+        [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] string type,[FromBody] DictionaryElementDeleteDTO element) {
             try {
                 if (type is null)
