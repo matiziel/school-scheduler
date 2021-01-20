@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Persistence;
 
-namespace WebClient {
+namespace WebApi {
     public class Startup {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
@@ -28,7 +28,7 @@ namespace WebClient {
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly("WebClient"))
+                b => b.MigrationsAssembly("WebApi"))
             );
             services.AddTransient<IDictionariesService, DictionariesService>();
             services.AddTransient<IScheduleService, ScheduleService>();
@@ -36,7 +36,7 @@ namespace WebClient {
 
             services.AddControllers();
             services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebClient", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
         }
 
@@ -45,7 +45,7 @@ namespace WebClient {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebClient v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
             }
 
             app.UseHttpsRedirection();

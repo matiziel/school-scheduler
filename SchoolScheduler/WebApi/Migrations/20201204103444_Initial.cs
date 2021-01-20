@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebClient.Migrations
+namespace WebApi.Migrations
 {
     public partial class Initial : Migration
     {

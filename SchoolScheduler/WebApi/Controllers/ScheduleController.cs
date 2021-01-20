@@ -8,7 +8,7 @@ using Model;
 using Contracts.DataTransferObjects.Schedule;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebClient.Controllers {
+namespace WebApi.Controllers {
 
     [ApiController]
     [Route("api/[controller]")]

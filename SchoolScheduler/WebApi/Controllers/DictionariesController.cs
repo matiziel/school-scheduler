@@ -11,7 +11,7 @@ using Contracts.DataTransferObjects.Dictionaries;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace WebClient.Controllers {
+namespace WebApi.Controllers {
 
     [ApiController]
     [Route("api/[controller]")]

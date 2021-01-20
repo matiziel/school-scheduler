@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
-namespace WebClient.Migrations
+namespace WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201207220219_DeleteCascadeWhenDeletingDictionaryElement")]
-    partial class DeleteCascadeWhenDeletingDictionaryElement
+    [Migration("20201204104301_AddTimespamps")]
+    partial class AddTimespamps
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
