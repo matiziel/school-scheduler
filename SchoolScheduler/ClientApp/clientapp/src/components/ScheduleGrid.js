@@ -2,6 +2,9 @@ import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import {
+    Link
+} from "react-router-dom";
 
 const terms = {
     days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -9,7 +12,7 @@ const terms = {
 }
 const range = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i);
 
-const apiUrl = 'https://localhost:5001/api/Schedule/group/1a';
+const apiUrl = 'https://localhost:5001/api/Schedule/';
 
 function Days() {
     return (
@@ -26,22 +29,20 @@ function Days() {
     );
 }
 
-function ScheduleButtons() {
+function ScheduleButtons(prop) {
 
     const [scheduleData, setScheduleData] = useState({ slots: [], name: '', type: '' });
     useEffect(() => {
         const fetchData = async () => {
             const result = await axios({
                 method: 'get',
-                url: apiUrl,
+                url: apiUrl + prop.type + '/' + prop.name,
                 headers: { 'Content-Type': 'application/json' }
             });
             setScheduleData({ slots: result.data.slots, name: result.data.name, type: result.data.type });
         };
         fetchData();
     }, []);
-
-    console.log(scheduleData.slots);
     return (
         <>
             {range(0, 8).map(i => (
@@ -51,7 +52,9 @@ function ScheduleButtons() {
                     </td>
                     {scheduleData.slots.slice(i * 5, i * 5 + 5).map((slot, index) => (
                         <td>
-                            <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
+                            <Link to="/edit">
+                                <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
+                            </Link>
                         </td>
                     ))}
                 </tr>
@@ -60,13 +63,13 @@ function ScheduleButtons() {
     );
 }
 
-function ScheduleGrid() {
+function ScheduleGrid(prop) {
     return (
         <div>
             <table className="table">
                 <tbody>
                     <Days></Days>
-                    <ScheduleButtons></ScheduleButtons>
+                    <ScheduleButtons type={prop.type} name={prop.name}></ScheduleButtons>
                 </tbody>
             </table>
         </div>

@@ -20,8 +20,8 @@ namespace WebApi.Controllers {
         public DictionariesController(IDictionariesService disctionariesService) =>
             _disctionariesService = disctionariesService;
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<DictionaryReadDTO>>> Get([FromQuery] string type) {
+        [HttpGet("all/{type}")]
+        public async Task<ActionResult<IEnumerable<DictionaryReadDTO>>> Get(string type) {
             try {
                 if (type is null)
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
