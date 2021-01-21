@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application;
 using Contracts.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using WebApi.Middlewares;
 using Persistence;
 
 namespace WebApi {
@@ -30,9 +24,17 @@ namespace WebApi {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly("WebApi"))
             );
+
+
             services.AddTransient<IDictionariesService, DictionariesService>();
             services.AddTransient<IScheduleService, ScheduleService>();
             services.AddTransient<IActivitiesService, ActivitiesService>();
+
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder => {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
             services.AddControllers();
             services.AddSwaggerGen(c => {
@@ -52,7 +54,11 @@ namespace WebApi {
 
             app.UseRouting();
 
+            app.UseCors("MyPolicy");
+
             app.UseAuthorization();
+
+            app.UseOptions();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
