@@ -4,12 +4,12 @@ using System.ComponentModel;
 namespace Common {
     public enum DataType {
         [Description("Klasy")]
-        ClassGroup,
+        classGroups,
         [Description("Nauczyciele")]
-        Teacher,
+        teachers,
         [Description("Przedmioty")]
-        Subject,
+        subjects,
         [Description("Sale")]
-        Room
+        rooms
     }
 }

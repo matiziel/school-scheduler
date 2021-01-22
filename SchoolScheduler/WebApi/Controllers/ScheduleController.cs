@@ -18,7 +18,7 @@ namespace WebApi.Controllers {
             _scheduleService = scheduleService;
         }
 
-        [HttpGet("room/{room}")]
+        [HttpGet("rooms/{room}")]
         public ActionResult<ScheduleDTO> GetByRoom(string room) {
             try {
                 return Ok(_scheduleService.GetScheduleByRoom(room));
@@ -27,7 +27,7 @@ namespace WebApi.Controllers {
                 return NotFound();
             }
         }
-        [HttpGet("teacher/{teacher}")]
+        [HttpGet("teachers/{teacher}")]
         public ActionResult<ScheduleDTO> GetByTeacher(string teacher) {
             try {
                 return Ok(_scheduleService.GetScheduleByTeacher(teacher));
@@ -36,7 +36,7 @@ namespace WebApi.Controllers {
                 return NotFound();
             }
         }
-        [HttpGet("group/{group}")]
+        [HttpGet("classGroups/{group}")]
         public ActionResult<ScheduleDTO> GetByGroup(string group) {
             try {
                 return Ok(_scheduleService.GetScheduleByGroup(group));

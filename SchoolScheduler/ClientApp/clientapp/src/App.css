@@ -18,7 +18,7 @@
   background-color: #282c34;
   min-height: 4vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -27,11 +27,11 @@
 
 .App-body {
   background-color: #282c34;
-  min-height: 96vh;
+  min-height: 92vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -42,7 +42,7 @@ label {
 }
 
 .App-link {
-  color: #61dafb;
+  margin-left : 1%; 
 }
 
 @keyframes App-logo-spin {

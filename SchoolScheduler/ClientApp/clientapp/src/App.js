@@ -1,16 +1,19 @@
 import './App.css';
+import React from "react";
 import ScheduleGrid from './components/ScheduleGrid.js';
-import DropDownList from './components/DropDownList.js';
-import NavbarHeader from './components/NavbarHeader.js';
 import DictionaryList from './components/DictionaryList.js'
 import EditActivity from './components/EditActivity.js'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link, useHistory
 } from "react-router-dom";
 
+
+// function useQuery() {
+//   return new URLSearchParams(useLocation().search);
+// }
 
 function App() {
   return (
@@ -18,28 +21,30 @@ function App() {
       <div key="app" className="App">
         <header className="App-header">
           <label>School scheduler</label>
-          <NavbarHeader></NavbarHeader>
+        </header>
+        <header className="App-header">
+          <Link className="App-link" to="/classGroups/1a">Group</Link>
+          <Link className="App-link" to="/teachers/clarkson">Teacher</Link>
+          <Link className="App-link" to="/rooms/111">Room</Link>
+          <Link className="App-link" to="/dictionaries/classGroups">Dictionaries</Link>
         </header>
         <div className="App-body">
           <Switch>
-            <Route path="/dictionaries">
+            <Route path="/dictionaries/:type">
               <DictionaryList></DictionaryList>
             </Route>
             <Route path="/edit">
               <EditActivity></EditActivity>
             </Route>
-            <Route path="/">
-              <ScheduleGrid key="scheduleGridGroup" type="room" name="111" />
+            <Route path="/classGroups/:searchName">
+              <ScheduleGrid key="scheduleGridGroup" type="classGroups" />
             </Route >
-            <Route path="/group">
-              <ScheduleGrid key="scheduleGridGroup" type="group" name="1a" />
-            </Route>
-            <Route path="/room">
-              <ScheduleGrid key="scheduleGridRoom" type="room" name="111" />
-            </Route>
-            <Route path="/teacher">
-              <ScheduleGrid key="scheduleGridTeacher" type="teacher" name="clarkson" />
-            </Route>
+            <Route path="/teachers/:searchName">
+              <ScheduleGrid key="scheduleGridTeacher" type="teachers" />
+            </Route >
+            <Route path="/rooms/:searchName">
+              <ScheduleGrid key="scheduleGridRoom" type="rooms" />
+            </Route >
           </Switch>
         </div>
       </div>

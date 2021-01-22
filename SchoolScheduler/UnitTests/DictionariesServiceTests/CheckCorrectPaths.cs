@@ -12,10 +12,10 @@ using Contracts.DataTransferObjects.Dictionaries;
 namespace UnitTests.DictionariesServiceTests {
     public class CheckCorrectPaths {
         [Theory]
-        [InlineData(DataType.ClassGroup, "1a")]
-        [InlineData(DataType.Room, "111")]
-        [InlineData(DataType.Subject, "eng")]
-        [InlineData(DataType.Teacher, "kowalski")]
+        [InlineData(DataType.classGroups, "1a")]
+        [InlineData(DataType.rooms, "111")]
+        [InlineData(DataType.subjects, "eng")]
+        [InlineData(DataType.teachers, "kowalski")]
         public async Task GetDictionaryElementAsync(DataType type, string name) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
@@ -27,22 +27,22 @@ namespace UnitTests.DictionariesServiceTests {
         }
         private ValueTuple<int, string> GetDictionaryElement(ApplicationDbContext context, DataType type, string name) {
             switch (type) {
-                case DataType.ClassGroup:
+                case DataType.classGroups:
                     var group = context.ClassGroups.FirstOrDefault(c => c.Name == name);
                     if(group is null)
                         return (-1, "");
                     return (group.Id, group.Name);
-                case DataType.Room:
+                case DataType.rooms:
                     var room = context.Rooms.FirstOrDefault(c => c.Name == name);
                     if (room is null)
                         return (-1, "");
                     return (room.Id, room.Name);
-                case DataType.Teacher:
+                case DataType.teachers:
                     var teacher = context.Teachers.FirstOrDefault(c => c.Name == name);
                     if (teacher is null)
                         return (-1, "");
                     return (teacher.Id, teacher.Name);
-                case DataType.Subject:
+                case DataType.subjects:
                     var subject = context.Subjects.FirstOrDefault(c => c.Name == name);
                     if (subject is null)
                         return (-1, "");
@@ -52,10 +52,10 @@ namespace UnitTests.DictionariesServiceTests {
             }
         }
         [Theory]
-        [InlineData(DataType.ClassGroup)]
-        [InlineData(DataType.Room)]
-        [InlineData(DataType.Subject)]
-        [InlineData(DataType.Teacher)]
+        [InlineData(DataType.classGroups)]
+        [InlineData(DataType.rooms)]
+        [InlineData(DataType.subjects)]
+        [InlineData(DataType.teachers)]
         public async Task GetDictionaryAsync(DataType type) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
@@ -66,23 +66,23 @@ namespace UnitTests.DictionariesServiceTests {
         }
         public int GetSizeOfDictionary(ApplicationDbContext context, DataType type) {
             switch (type) {
-                case DataType.ClassGroup:
+                case DataType.classGroups:
                     return context.ClassGroups.Count();
-                case DataType.Room:
+                case DataType.rooms:
                     return context.Rooms.Count();
-                case DataType.Teacher:
+                case DataType.teachers:
                     return context.Teachers.Count();
-                case DataType.Subject:
+                case DataType.subjects:
                     return context.Subjects.Count();
                 default:
                     return 0;
             }
         }
         [Theory]
-        [InlineData(DataType.ClassGroup)]
-        [InlineData(DataType.Room)]
-        [InlineData(DataType.Subject)]
-        [InlineData(DataType.Teacher)]
+        [InlineData(DataType.classGroups)]
+        [InlineData(DataType.rooms)]
+        [InlineData(DataType.subjects)]
+        [InlineData(DataType.teachers)]
         public async Task AddKeyTest(DataType type) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
@@ -95,10 +95,10 @@ namespace UnitTests.DictionariesServiceTests {
             }
         }
         [Theory]
-        [InlineData(DataType.ClassGroup, "1a")]
-        [InlineData(DataType.Room, "111")]
-        [InlineData(DataType.Subject, "eng")]
-        [InlineData(DataType.Teacher, "kowalski")]
+        [InlineData(DataType.classGroups, "1a")]
+        [InlineData(DataType.rooms, "111")]
+        [InlineData(DataType.subjects, "eng")]
+        [InlineData(DataType.teachers, "kowalski")]
         public async Task UpdateKey(DataType type, string name) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
@@ -113,10 +113,10 @@ namespace UnitTests.DictionariesServiceTests {
             }
         }
         [Theory]
-        [InlineData(DataType.ClassGroup, "1a")]
-        [InlineData(DataType.Room, "111")]
-        [InlineData(DataType.Subject, "eng")]
-        [InlineData(DataType.Teacher, "kowalski")]
+        [InlineData(DataType.classGroups, "1a")]
+        [InlineData(DataType.rooms, "111")]
+        [InlineData(DataType.subjects, "eng")]
+        [InlineData(DataType.teachers, "kowalski")]
         public async Task RemoveKey(DataType type, string name) {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
@@ -131,7 +131,7 @@ namespace UnitTests.DictionariesServiceTests {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
                 var elements = service.GetFreeClassGroupsBySlot(0);
-                int size = GetSizeOfDictionary(context, DataType.ClassGroup);
+                int size = GetSizeOfDictionary(context, DataType.classGroups);
                 Assert.Equal(size - 2, elements.Count());
             }
         }
@@ -140,7 +140,7 @@ namespace UnitTests.DictionariesServiceTests {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
                 var elements = service.GetFreeRoomsBySlot(0);
-                int size = GetSizeOfDictionary(context, DataType.Room);
+                int size = GetSizeOfDictionary(context, DataType.rooms);
                 Assert.Equal(size - 2, elements.Count());
             }
         }
@@ -149,7 +149,7 @@ namespace UnitTests.DictionariesServiceTests {
             using (var context = PrepareData.GetDbContext()) {
                 var service = new DictionariesService(context);
                 var elements = service.GetFreeTeachersBySlot(0);
-                int size = GetSizeOfDictionary(context, DataType.Teacher);
+                int size = GetSizeOfDictionary(context, DataType.teachers);
                 Assert.Equal(size - 2, elements.Count());
             }
         }
