@@ -7,11 +7,8 @@ import axios from 'axios';
 import {
     Link, useParams, useHistory, Router
 } from "react-router-dom";
-const terms = {
-    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    hours: ['8:15 - 9:00', '9:15 - 10:00', '10:15 - 11:00', '11:15 - 12:00', '12:15 - 13:00', '13:15 - 14:00', '14:15 - 15:00', '15:15 - 16:00', '16:15 - 17:00']
-}
-const range = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i);
+import Utils from './Utils.js';
+import ApiClient from './ApiClient.js';
 
 
 function Days() {
@@ -20,7 +17,7 @@ function Days() {
             <td>
                 <Button key="time" className="btn btn-light btn-block">time</Button>
             </td>
-            {terms.days.map(dayId => (
+            {Utils.terms.days.map(dayId => (
                 <td>
                     <Button key={dayId} className="btn btn-light btn-block">{dayId}</Button>
                 </td>
@@ -30,33 +27,42 @@ function Days() {
 }
 
 function ScheduleButtons(props) {
-    const apiUrl = 'https://localhost:5001/api/Schedule/';
     const [scheduleData, setScheduleData] = useState({ slots: [], name: '', type: '' });
     useEffect(() => {
         const fetchData = async () => {
-            const result = await axios({
-                method: 'get',
-                url: apiUrl + props.type + '/' + props.name,
-                headers: { 'Content-Type': 'application/json' }
-            });
-            setScheduleData({ slots: result.data.slots, name: result.data.name, type: result.data.type });
+            const result = await ApiClient.getSchedule(props.type, props.name);
+            setScheduleData({ slots: result.slots, name: result.name, type: result.type });
         };
         fetchData();
-    });
+    }, [props.name, props.type]);
     return (
         <>
-            {range(0, 8).map(i => (
+            {Utils.range(0, 8).map(i => (
                 <tr>
                     <td>
-                        <Button key={'term' + i.toString()} className="btn btn-light btn-block">{terms.hours[i]}</Button>
+                        <Button key={'term' + i.toString()} className="btn btn-light btn-block">{Utils.terms.hours[i]}</Button>
                     </td>
-                    {scheduleData.slots.slice(i * 5, i * 5 + 5).map((slot, index) => (
-                        <td>
-                            <Link to="/edit">
-                                <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
-                            </Link>
-                        </td>
-                    ))}
+                    {scheduleData.slots.slice(i * 5, i * 5 + 5).map((slot, index) => {
+                        if (slot.id === null) {
+                            return (
+                                <td>
+                                    <Link to={"/create/" + (i * 5 + index).toString()}>
+                                        <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
+                                    </Link>
+                                </td>
+                            )
+                        }
+                        else {
+                            return (
+                                <td>
+                                    <Link to={"/edit/" + slot.id }>
+                                        <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
+                                    </Link>
+                                </td>
+                            )
+
+                        }
+                    })}
                 </tr>
             ))}
         </>
@@ -72,7 +78,7 @@ function ScheduleGrid(props) {
         setValue(e);
         history.push("/" + props.type + "/" + e);
     }
-    const apiUrl = 'https://localhost:5001/api/Dictionaries/all/'
+    const apiUrl = ApiClient.apiUrl('/Dictionaries/all/')
     const [dictionaryList, setDictionaryList] = useState({ nameList: [] });
     useEffect(() => {
         const fetchData = async () => {

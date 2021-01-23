@@ -8,12 +8,16 @@ import {
     useParams,
     useHistory
 } from "react-router-dom";
+import Utils from './Utils.js';
+import ApiClient from './ApiClient.js';
 import './../App.css';
 
-const apiUrl = 'https://localhost:5001/api/Dictionaries/all/'
+
+
 
 function DictionaryList() {
     let { type } = useParams();
+    const apiUrl = ApiClient.apiUrl('/Dictionaries/all/');
     const [dictionaryList, setdictionaryList] = useState({ elements: [] });
     const [value, setValue] = useState(type);
     const history = useHistory();
@@ -23,12 +27,8 @@ function DictionaryList() {
     }
     useEffect(() => {
         const fetchData = async () => {
-            const result = await axios({
-                method: 'get',
-                url: apiUrl + type,
-                headers: { 'Content-Type': 'application/json' }
-            });
-            setdictionaryList({ elements: result.data });
+            const result = await ApiClient.getDictionary(type);
+            setdictionaryList({ elements: result });
         };
         fetchData();
     });

@@ -40,7 +40,7 @@ namespace WebApi.Controllers {
                 return BadRequest();
             }
         }
-        [HttpGet("groups/{slot}")]
+        [HttpGet("classGroups/{slot}")]
         public ActionResult<IEnumerable<string>> GetClassGroups(int slot, [FromQuery] int? id) {
             try {
                 return Ok(_disctionariesService.GetFreeClassGroupsBySlot(slot, id));

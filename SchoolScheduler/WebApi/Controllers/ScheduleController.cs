@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Model;
 using Contracts.DataTransferObjects.Schedule;
 using Microsoft.EntityFrameworkCore;
+using Contracts.DataTransferObjects;
 
 namespace WebApi.Controllers {
 
@@ -23,8 +24,8 @@ namespace WebApi.Controllers {
             try {
                 return Ok(_scheduleService.GetScheduleByRoom(room));
             }
-            catch (Exception) {
-                return NotFound();
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("teachers/{teacher}")]
@@ -32,8 +33,8 @@ namespace WebApi.Controllers {
             try {
                 return Ok(_scheduleService.GetScheduleByTeacher(teacher));
             }
-            catch (Exception) {
-                return NotFound();
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("classGroups/{group}")]
@@ -41,8 +42,8 @@ namespace WebApi.Controllers {
             try {
                 return Ok(_scheduleService.GetScheduleByGroup(group));
             }
-            catch (Exception) {
-                return NotFound();
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
     }
