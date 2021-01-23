@@ -77,7 +77,6 @@ function ScheduleGrid(props) {
         setValue(e);
         history.push("/" + props.type + "/" + e);
     }
-    const apiUrl = ApiClient.apiUrl('/Dictionaries/all/')
     const [dictionaryList, setDictionaryList] = useState({ nameList: [] });
     useEffect(() => {
         const fetchData = async () => {
@@ -95,9 +94,7 @@ function ScheduleGrid(props) {
                 id="dropdown-menu-align-right"
                 onSelect={handleSelect}>
                 {dictionaryList.nameList.map(item => (
-                    <Dropdown.Item eventKey={item.name}>{item.name}
-                        {/* <Link className="App-link" to={"/" + props.type + "/" + item.name}>{item.name}</Link> */}
-                    </Dropdown.Item>
+                    <Dropdown.Item eventKey={item.name}>{item.name}</Dropdown.Item>
                 ))}
             </DropdownButton>
 
@@ -113,7 +110,4 @@ function ScheduleGrid(props) {
 
     );
 }
-
-
-
 export default ScheduleGrid;
