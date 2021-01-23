@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Utils from './Utils.js';
 
 const ApiClient = {
     apiUrl: (path) => ('https://localhost:5001/api' + path),
@@ -11,15 +10,12 @@ const ApiClient = {
         const r = await this.getDictionaryBySlot('rooms/' + query);
         const t = await this.getDictionaryBySlot('teachers/' + query);
         const s = await this.getDictionaryBySlot('subjects');
-
-        let x = {
-            teachers: t.data,
-            groups: g.data,
-            rooms: r.data,
-            subjects: s.data
+        return {
+            teachers: t,
+            groups: g,
+            rooms: r,
+            subjects: s
         };
-        console.log(x);
-        return x;
     },
     getDictionary: async function (type) {
         const result = await axios({

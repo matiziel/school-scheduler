@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import Utils from './Utils.js';
 import ApiClient from './ApiClient.js';
-import axios from 'axios';
 
 function CreateActivity() {
     let { slot } = useParams();
@@ -15,40 +14,11 @@ function CreateActivity() {
     const [selectLists, setSelectLists] = useState({ teachers: [], subjects: [], rooms: [], groups: [] });
     useEffect(() => {
         const fetchData = async () => {
-            // let query = slot.toString();
-            // if (id !== null)
-            //     query += '?id=' + id.toString();
-            const g = await axios({
-                method: 'get',
-                url: ApiClient.apiUrl('/Dictionaries/classGroups/' + slot),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const r = await axios({
-                method: 'get',
-                url: ApiClient.apiUrl('/Dictionaries/rooms/' + slot),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const t = await axios({
-                method: 'get',
-                url: ApiClient.apiUrl('/Dictionaries/teachers/' + slot),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const s = await axios({
-                method: 'get',
-                url: ApiClient.apiUrl('/Dictionaries/subjects'),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            setSelectLists({
-                teachers: t.data,
-                groups: g.data,
-                rooms: r.data,
-                subjects: s.data
-            });
+            const result = await ApiClient.getDictionaries(slot);
+            setSelectLists(result);
         };
         fetchData();
     }, [slot]);
-
-    console.log(selectLists);
     return (
         <>
             <label>{Utils.getTermBySlot(slot)}</label>

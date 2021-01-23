@@ -3,7 +3,6 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
 import {
     Link, useParams, useHistory, Router
 } from "react-router-dom";
@@ -31,7 +30,7 @@ function ScheduleButtons(props) {
     useEffect(() => {
         const fetchData = async () => {
             const result = await ApiClient.getSchedule(props.type, props.name);
-            setScheduleData({ slots: result.slots, name: result.name, type: result.type });
+            setScheduleData(result);
         };
         fetchData();
     }, [props.name, props.type]);
@@ -55,7 +54,7 @@ function ScheduleButtons(props) {
                         else {
                             return (
                                 <td>
-                                    <Link to={"/edit/" + slot.id }>
+                                    <Link to={"/edit/" + slot.id}>
                                         <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
                                     </Link>
                                 </td>
@@ -82,12 +81,8 @@ function ScheduleGrid(props) {
     const [dictionaryList, setDictionaryList] = useState({ nameList: [] });
     useEffect(() => {
         const fetchData = async () => {
-            const result = await axios({
-                method: 'get',
-                url: apiUrl + props.type,
-                headers: { 'Content-Type': 'application/json' }
-            });
-            setDictionaryList({ nameList: result.data });
+            const result = await ApiClient.getDictionary(props.type);
+            setDictionaryList({ nameList: result });
         };
         fetchData();
     }, []);

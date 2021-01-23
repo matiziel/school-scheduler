@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import axios from 'axios';
 import {
     Link,
     useParams,
