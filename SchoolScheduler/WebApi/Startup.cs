@@ -26,7 +26,11 @@ namespace WebApi {
             );
 
 
-            services.AddTransient<IDictionariesService, DictionariesService>();
+            services.AddTransient<IRoomsService, RoomsService>();
+            services.AddTransient<ITeachersService, TeachersService>();
+            services.AddTransient<IClassGroupsService, ClassGroupsService>();
+            services.AddTransient<ISubjectsService, SubjectsService>();
+
             services.AddTransient<IScheduleService, ScheduleService>();
             services.AddTransient<IActivitiesService, ActivitiesService>();
 
