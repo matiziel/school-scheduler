@@ -39,11 +39,14 @@ namespace WebApi.Controllers {
                     return Ok();
                 }
                 else {
-                    return BadRequest();
+                    return BadRequest(new ErrorDTO("Passed activity is invalid"));
                 }
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (InvalidOperationException e) {
+                return BadRequest(new ErrorDTO(e.Message));
+            }
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpPut("{id:int}")]
@@ -55,13 +58,16 @@ namespace WebApi.Controllers {
                     await _activitiesService.EditActivityAsync(id.Value, activity);
                     return Ok();
                 }
-                return BadRequest();
+                return BadRequest(new ErrorDTO("Passed activity is invalid"));
             }
             catch (DbUpdateConcurrencyException) {
-                return BadRequest();
+                return BadRequest(new ErrorDTO("Someone has already updated this activity"));
+            }
+            catch (InvalidOperationException e) {
+                return BadRequest(new ErrorDTO(e.Message));
             }
             catch (Exception e) {
-                return NotFound();
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpDelete("{id:int}")]
@@ -69,14 +75,17 @@ namespace WebApi.Controllers {
             try {
                 if (id is null || activity is null)
                     NotFound();
-                await _activitiesService.DeleteActivityAsync(id.Value, activity);
-                return Ok();
+                if (ModelState.IsValid) {
+                    await _activitiesService.DeleteActivityAsync(id.Value, activity);
+                    return Ok(); 
+                }
+                return BadRequest(new ErrorDTO("Passed activity is invalid"));
             }
             catch (DbUpdateConcurrencyException) {
-                return BadRequest();
+                return BadRequest(new ErrorDTO("Someone has already updated this activity"));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
     }

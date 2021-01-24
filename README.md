@@ -34,6 +34,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ```bash
 $ cd ./school-scheduler/SchoolScheduler/ClientApp/client-app
+$ yarn 
 ```
 You can run:
 

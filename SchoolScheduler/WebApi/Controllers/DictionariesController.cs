@@ -28,7 +28,7 @@ namespace WebApi.Controllers {
                 return Ok(await _disctionariesService.GetDictionaryAsync(GetValueFromString(type)));
             }
             catch (Exception e) {
-                return BadRequest(new ErrorDTO(e.Message));
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("rooms/{slot}")]
@@ -37,7 +37,7 @@ namespace WebApi.Controllers {
                 return Ok(_disctionariesService.GetFreeRoomsBySlot(slot, id));
             }
             catch (Exception e) {
-                return BadRequest(new ErrorDTO(e.Message));
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("classGroups/{slot}")]
@@ -46,7 +46,7 @@ namespace WebApi.Controllers {
                 return Ok(_disctionariesService.GetFreeClassGroupsBySlot(slot, id));
             }
             catch (Exception e) {
-                return BadRequest(new ErrorDTO(e.Message));
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("teachers/{slot}")]
@@ -55,7 +55,7 @@ namespace WebApi.Controllers {
                 return Ok(_disctionariesService.GetFreeTeachersBySlot(slot, id));
             }
             catch (Exception e) {
-                return BadRequest(new ErrorDTO(e.Message));
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("subjects")]
@@ -64,7 +64,7 @@ namespace WebApi.Controllers {
                 return Ok(_disctionariesService.GetAllSubjects());
             }
             catch (Exception e) {
-                return BadRequest(new ErrorDTO(e.Message));
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpGet]
@@ -75,7 +75,7 @@ namespace WebApi.Controllers {
                 return Ok(await _disctionariesService.GetDictionaryElementAsync(id, GetValueFromString(type)));
             }
             catch (Exception e) {
-                return BadRequest(new ErrorDTO(e.Message));
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpPost]
@@ -87,10 +87,13 @@ namespace WebApi.Controllers {
                     await _disctionariesService.AddKey(element, GetValueFromString(type));
                     return Ok();
                 }
-                return NotFound();
+                return BadRequest(new ErrorDTO("Passed dictionary element is invalid"));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (InvalidOperationException e) {
+                return BadRequest(new ErrorDTO(e.Message));
+            }
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
 
         }
@@ -101,15 +104,18 @@ namespace WebApi.Controllers {
                     return NotFound();
                 if (ModelState.IsValid) {
                     await _disctionariesService.UpdateKey(element, GetValueFromString(type));
-                    return RedirectToAction("Index", new { type = type });
+                    return Ok();
                 }
-                return RedirectToAction("Edit", new { id = id, type = type });
+                return BadRequest(new ErrorDTO("Passed dictionary element is invalid"));
             }
             catch (DbUpdateConcurrencyException) {
-                return BadRequest(new ErrorDTO());
+                return BadRequest(new ErrorDTO("Someone has already updated this element"));
             }
-            catch (Exception) {
-                return NotFound();
+            catch (InvalidOperationException e) {
+                return BadRequest(new ErrorDTO(e.Message));
+            }
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         [HttpDelete]
@@ -117,15 +123,18 @@ namespace WebApi.Controllers {
             try {
                 if (type is null)
                     return NotFound();
+                if (ModelState.IsValid) {
+                    await _disctionariesService.RemoveKey(element.Id, element.Timestamp, GetValueFromString(type));
+                    return Ok();
+                }
+                return BadRequest(new ErrorDTO("Passed dictionary element is invalid"));
 
-                await _disctionariesService.RemoveKey(element.Id, element.Timestamp, GetValueFromString(type));
-                return Ok();
             }
             catch (DbUpdateConcurrencyException) {
-                return BadRequest();
+                return BadRequest(new ErrorDTO("Someone has already updated this element"));
             }
-            catch (Exception) {
-                return NotFound();
+            catch (Exception e) {
+                return NotFound(new ErrorDTO(e.Message));
             }
         }
         private DataType GetValueFromString(string name) => (DataType)Enum.Parse(typeof(DataType), name);
