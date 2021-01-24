@@ -6,7 +6,7 @@ namespace Contracts.Services {
         Task<ActivityEditDTO> GetActivity(int id);
         Task CreateActivityAsync(ActivityCreateDTO activity);
         Task EditActivityAsync(int id, ActivityEditDTO activity);
-        Task DeleteActivityAsync(int id, ActivityDeleteDTO activityDTO);
+        Task DeleteActivityAsync(int id, byte[] timestamp);
     }
 
 }

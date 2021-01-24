@@ -25,25 +25,35 @@ const ApiClient = {
         const result = await axios.get(this.apiUrl('/Dictionaries/' + query));
         return result.data;
     },
+    createDictionaryElement: async function (element) {
+
+    },
+    editDictionaryElement: async function (element) {
+
+    },
+    deleteDictionaryElement: async function (element) {
+
+    },
     getSchedule: async function (type, name) {
         const result = await axios.get(this.apiUrl('/Schedule/' + type + '/' + name));
-        return {
-            slots: result.data.slots,
-            name: result.data.name,
-            type: result.data.type
-        }
+        return result.data;
     },
     getActivity: async function (id) {
         const result = await axios.get(this.apiUrl('/Activities/' + id.toString()));
-        return result.data;
+        return result.data
     },
     createActivity: async function (activity) {
         const result = await axios.post(this.apiUrl('/Activities'), activity);
-        return result.status;
+        return { data: result.data, status: result.status };
     },
     updateActivity: async function (activity) {
         const result = await axios.put(this.apiUrl('/Activities/' + activity.Id), activity);
-        return result.status;
+        return { data: result.data, status: result.status };
+    },
+    deleteActivity: async function (activity) {
+        console.log(activity);
+        const result = axios.delete(this.apiUrl('/Activities/' + activity.Id + '/' + activity.Timestamp));
+        return { data: result.data, status: result.status };
     }
 };
 

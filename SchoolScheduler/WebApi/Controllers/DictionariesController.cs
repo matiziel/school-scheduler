@@ -67,8 +67,8 @@ namespace WebApi.Controllers {
                 return NotFound(new ErrorDTO(e.Message));
             }
         }
-        [HttpGet]
-        public async Task<ActionResult<DictionaryReadDTO>> Get([FromQuery] int id, [FromQuery] string type) {
+        [HttpGet("{id:int}/{type}")]
+        public async Task<ActionResult<DictionaryReadDTO>> Get(int id, string type) {
             try {
                 if (type is null)
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
@@ -78,8 +78,8 @@ namespace WebApi.Controllers {
                 return NotFound(new ErrorDTO(e.Message));
             }
         }
-        [HttpPost]
-        public async Task<ActionResult> Create([FromQuery] string type, [FromBody] DictionaryElementCreateDTO element) {
+        [HttpPost("{type}")]
+        public async Task<ActionResult> Create(string type, [FromBody] DictionaryElementCreateDTO element) {
             try {
                 if (type is null || element is null)
                     return NotFound();
@@ -97,10 +97,10 @@ namespace WebApi.Controllers {
             }
 
         }
-        [HttpPut]
-        public async Task<IActionResult> Edit([FromQuery] int id, [FromQuery] string type, [FromBody] DictionaryElementEditDTO element) {
+        [HttpPut("{id:int}/{type}")]
+        public async Task<IActionResult> Edit(int? id, string type, [FromBody] DictionaryElementEditDTO element) {
             try {
-                if (type is null || element is null)
+                if (id is null || type is null || element is null)
                     return NotFound();
                 if (ModelState.IsValid) {
                     await _disctionariesService.UpdateKey(element, GetValueFromString(type));
@@ -118,17 +118,14 @@ namespace WebApi.Controllers {
                 return NotFound(new ErrorDTO(e.Message));
             }
         }
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] string type, [FromBody] DictionaryElementDeleteDTO element) {
+        [HttpDelete("{id:int}/{type}/{timestamp}")]
+        public async Task<IActionResult> Delete(int? id, string type, string timestamp) {
             try {
-                if (type is null)
+                if (id is null || type is null || timestamp is null)
                     return NotFound();
-                if (ModelState.IsValid) {
-                    await _disctionariesService.RemoveKey(element.Id, element.Timestamp, GetValueFromString(type));
-                    return Ok();
-                }
-                return BadRequest(new ErrorDTO("Passed dictionary element is invalid"));
 
+                await _disctionariesService.RemoveKey(id.Value, Convert.FromBase64String(timestamp), GetValueFromString(type));
+                return Ok();
             }
             catch (DbUpdateConcurrencyException) {
                 return BadRequest(new ErrorDTO("Someone has already updated this element"));

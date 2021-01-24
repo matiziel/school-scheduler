@@ -8,6 +8,7 @@ using Model;
 using Contracts.DataTransferObjects.Activities;
 using Microsoft.EntityFrameworkCore;
 using Contracts.DataTransferObjects;
+using System.Text;
 
 namespace WebApi.Controllers {
 
@@ -22,7 +23,8 @@ namespace WebApi.Controllers {
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ActivityEditDTO>> Get(int id) {
             try {
-                return Ok(await _activitiesService.GetActivity(id));
+                var x = await _activitiesService.GetActivity(id);
+                return Ok(x);
             }
             catch (Exception e) {
                 return NotFound(new ErrorDTO(e.Message));
@@ -70,16 +72,14 @@ namespace WebApi.Controllers {
                 return NotFound(new ErrorDTO(e.Message));
             }
         }
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int? id, [FromBody] ActivityDeleteDTO activity) {
+        [HttpDelete("{id:int}/{timestamp}")]
+        public async Task<ActionResult> Delete(int? id, string timestamp) {
             try {
-                if (id is null || activity is null)
+                if (id is null || timestamp is null)
                     NotFound();
-                if (ModelState.IsValid) {
-                    await _activitiesService.DeleteActivityAsync(id.Value, activity);
-                    return Ok(); 
-                }
-                return BadRequest(new ErrorDTO("Passed activity is invalid"));
+
+                await _activitiesService.DeleteActivityAsync(id.Value, Convert.FromBase64String(timestamp));
+                return Ok();
             }
             catch (DbUpdateConcurrencyException) {
                 return BadRequest(new ErrorDTO("Someone has already updated this activity"));

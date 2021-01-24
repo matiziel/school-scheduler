@@ -97,7 +97,7 @@ namespace UnitTests.ScheduleServicesTests {
                         a.ClassGroup.Name == classgroup
                     );
                 var service = new ActivitiesService(context);
-                await service.DeleteActivityAsync(activityToDelete.Id, new ActivityDeleteDTO() { Timestamp = activityToDelete.Timestamp });
+                await service.DeleteActivityAsync(activityToDelete.Id,  activityToDelete.Timestamp);
                 var activity = context.Activities.FirstOrDefault(a => a.Id == activityToDelete.Id);
                 Assert.Null(activity);
             }

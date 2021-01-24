@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import React, { useEffect, useState } from "react";
 import {
-    Link, useParams, useHistory, Router
+    Link, useParams, useHistory
 } from "react-router-dom";
 import Utils from './Utils.js';
 import ApiClient from './ApiClient.js';

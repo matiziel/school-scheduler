@@ -21,7 +21,8 @@ function CreateActivity() {
 
     const onSubmit = async (data) => {
         data.Slot = parseInt(data.Slot);
-        ApiClient.createActivity(data).then(result => console.log(result));
+        const result = await ApiClient.createActivity(data);
+        console.log(result);
         // history.push("/" + props.type + "/" + e);
     }
     return (

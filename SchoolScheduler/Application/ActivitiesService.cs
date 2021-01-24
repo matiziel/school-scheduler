@@ -109,11 +109,11 @@ namespace Application {
                 GetActivities().Where(a => a.Id != id),
                 activity
             );
-        public async Task DeleteActivityAsync(int id, ActivityDeleteDTO activityDTO) {
+        public async Task DeleteActivityAsync(int id, byte[] timestamp) {
             var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
             if (activity is null)
                 throw new ArgumentException("Activity does not exist");
-            _context.Entry(activity).Property("Timestamp").OriginalValue = activityDTO.Timestamp;
+            _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
             _context.Activities.Remove(activity);
             await _context.SaveChangesAsync();
         }

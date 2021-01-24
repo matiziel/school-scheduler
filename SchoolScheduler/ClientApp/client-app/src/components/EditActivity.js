@@ -8,6 +8,7 @@ import ApiClient from './ApiClient.js';
 function EditActivity() {
     let { id, slot, type } = useParams();
     const { register, handleSubmit } = useForm();
+    const { register: deleteRegister, handleSubmit: deleteHandleSubmit } = useForm();
     const [selectLists, setSelectLists] = useState({ teachers: [], subjects: [], rooms: [], groups: [] });
     const [activity, setActivity] = useState({
         id: "",
@@ -30,8 +31,13 @@ function EditActivity() {
     const onSubmit = async (data) => {
         data.Slot = parseInt(data.Slot);
         data.Id = parseInt(data.Id);
-        ApiClient.updateActivity(data).then(result => console.log(result));
-        // console.log(data);
+        const result = await ApiClient.updateActivity(data);
+        console.log(result);
+    }
+    const onSubmitDelete = async (data) => {
+        data.Id = parseInt(data.Id);
+        const result = await ApiClient.deleteActivity(data);
+        console.log(result);
     }
     return (
         <div class="col-md-4">
@@ -107,7 +113,13 @@ function EditActivity() {
                 <input type="hidden" name="Slot" ref={register} value={activity.slot} />
                 <input type="hidden" name="Id" ref={register} value={activity.id} />
                 <input type="hidden" name="Timestamp" ref={register} value={activity.timestamp} />
-                <input className="btn btn-primary" type="submit" />
+                <input className="btn btn-primary" value="Save" type="submit" />
+            </form>
+
+            <form onSubmit={deleteHandleSubmit(onSubmitDelete)}>
+                <input type="hidden" name="Id" ref={deleteRegister} value={activity.id} />
+                <input type="hidden" name="Timestamp" ref={deleteRegister} value={activity.timestamp} />
+                <input className="btn btn-danger" value="Delete" type="submit" />
             </form>
         </div>
     );
