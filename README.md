@@ -8,19 +8,19 @@ Simple app to make school schedule powered by:
 
 ## Server
 
-### requirements
+### Requirements
 .NET Core 5.0<br/>
 Entity Framework 5.0 <br/>
 SQL Server<br/>
 
 
-### launch guide
+### Launch guide
 ```bash
 $ cd ./school-scheduler/SchoolScheduler/WebApi
 $ dotnet run
 ```
 
-### unit test launch guide
+### Unit test launch guide
 ```bash
 $ cd ./school-scheduler/SchoolScheduler/UnitTests
 $ dotnet test
@@ -28,7 +28,7 @@ $ dotnet test
 
 ## Client
 
-## Getting Started with Create React App
+### Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
