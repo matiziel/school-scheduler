@@ -34,7 +34,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### Available Scripts
 
-In the project directory, you can run:
+```bash
+$ cd ./school-scheduler/SchoolScheduler/ClientApp/client-app
+```
+You can run:
 
 #### `yarn start`
 
