@@ -18,32 +18,25 @@ const ApiClient = {
         };
     },
     getDictionary: async function (type) {
-        const result = await axios({
-            method: 'get',
-            url: this.apiUrl('/Dictionaries/all/' + type),
-            headers: { 'Content-Type': 'application/json' }
-        });
+        const result = await axios.get(this.apiUrl('/Dictionaries/all/' + type));
         return result.data;
     },
     getDictionaryBySlot: async function (query) {
-        const result = await axios({
-            method: 'get',
-            url: this.apiUrl('/Dictionaries/' + query),
-            headers: { 'Content-Type': 'application/json' }
-        });
+        const result = await axios.get(this.apiUrl('/Dictionaries/' + query));
         return result.data;
     },
     getSchedule: async function (type, name) {
-        const result = await axios({
-            method: 'get',
-            url: this.apiUrl('/Schedule/' + type + '/' + name),
-            headers: { 'Content-Type': 'application/json' }
-        });
+        const result = await axios.get(this.apiUrl('/Schedule/' + type + '/' + name));
         return {
             slots: result.data.slots,
             name: result.data.name,
             type: result.data.type
         }
+    },
+    createActivity: async function (activity) {
+        const result = await axios.post(this.apiUrl('/Activities'), activity);
+        
+        return result.status;
     }
 };
 

@@ -10,7 +10,6 @@ import ApiClient from './ApiClient.js';
 function CreateActivity() {
     let { slot } = useParams();
     const { register, handleSubmit } = useForm();
-    const onSubmit = data => console.log(data);
     const [selectLists, setSelectLists] = useState({ teachers: [], subjects: [], rooms: [], groups: [] });
     useEffect(() => {
         const fetchData = async () => {
@@ -19,6 +18,11 @@ function CreateActivity() {
         };
         fetchData();
     }, [slot]);
+
+    const onSubmit = async (data) => {
+        data.Slot = parseInt(data.Slot);
+        ApiClient.createActivity(data).then(result => console.log(result));
+    }
     return (
         <>
             <label>{Utils.getTermBySlot(slot)}</label>

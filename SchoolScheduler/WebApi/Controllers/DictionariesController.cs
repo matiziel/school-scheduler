@@ -9,7 +9,7 @@ using Common;
 using Persistence;
 using Contracts.DataTransferObjects.Dictionaries;
 using Microsoft.EntityFrameworkCore;
-
+using Contracts.DataTransferObjects;
 
 namespace WebApi.Controllers {
 
@@ -27,8 +27,8 @@ namespace WebApi.Controllers {
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
                 return Ok(await _disctionariesService.GetDictionaryAsync(GetValueFromString(type)));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return BadRequest(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("rooms/{slot}")]
@@ -36,8 +36,8 @@ namespace WebApi.Controllers {
             try {
                 return Ok(_disctionariesService.GetFreeRoomsBySlot(slot, id));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return BadRequest(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("classGroups/{slot}")]
@@ -45,17 +45,17 @@ namespace WebApi.Controllers {
             try {
                 return Ok(_disctionariesService.GetFreeClassGroupsBySlot(slot, id));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return BadRequest(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("teachers/{slot}")]
         public ActionResult<IEnumerable<string>> GetTeachers(int slot, [FromQuery] int? id) {
             try {
-                return Ok(_disctionariesService.GetFreeRoomsBySlot(slot, id));
+                return Ok(_disctionariesService.GetFreeTeachersBySlot(slot, id));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return BadRequest(new ErrorDTO(e.Message));
             }
         }
         [HttpGet("subjects")]
@@ -63,8 +63,8 @@ namespace WebApi.Controllers {
             try {
                 return Ok(_disctionariesService.GetAllSubjects());
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return BadRequest(new ErrorDTO(e.Message));
             }
         }
         [HttpGet]
@@ -74,8 +74,8 @@ namespace WebApi.Controllers {
                     type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
                 return Ok(await _disctionariesService.GetDictionaryElementAsync(id, GetValueFromString(type)));
             }
-            catch (Exception) {
-                return BadRequest();
+            catch (Exception e) {
+                return BadRequest(new ErrorDTO(e.Message));
             }
         }
         [HttpPost]
@@ -106,7 +106,7 @@ namespace WebApi.Controllers {
                 return RedirectToAction("Edit", new { id = id, type = type });
             }
             catch (DbUpdateConcurrencyException) {
-                return BadRequest();
+                return BadRequest(new ErrorDTO());
             }
             catch (Exception) {
                 return NotFound();
