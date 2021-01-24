@@ -8,7 +8,7 @@ import Utils from './Utils.js';
 import ApiClient from './ApiClient.js';
 
 function CreateActivity() {
-    let { slot } = useParams();
+    let { id, slot, type, typeName } = useParams();
     const { register, handleSubmit } = useForm();
     const [selectLists, setSelectLists] = useState({ teachers: [], subjects: [], rooms: [], groups: [] });
     useEffect(() => {
@@ -17,60 +17,73 @@ function CreateActivity() {
             setSelectLists(result);
         };
         fetchData();
-    }, [slot]);
+    }, [id, slot, type, typeName]);
 
     const onSubmit = async (data) => {
         data.Slot = parseInt(data.Slot);
         ApiClient.createActivity(data).then(result => console.log(result));
+        // history.push("/" + props.type + "/" + e);
     }
     return (
-        <>
+        <div class="col-md-4">
             <label>{Utils.getTermBySlot(slot)}</label>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="form-group">
-                    <label>
-                        Group:
-                    <select name="ClassGroup" ref={register}>
-                            {selectLists.groups.map(item =>
-                                <option value={item}>{item}</option>
-                            )}
-                        </select>
-                    </label>
-                </div>
-                <div className="form-group">
-                    <label>
-                        Teacher:
-                <select name="Teacher" ref={register}>
-                            {selectLists.teachers.map(item =>
-                                <option value={item}>{item}</option>
-                            )}
-                        </select>
-                    </label>
-                </div>
+                {
+                    type !== 'Group'
+                        ? <div className="form-group">
+                            <label>
+                                Group:
+                        <select className="form-control" name="ClassGroup" ref={register}>
+                                    {selectLists.groups.map(item =>
+                                        <option value={item}>{item}</option>
+                                    )}
+                                </select>
+                            </label>
+                        </div>
+                        : <input type="hidden" name="ClassGroup" ref={register} value={typeName} />
+                }
+                {
+                    type !== 'Teacher'
+                        ? <div className="form-group">
+                            <label>
+                                Teacher:
+                        <select className="form-control" name="Teacher" ref={register}>
+                                    {selectLists.teachers.map(item =>
+                                        <option value={item}>{item}</option>
+                                    )}
+                                </select>
+                            </label>
+                        </div>
+                        : <input type="hidden" name="Teacher" ref={register} value={typeName} />
+                }
                 <div className="form-group">
                     <label>
                         Subject:
-                <select name="Subject" ref={register}>
+                    <select className="form-control" name="Subject" ref={register}>
                             {selectLists.subjects.map(item =>
                                 <option value={item}>{item}</option>
                             )}
                         </select>
                     </label>
                 </div>
-                <div className="form-group">
-                    <label>
-                        Room:
-                <select name="Room" ref={register}>
-                            {selectLists.rooms.map(item =>
-                                <option value={item}>{item}</option>
-                            )}
-                        </select>
-                    </label>
-                </div>
+                {
+                    type !== 'Room'
+                        ? <div className="form-group">
+                            <label>
+                                Room:
+                    <select className="form-control" name="Room" ref={register}>
+                                    {selectLists.rooms.map(item =>
+                                        <option value={item}>{item}</option>
+                                    )}</select>
+                            </label>
+                        </div>
+                        : <input type="hidden" name="Room" ref={register} value={typeName} />
+                }
+
                 <input type="hidden" name="Slot" ref={register} value={slot} />
-                <input type="submit" />
+                <input className="btn btn-primary" type="submit" />
             </form>
-        </>
+        </div>
     );
 
 }

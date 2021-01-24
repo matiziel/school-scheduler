@@ -33,9 +33,16 @@ const ApiClient = {
             type: result.data.type
         }
     },
+    getActivity: async function (id) {
+        const result = await axios.get(this.apiUrl('/Activities/' + id.toString()));
+        return result.data;
+    },
     createActivity: async function (activity) {
         const result = await axios.post(this.apiUrl('/Activities'), activity);
-        
+        return result.status;
+    },
+    updateActivity: async function (activity) {
+        const result = await axios.put(this.apiUrl('/Activities/' + activity.Id), activity);
         return result.status;
     }
 };

@@ -45,7 +45,7 @@ function ScheduleButtons(props) {
                         if (slot.id === null) {
                             return (
                                 <td>
-                                    <Link to={"/create/" + (i * 5 + index).toString()}>
+                                    <Link to={"/create/" + scheduleData.type + "/" + scheduleData.name + "/" + (i * 5 + index).toString()}>
                                         <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
                                     </Link>
                                 </td>
@@ -54,7 +54,7 @@ function ScheduleButtons(props) {
                         else {
                             return (
                                 <td>
-                                    <Link to={"/edit/" + slot.id}>
+                                    <Link to={"/edit/" + scheduleData.type + "/" + slot.id + "/" + (i * 5 + index).toString()}>
                                         <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
                                     </Link>
                                 </td>

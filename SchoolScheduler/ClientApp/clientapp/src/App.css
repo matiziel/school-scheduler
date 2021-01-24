@@ -57,3 +57,8 @@ label {
     transform: rotate(360deg);
   }
 }
+
+
+.hide-form {
+    display: none;
+}

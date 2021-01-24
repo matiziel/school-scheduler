@@ -37,10 +37,10 @@ function App() {
             <Route path="/dictionaries/:type">
               <DictionaryList></DictionaryList>
             </Route>
-            <Route path="/edit">
+            <Route path="/edit/:type/:id/:slot">
               <EditActivity></EditActivity>
             </Route>
-            <Route path="/create/:slot">
+            <Route path="/create/:type/:typeName/:slot">
               <CreateActivity></CreateActivity>
             </Route>
             <Route path="/classGroups/:searchName">
