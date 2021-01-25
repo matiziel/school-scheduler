@@ -69,7 +69,7 @@ function EditDictionaryElement() {
                 </div>
                 <input type="hidden" name="Id" ref={register} value={element.id} />
                 <input type="hidden" name="Timestamp" ref={register} value={element.timestamp} />
-                <input className="btn btn-primary" type="submit" />
+                <input className="btn btn-primary" value="Save" type="submit" />
             </form>
             <Link to={"/dictionaries/" + type} className="App-link">Back to list</Link>
         </div>

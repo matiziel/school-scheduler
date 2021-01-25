@@ -17,7 +17,7 @@ function CreateDictionaryElement() {
 
     const onSubmit = async (data) => {
         const result = await ApiClient.createDictionaryElement(type, data);
-        if(result.status === 200)
+        if (result.status === 200)
             history.push("/dictionaries/" + type)
     }
     return (
@@ -36,7 +36,7 @@ function CreateDictionaryElement() {
                     <input className="form-control" type="textarea" name="Comment" ref={register} />
                     </label>
                 </div>
-                <input className="btn btn-primary" type="submit" />
+                <input className="btn btn-primary" value="Save" type="submit" />
             </form>
             <Link to={"/dictionaries/" + type} className="App-link">Back to list</Link>
         </div>
