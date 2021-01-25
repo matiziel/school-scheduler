@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Contracts.Services;
 using Contracts.DataTransferObjects.Schedule;
-using Contracts.DataTransferObjects.Activities;
-
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Persistence;

@@ -31,6 +31,7 @@ function DictionaryList() {
     });
     return (
         <div>
+            <Link to={"/dictionariesCreate/" + type} className="App-link">Create</Link>
             <DropdownButton
                 alignRight
                 title={value}
@@ -54,10 +55,10 @@ function DictionaryList() {
                                 <label>{item.name}</label>
                             </td>
                             <td>
-                                <Link to="/edit" className="App-link">Edit</Link>
+                                <Link to={"/dictionariesEdit/" + type + "/" + item.id} className="App-link">Edit</Link>
                             </td>
                             <td>
-                                <Link to="/edit" className="App-link">Delete</Link>
+                                <Link to={"/dictionariesDelete/" + type + "/" + item.id} className="App-link">Delete</Link>
                             </td>
                         </tr>
                     ))}

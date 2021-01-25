@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { useForm } from "react-hook-form";
 import {
     useParams,
-    useHistory
+    useHistory,
+    Link
 } from "react-router-dom";
 import Utils from './Utils.js';
 import ApiClient from './ApiClient.js';
@@ -88,6 +89,7 @@ function CreateActivity() {
                 <input type="hidden" name="Slot" ref={register} value={slot} />
                 <input className="btn btn-primary" type="submit" />
             </form>
+            <Link to={"/" + type + "/" + typeName} className="App-link">Back to list</Link>
         </div>
     );
 

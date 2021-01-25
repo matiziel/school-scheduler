@@ -66,7 +66,7 @@ namespace WebApi.Controllers {
             }
 
         }
-        [HttpPut("{id:int}/{type}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> Edit(int? id, [FromBody] DictionaryElementEditDTO element) {
             try {
                 if (id is null || element is null)

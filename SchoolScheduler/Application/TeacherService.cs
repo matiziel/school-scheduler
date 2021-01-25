@@ -18,7 +18,5 @@ namespace Application {
             var occupiedTeachers = Helper.GetActivitiesBySlot(_context, slot, id).Select(a => a.Teacher.Name);
             return teachers.Where(t => !occupiedTeachers.Contains(t)).ToList();
         }
-
-
     }
 }

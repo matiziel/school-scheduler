@@ -9,7 +9,11 @@ import {
   Link
 } from "react-router-dom";
 import CreateActivity from './components/CreateActivity.js';
-import EditActivity from './components/EditActivity';
+import EditActivity from './components/EditActivity.js';
+import CreateDictionaryElement from './components/CreateDictionaryElement.js';
+import EditDictionaryElement from './components/EditDictionaryElement.js';
+import DeleteDictionaryElement from './components/DeleteDictionaryElement.js';
+
 
 function App() {
 
@@ -30,6 +34,15 @@ function App() {
           <Switch>
             <Route path="/dictionaries/:type">
               <DictionaryList></DictionaryList>
+            </Route>
+            <Route path="/dictionariesCreate/:type">
+              <CreateDictionaryElement></CreateDictionaryElement>
+            </Route>
+            <Route path="/dictionariesEdit/:type/:id">
+              <EditDictionaryElement></EditDictionaryElement>
+            </Route>
+            <Route path="/dictionariesDelete/:type/:id">
+              <DeleteDictionaryElement></DeleteDictionaryElement>
             </Route>
             <Route path="/edit/:type/:typeName/:id/:slot">
               <EditActivity></EditActivity>

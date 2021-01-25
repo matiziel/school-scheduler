@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useForm } from "react-hook-form";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import Utils from './Utils.js';
 import ApiClient from './ApiClient.js';
 
@@ -124,6 +124,7 @@ function EditActivity() {
                 <input type="hidden" name="Timestamp" ref={deleteRegister} value={activity.timestamp} />
                 <input className="btn btn-danger" value="Delete" type="submit" />
             </form>
+            <Link to={"/" + type + "/" + typeName} className="App-link">Back to list</Link>
         </div>
     );
 }
