@@ -12,7 +12,5 @@ namespace Model {
             Index = index;
             Comment = comment;
         }
-        
-
     }
 }
