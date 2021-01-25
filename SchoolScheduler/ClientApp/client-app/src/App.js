@@ -6,16 +6,10 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link, useHistory
+  Link
 } from "react-router-dom";
 import CreateActivity from './components/CreateActivity.js';
 import EditActivity from './components/EditActivity';
-
-
-
-// function useQuery() {
-//   return new URLSearchParams(useLocation().search);
-// }
 
 function App() {
 
@@ -37,7 +31,7 @@ function App() {
             <Route path="/dictionaries/:type">
               <DictionaryList></DictionaryList>
             </Route>
-            <Route path="/edit/:type/:id/:slot">
+            <Route path="/edit/:type/:typeName/:id/:slot">
               <EditActivity></EditActivity>
             </Route>
             <Route path="/create/:type/:typeName/:slot">

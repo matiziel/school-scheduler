@@ -37,7 +37,7 @@ namespace Application {
                 }
             }
             schedule.Name = classGroup;
-            schedule.Type = "Group";
+            schedule.Type = "classGroups";
             return schedule;
         }
 
@@ -51,7 +51,7 @@ namespace Application {
                 }
             }
             schedule.Name = room;
-            schedule.Type = "Room";
+            schedule.Type = "rooms";
             return schedule;
         }
 
@@ -65,7 +65,7 @@ namespace Application {
                 }
             }
             schedule.Name = teacher;
-            schedule.Type = "Teacher";
+            schedule.Type = "teachers";
             return schedule;
         }
     }

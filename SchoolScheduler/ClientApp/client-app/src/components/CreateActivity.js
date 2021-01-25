@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useForm } from "react-hook-form";
 import {
-    useParams
+    useParams,
+    useHistory
 } from "react-router-dom";
 import Utils from './Utils.js';
 import ApiClient from './ApiClient.js';
+
 
 function CreateActivity() {
     let { id, slot, type, typeName } = useParams();
     const { register, handleSubmit } = useForm();
     const [selectLists, setSelectLists] = useState({ teachers: [], subjects: [], rooms: [], groups: [] });
+    const history = useHistory();
+
     useEffect(() => {
         const fetchData = async () => {
             const result = await ApiClient.getDictionaries(slot);
@@ -22,15 +26,15 @@ function CreateActivity() {
     const onSubmit = async (data) => {
         data.Slot = parseInt(data.Slot);
         const result = await ApiClient.createActivity(data);
-        console.log(result);
-        // history.push("/" + props.type + "/" + e);
+        if (result.status === 200)
+            history.push("/" + type + "/" + typeName);
     }
     return (
         <div class="col-md-4">
             <label>{Utils.getTermBySlot(slot)}</label>
             <form onSubmit={handleSubmit(onSubmit)}>
                 {
-                    type !== 'Group'
+                    type !== 'classGroups'
                         ? <div className="form-group">
                             <label>
                                 Group:
@@ -44,7 +48,7 @@ function CreateActivity() {
                         : <input type="hidden" name="ClassGroup" ref={register} value={typeName} />
                 }
                 {
-                    type !== 'Teacher'
+                    type !== 'teachers'
                         ? <div className="form-group">
                             <label>
                                 Teacher:
@@ -68,7 +72,7 @@ function CreateActivity() {
                     </label>
                 </div>
                 {
-                    type !== 'Room'
+                    type !== 'rooms'
                         ? <div className="form-group">
                             <label>
                                 Room:

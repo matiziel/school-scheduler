@@ -6,10 +6,10 @@ const ApiClient = {
         let query = slot.toString();
         if (id !== null)
             query += '?id=' + id.toString();
-        const g = await this.getDictionaryBySlot('classGroups/' + query)
-        const r = await this.getDictionaryBySlot('rooms/' + query);
-        const t = await this.getDictionaryBySlot('teachers/' + query);
-        const s = await this.getDictionaryBySlot('subjects');
+        const g = await this.getDictionaryBySlot('classGroups/slot/' + query)
+        const r = await this.getDictionaryBySlot('rooms/slot/' + query);
+        const t = await this.getDictionaryBySlot('teachers/slot/' + query);
+        const s = await this.getDictionaryBySlot('subjects/slot/' + query);
         return {
             teachers: t,
             groups: g,
@@ -18,11 +18,11 @@ const ApiClient = {
         };
     },
     getDictionary: async function (type) {
-        const result = await axios.get(this.apiUrl('/Dictionaries/all/' + type));
+        const result = await axios.get(this.apiUrl('/' + type));
         return result.data;
     },
     getDictionaryBySlot: async function (query) {
-        const result = await axios.get(this.apiUrl('/Dictionaries/' + query));
+        const result = await axios.get(this.apiUrl('/' + query));
         return result.data;
     },
     createDictionaryElement: async function (element) {
@@ -51,8 +51,7 @@ const ApiClient = {
         return { data: result.data, status: result.status };
     },
     deleteActivity: async function (activity) {
-        console.log(activity);
-        const result = axios.delete(this.apiUrl('/Activities/' + activity.Id + '/' + activity.Timestamp));
+        const result = await axios.delete(this.apiUrl('/Activities/' + activity.Id + '/' + activity.Timestamp));
         return { data: result.data, status: result.status };
     }
 };

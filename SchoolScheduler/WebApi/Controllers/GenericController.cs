@@ -21,18 +21,16 @@ namespace WebApi.Controllers {
             _service = service;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DictionaryReadDTO>>> Get(string type) {
+        public async Task<ActionResult<IEnumerable<DictionaryReadDTO>>> Get() {
             try {
-                if (type is null)
-                    type = Enum.GetNames(typeof(DataType)).FirstOrDefault();
                 return Ok(await _service.GetDictionaryAsync());
             }
             catch (Exception e) {
                 return NotFound(new ErrorDTO(e.Message));
             }
         }
-        [HttpGet("{slot:int}/{id:int}")]
-        public ActionResult<IEnumerable<string>> GetBySlot(int id, int slot) {
+        [HttpGet("slot/{slot:int}")]
+        public ActionResult<IEnumerable<string>> GetBySlot(int slot, [FromQuery] int? id) {
             try {
                 return Ok(_service.GetDictionaryBySlot(slot, id));
             }

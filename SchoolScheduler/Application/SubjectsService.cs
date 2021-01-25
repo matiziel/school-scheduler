@@ -16,7 +16,7 @@ namespace Application {
             _context = context;
         public async Task<DictionaryElementEditDTO> GetDictionaryElementAsync(int id) {
             var subject = await _context.Subjects.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id)
-                ?? throw new ArgumentException("Class group with id: " + id + " does not exist");
+                ?? throw new ArgumentException("Subject with id: " + id + " does not exist");
             return new DictionaryElementEditDTO() { Id = subject.Id, Name = subject.Name, Comment = subject.Comment, Timestamp = subject.Timestamp };
 
         }
@@ -46,7 +46,7 @@ namespace Application {
             if (!ValidateName(element.Name, element.Id))
                 throw new InvalidOperationException($"Subject with name: {element.Name} has already exist");
             var subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Id == element.Id)
-                        ?? throw new ArgumentException("Class group with id: " + element.Id + " does not exist");
+                        ?? throw new ArgumentException("Subject with id: " + element.Id + " does not exist");
 
             subject.Update(element.Name, element.Comment);
             _context.Entry(subject).Property("Timestamp").OriginalValue = element.Timestamp;
@@ -63,6 +63,7 @@ namespace Application {
         }
         public IEnumerable<string> GetDictionaryBySlot(int slot, int? id = null) {
             return _context.Subjects.Select(s => s.Name).AsNoTracking().OrderBy(s => s).ToList();
+            
         }
     }
 }

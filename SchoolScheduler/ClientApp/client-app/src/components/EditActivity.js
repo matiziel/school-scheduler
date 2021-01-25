@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import Utils from './Utils.js';
 import ApiClient from './ApiClient.js';
 
 function EditActivity() {
-    let { id, slot, type } = useParams();
+    let { id, slot, type, typeName } = useParams();
     const { register, handleSubmit } = useForm();
     const { register: deleteRegister, handleSubmit: deleteHandleSubmit } = useForm();
     const [selectLists, setSelectLists] = useState({ teachers: [], subjects: [], rooms: [], groups: [] });
+    const history = useHistory();
     const [activity, setActivity] = useState({
         id: "",
         classGroup: "",
@@ -27,24 +28,26 @@ function EditActivity() {
             setSelectLists(resultList);
         };
         fetchData();
-    }, [id, slot, type]);
+    }, [id, slot, type, typeName]);
     const onSubmit = async (data) => {
         data.Slot = parseInt(data.Slot);
         data.Id = parseInt(data.Id);
         const result = await ApiClient.updateActivity(data);
-        console.log(result);
+        if (result.status === 200)
+            history.push("/" + type + "/" + typeName);
     }
     const onSubmitDelete = async (data) => {
         data.Id = parseInt(data.Id);
         const result = await ApiClient.deleteActivity(data);
-        console.log(result);
+        if (result.status === 200)
+            history.push("/" + type + "/" + typeName);
     }
     return (
         <div class="col-md-4">
             <label>{Utils.getTermBySlot(slot)}</label>
             <form onSubmit={handleSubmit(onSubmit)}>
                 {
-                    type !== 'Group'
+                    type !== 'classGroups'
                         ? <div className="form-group">
                             <label>
                                 Group:
@@ -62,7 +65,7 @@ function EditActivity() {
                         : <input type="hidden" name="ClassGroup" ref={register} value={activity.classGroup} />
                 }
                 {
-                    type !== 'Teacher'
+                    type !== 'teachers'
                         ? < div className="form-group" >
                             <label>
                                 Teacher:
@@ -94,7 +97,7 @@ function EditActivity() {
                     </label>
                 </div>
                 {
-                    type !== 'Room'
+                    type !== 'rooms'
                         ? <div className="form-group">
                             <label>
                                 Room:

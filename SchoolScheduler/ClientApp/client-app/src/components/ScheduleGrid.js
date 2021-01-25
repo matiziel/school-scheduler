@@ -54,7 +54,7 @@ function ScheduleButtons(props) {
                         else {
                             return (
                                 <td>
-                                    <Link to={"/edit/" + scheduleData.type + "/" + slot.id + "/" + (i * 5 + index).toString()}>
+                                    <Link to={"/edit/" + scheduleData.type + "/" + scheduleData.name + "/" + slot.id + "/" + (i * 5 + index).toString()}>
                                         <Button key={i * 5 + index} className="btn btn-secondary btn-block"> {slot.title} </Button>
                                     </Link>
                                 </td>
