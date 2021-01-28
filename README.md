@@ -17,7 +17,9 @@ Yarn 1.22.10 <br/>
 $ cd ./school-scheduler/SchoolScheduler/WebApi
 $ dotnet run
 ```
-Server serving static files for react now. Application works on localhost:5001.
+
+Application works on localhost:5001.
+If you set up client and run build script, server will serve static files for react now. 
 
 ### Unit test launch guide
 ```bash
@@ -25,7 +27,7 @@ $ cd ./school-scheduler/SchoolScheduler/UnitTests
 $ dotnet test
 ```
 
-## Client for development
+## Client
 
 ### Getting Started with Create React App
 
