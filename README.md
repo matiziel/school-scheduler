@@ -19,7 +19,7 @@ $ dotnet run
 ```
 
 Application works on localhost:5001.
-If you set up client and run build script, server will serve static files for react now. 
+If you set up client and run build script, server will serve static files for react. 
 
 ### Unit test launch guide
 ```bash
