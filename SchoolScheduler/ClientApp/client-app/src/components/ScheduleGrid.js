@@ -84,7 +84,7 @@ function ScheduleGrid(props) {
             setDictionaryList({ nameList: result });
         };
         fetchData();
-    }, []);
+    }, [props.type]);
     return (
         <div>
 

@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using WebApi.Middlewares;
 using Persistence;
+using Microsoft.AspNetCore.SpaServices.Extensions;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace WebApi {
     public class Startup {
@@ -24,7 +26,6 @@ namespace WebApi {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly("WebApi"))
             );
-
 
             services.AddTransient<IRoomsService, RoomsService>();
             services.AddTransient<ITeachersService, TeachersService>();
@@ -53,6 +54,7 @@ namespace WebApi {
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
             }
+            
 
             app.UseHttpsRedirection();
 
@@ -63,10 +65,21 @@ namespace WebApi {
             app.UseAuthorization();
 
             app.UseOptions();
-
-            app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
+            app.MapWhen(x => x.Request.Path.Value.StartsWith("/api"), builder => {
+                app.UseEndpoints(endpoints => {
+                    endpoints.MapControllers();
+                });
             });
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder => {
+                app.UseSpa(spa => {
+                    spa.Options.SourcePath = "../ClientApp/client-app";
+
+                    if (env.IsDevelopment()) {
+                        spa.UseReactDevelopmentServer(npmScript: "start");
+                    }
+                });
+            });
+           
         }
     }
 }

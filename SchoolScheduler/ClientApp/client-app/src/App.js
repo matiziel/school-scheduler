@@ -1,5 +1,5 @@
 import './App.css';
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ScheduleGrid from './components/ScheduleGrid.js';
 import DictionaryList from './components/DictionaryList.js';
 import {
@@ -13,9 +13,24 @@ import EditActivity from './components/EditActivity.js';
 import CreateDictionaryElement from './components/CreateDictionaryElement.js';
 import EditDictionaryElement from './components/EditDictionaryElement.js';
 import DeleteDictionaryElement from './components/DeleteDictionaryElement.js';
+import ApiClient from './components/ApiClient.js';
+import Error from './components/Error.js';
+
 
 
 function App() {
+  const [elements, setElements] = useState({
+    teacher: "",
+    room: "",
+    group: ""
+  });
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await ApiClient.getDictionariesFirstElements();
+      setElements(result);
+    };
+    fetchData();
+  }, []);
 
   return (
     <Router>
@@ -24,9 +39,9 @@ function App() {
           <label>School scheduler</label>
         </header>
         <header className="App-header">
-          <Link className="App-link" to="/classGroups/1a">Group</Link>
-          <Link className="App-link" to="/teachers/clarkson">Teacher</Link>
-          <Link className="App-link" to="/rooms/111">Room</Link>
+          <Link className="App-link" to={"/classGroups/" + elements.group}>Group</Link>
+          <Link className="App-link" to={"/teachers/" + elements.teacher}>Teacher</Link>
+          <Link className="App-link" to={"/rooms/" + elements.room}>Room</Link>
           <Link className="App-link" to="/dictionaries/classGroups">Dictionaries</Link>
         </header>
         <hr className="Line"></hr>
@@ -58,6 +73,9 @@ function App() {
             </Route >
             <Route path="/rooms/:searchName">
               <ScheduleGrid key="scheduleGridRoom" type="rooms" />
+            </Route >
+            <Route path="/error/:message">
+              <Error key="error" />
             </Route >
           </Switch>
         </div>

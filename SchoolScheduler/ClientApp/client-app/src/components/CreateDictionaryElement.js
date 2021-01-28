@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useForm } from "react-hook-form";
 import {
     useParams,
     useHistory, Link
 } from "react-router-dom";
-import Utils from './Utils.js';
+
 import ApiClient from './ApiClient.js';
 
 
@@ -19,6 +19,9 @@ function CreateDictionaryElement() {
         const result = await ApiClient.createDictionaryElement(type, data);
         if (result.status === 200)
             history.push("/dictionaries/" + type)
+        else
+            history.push("/error/" + result.data.message);
+
     }
     return (
         <div class="col-md-4">

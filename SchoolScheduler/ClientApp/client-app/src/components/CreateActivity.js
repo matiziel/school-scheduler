@@ -29,6 +29,8 @@ function CreateActivity() {
         const result = await ApiClient.createActivity(data);
         if (result.status === 200)
             history.push("/" + type + "/" + typeName);
+        else
+            history.push("/error/" + result.data.message);
     }
     return (
         <div class="col-md-4">

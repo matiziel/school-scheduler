@@ -33,6 +33,8 @@ function DeleteDictionaryElement() {
         const result = await ApiClient.deleteDictionaryElement(type, data);
         if (result.status === 200)
             history.push("/dictionaries/" + type);
+        else
+            history.push("/error/" + result.data.message);
     }
     return (
         <div class="col-md-4">

@@ -35,12 +35,16 @@ function EditActivity() {
         const result = await ApiClient.updateActivity(data);
         if (result.status === 200)
             history.push("/" + type + "/" + typeName);
+        else
+            history.push("/error/" + result.data.message);
     }
     const onSubmitDelete = async (data) => {
         data.Id = parseInt(data.Id);
         const result = await ApiClient.deleteActivity(data);
         if (result.status === 200)
             history.push("/" + type + "/" + typeName);
+        else
+            history.push("/error/" + result.data.message);
     }
     return (
         <div class="col-md-4">

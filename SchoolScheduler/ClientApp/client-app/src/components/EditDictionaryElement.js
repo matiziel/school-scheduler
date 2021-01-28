@@ -26,13 +26,15 @@ function EditDictionaryElement() {
             setElement(result);
         };
         fetchData();
-    }, []);
+    }, [id, type]);
 
     const onSubmit = async (data) => {
         data.Id = parseInt(data.Id);
         const result = await ApiClient.editDictionaryElement(type, data);
         if (result.status === 200)
             history.push("/dictionaries/" + type);
+        else
+            history.push("/error/" + result.data.message);
     }
     const onChangeName = (e) => {
         setElement({
