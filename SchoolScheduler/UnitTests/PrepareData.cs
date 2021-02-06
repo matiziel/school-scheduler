@@ -48,28 +48,31 @@ namespace UnitTests {
 
             context.SaveChanges();
 
-            var activityFirst = new Activity();
-            activityFirst.Room = context.Rooms.FirstOrDefault(r => r.Name == "111");
-            activityFirst.Slot = context.Slots.FirstOrDefault(s => s.Index == 0);
-            activityFirst.Teacher = context.Teachers.FirstOrDefault(t => t.Name == "kowalski");
-            activityFirst.Subject = context.Subjects.FirstOrDefault(s => s.Name == "mat");
-            activityFirst.ClassGroup = context.ClassGroups.FirstOrDefault(c => c.Name == "1a");
+            var activityFirst = new Activity {
+                Room = context.Rooms.FirstOrDefault(r => r.Name == "111"),
+                Slot = context.Slots.FirstOrDefault(s => s.Index == 0),
+                Teacher = context.Teachers.FirstOrDefault(t => t.Name == "kowalski"),
+                Subject = context.Subjects.FirstOrDefault(s => s.Name == "mat"),
+                ClassGroup = context.ClassGroups.FirstOrDefault(c => c.Name == "1a")
+            };
             context.Activities.Add(activityFirst);
 
-            var activitySecond = new Activity();
-            activitySecond.Room = context.Rooms.FirstOrDefault(r => r.Name == "113");
-            activitySecond.Slot = context.Slots.FirstOrDefault(s => s.Index == 0);
-            activitySecond.Teacher = context.Teachers.FirstOrDefault(t => t.Name == "mazurek");
-            activitySecond.Subject = context.Subjects.FirstOrDefault(s => s.Name == "eng");
-            activitySecond.ClassGroup = context.ClassGroups.FirstOrDefault(c => c.Name == "2a");
+            var activitySecond = new Activity {
+                Room = context.Rooms.FirstOrDefault(r => r.Name == "113"),
+                Slot = context.Slots.FirstOrDefault(s => s.Index == 0),
+                Teacher = context.Teachers.FirstOrDefault(t => t.Name == "mazurek"),
+                Subject = context.Subjects.FirstOrDefault(s => s.Name == "eng"),
+                ClassGroup = context.ClassGroups.FirstOrDefault(c => c.Name == "2a")
+            };
             context.Activities.Add(activitySecond);
 
-            var activityThird = new Activity();
-            activityThird.Room = context.Rooms.FirstOrDefault(r => r.Name == "112");
-            activityThird.Slot = context.Slots.FirstOrDefault(s => s.Index == 1);
-            activityThird.Teacher = context.Teachers.FirstOrDefault(t => t.Name == "nowak");
-            activityThird.Subject = context.Subjects.FirstOrDefault(s => s.Name == "phys");
-            activityThird.ClassGroup = context.ClassGroups.FirstOrDefault(c => c.Name == "2a");
+            var activityThird = new Activity {
+                Room = context.Rooms.FirstOrDefault(r => r.Name == "112"),
+                Slot = context.Slots.FirstOrDefault(s => s.Index == 1),
+                Teacher = context.Teachers.FirstOrDefault(t => t.Name == "nowak"),
+                Subject = context.Subjects.FirstOrDefault(s => s.Name == "phys"),
+                ClassGroup = context.ClassGroups.FirstOrDefault(c => c.Name == "2a")
+            };
             context.Activities.Add(activityThird);
 
             context.SaveChanges();

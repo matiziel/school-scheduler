@@ -25,7 +25,7 @@ namespace Common {
             string hour = Hours.Values[slot / 5];
             return (day, hour);
         }
-        private static Dictionary<int, Days> toDaysMapper = new Dictionary<int, Days>() {
+        private readonly static Dictionary<int, Days> toDaysMapper = new Dictionary<int, Days>() {
             { 0, Days.Monday },
             { 1, Days.Tuesday },
             { 2, Days.Wednesday },

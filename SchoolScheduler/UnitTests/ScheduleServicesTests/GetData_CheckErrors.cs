@@ -11,25 +11,15 @@ using System;
 
 namespace UnitTests.ScheduleServicesTests {
     public class GetData_CheckErrors {
-        private IQueryable<Activity> GetActivities(ApplicationDbContext context) {
-            return context.Activities
-                .Include(a => a.Slot)
-                .Include(a => a.Teacher)
-                .Include(a => a.Room)
-                .Include(a => a.ClassGroup)
-                .Include(a => a.Subject);
-        }
+
         [Theory]
         [InlineData(1000)]
         [InlineData(2000)]
         [InlineData(3000)]
         public async Task GetActivityByGroupAsync_GiveIncorrectId_ThrowsArgumentException(int id) {
-            using (var context = PrepareData.GetDbContext()) {
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.GetActivity(id));
-
-            }
+            using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<ArgumentException>(
+                async () => await service.GetActivity(id));
         }
 
     }

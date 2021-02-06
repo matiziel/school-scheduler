@@ -26,7 +26,7 @@ namespace Application {
             var activitiesByGroup = GetActivities().Where(a => a.ClassGroup.Name == classGroup);
             var schedule = new ScheduleDTO();
             foreach (var item in activitiesByGroup) {
-                if (item.Slot.Id < schedule.Slots.Length) {
+                if (item.Slot.Index < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
                     schedule.Slots[item.Slot.Index].Title = item.GetTitleForGroups();
                 }
@@ -40,7 +40,7 @@ namespace Application {
             var activitiesByGroup = GetActivities().Where(a => a.Room.Name == room);
             var schedule = new ScheduleDTO();
             foreach (var item in activitiesByGroup) {
-                if (item.Slot.Id < schedule.Slots.Length) {
+                if (item.Slot.Index < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
                     schedule.Slots[item.Slot.Index].Title = item.GetTitleForRooms();
                 }
@@ -54,7 +54,7 @@ namespace Application {
             var activitiesByGroup = GetActivities().Where(a => a.Teacher.Name == teacher);
             var schedule = new ScheduleDTO();
             foreach (var item in activitiesByGroup) {
-                if (item.Slot.Id < schedule.Slots.Length) {
+                if (item.Slot.Index < schedule.Slots.Length) {
                     schedule.Slots[item.Slot.Index].Id = item.Id;
                     schedule.Slots[item.Slot.Index].Title = item.GetTitleForTeachers();
                 }

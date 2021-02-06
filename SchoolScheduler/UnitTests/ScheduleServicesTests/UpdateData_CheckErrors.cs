@@ -10,22 +10,12 @@ using System;
 
 namespace UnitTests.ScheduleServicesTests {
     public class UpdateData_CheckErrors {
-        private IQueryable<Activity> GetActivities(ApplicationDbContext context) {
-            return context.Activities
-                .Include(a => a.Slot)
-                .Include(a => a.Teacher)
-                .Include(a => a.Room)
-                .Include(a => a.ClassGroup)
-                .Include(a => a.Subject);
-        }
 
         [Fact]
         public async Task CreateActivityAsync_WhenActivityDTOIsNull_CheckThrowsArgumentException() {
-            using (var context = PrepareData.GetDbContext()) {
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.CreateActivityAsync(null));
-            }
+            using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<ArgumentException>(
+                async () => await service.CreateActivityAsync(null));
         }
         [Theory]
         [InlineData("nowak", "112", "mat", "1a", 0)]
@@ -36,11 +26,9 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("kowalski", "113", "eng", "1a", 0)]
         public async Task CreateActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
             string teacher, string room, string subject, string classGroup, int slot) {
-            using (var context = PrepareData.GetDbContext()) {
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<InvalidOperationException>(
-                    async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
-            }
+            using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
         }
         [Theory]
         [InlineData("nowak", "112", "mat", null, 22)]
@@ -54,12 +42,10 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("kowalski", "111", "phys", "2a", 76)]
         public async Task CreateActivityAsync_WhenOneOfValuesIsNullOrDoesNotExist_CheckArgumentException(
             string teacher, string room, string subject, string classGroup, int slot) {
-            using (var context = PrepareData.GetDbContext()) {
-
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
-            }
+            using var context = PrepareData.GetDbContext();
+            var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<ArgumentException>(
+                async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
         }
         private ActivityCreateDTO GetDTOToCreate(
             string teacher, string room, string subject, string classGroup, int slot) {
@@ -74,11 +60,9 @@ namespace UnitTests.ScheduleServicesTests {
         }
         [Fact]
         public async Task EditActivityAsync_WhenActivityDTOIsNull_CheckThrows() {
-            using (var context = PrepareData.GetDbContext()) {
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.EditActivityAsync(1, null));
-            }
+            using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<ArgumentException>(
+                async () => await service.EditActivityAsync(1, null));
         }
         [Theory]
         [InlineData("kowalski", "112", "eng", "3a")]
@@ -88,12 +72,10 @@ namespace UnitTests.ScheduleServicesTests {
         public async Task EditActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
             string teacher, string room, string subject, string classGroup) {
 
-            using (var context = PrepareData.GetDbContext()) {
-                var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<InvalidOperationException>(
-                    async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
-            }
+            using var context = PrepareData.GetDbContext(); var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
+            var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
         }
         [Theory]
         [InlineData("asddas", "114", "esp", "4a")]
@@ -107,12 +89,10 @@ namespace UnitTests.ScheduleServicesTests {
         public async Task EditActivityAsync_WhenOneOfValuesIsIncorrect_CheckThrowsArgumentException(
             string teacher, string room, string subject, string classGroup) {
 
-            using (var context = PrepareData.GetDbContext()) {
-                var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
-            }
+            using var context = PrepareData.GetDbContext(); var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
+            var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<ArgumentException>(
+                async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
         }
         private ActivityEditDTO GetDTOToEdit(
             string teacher, string room, string subject, string classGroup, ApplicationDbContext context) {
@@ -135,11 +115,9 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(20000)]
         public async Task DeleteActivityAsync_CheckThrowsInNull(int id) {
 
-            using (var context = PrepareData.GetDbContext()) {
-                var service = new ActivitiesService(context);
-                await Assert.ThrowsAsync<ArgumentException>(
-                    async () => await service.DeleteActivityAsync(id, null));
-            }
+            using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
+            await Assert.ThrowsAsync<ArgumentException>(
+                async () => await service.DeleteActivityAsync(id, null));
         }
     }
 }

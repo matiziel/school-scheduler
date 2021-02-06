@@ -8,8 +8,9 @@ namespace Contracts.DataTransferObjects.Schedule {
         public ScheduleDTO() {
             Slots = new ActivityReadDTO[45];
             for (int i = 0; i < Slots.Length; i++) {
-                Slots[i] = new ActivityReadDTO();
-                Slots[i].Title = "-";
+                Slots[i] = new ActivityReadDTO {
+                    Title = "-"
+                };
             }
         }
         public string Name { get; set; }
