@@ -12,11 +12,11 @@ namespace Model {
 
         public Activity() { }
         public Activity(Room room, ClassGroup classGroup, Subject subject, Slot slot, Teacher teacher) {
-            ClassGroup = classGroup ?? throw new ArgumentException("Class group cannot be empty");
-            Subject = subject ?? throw new ArgumentException("Subject cannot be empty");
-            Teacher = teacher ?? throw new ArgumentException("Teacher cannot be empty");
-            Slot = slot ?? throw new ArgumentException("Slot cannot be empty");
-            Room = room ?? throw new ArgumentException("Room cannot be empty");
+            ClassGroup = classGroup;
+            Subject = subject;
+            Teacher = teacher;
+            Slot = slot;
+            Room = room;
         }
         public string GetTitleForTeachers() {
             return Room.Name + " " + Subject.Name + " " + ClassGroup.Name;

@@ -8,7 +8,9 @@ using Contracts.DataTransferObjects.Activities;
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Persistence;
-
+using LanguageExt;
+using static LanguageExt.Prelude;
+using Contracts.DataTransferObjects;
 
 namespace Application {
     public class ActivitiesService : IActivitiesService {
@@ -17,11 +19,11 @@ namespace Application {
         public ActivitiesService(ApplicationDbContext context) {
             _context = context;
         }
-        public async Task<ActivityEditDTO> GetActivity(int id) {
+        public async Task<Either<ErrorDTO, ActivityEditDTO>> GetActivity(int id) {
             var activity = await GetActivities().AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
             if (activity is null)
-                throw new ArgumentException("Activity does not exist");
-            return new ActivityEditDTO() {
+                return Left(new ErrorDTO("Activity does not exist"));
+            return Right(new ActivityEditDTO() {
                 Id = activity.Id,
                 Slot = activity.Slot.Index,
                 ClassGroup = activity.ClassGroup.Name,
@@ -29,7 +31,7 @@ namespace Application {
                 Subject = activity.Subject.Name,
                 Teacher = activity.Teacher.Name,
                 Timestamp = activity.Timestamp
-            };
+            });
         }
         private IQueryable<Activity> GetActivities() {
             return _context.Activities
@@ -39,12 +41,12 @@ namespace Application {
                 .Include(a => a.ClassGroup)
                 .Include(a => a.Subject);
         }
-        public async Task CreateActivityAsync(ActivityCreateDTO activity) {
+        public async Task<Either<ErrorDTO, Unit>> CreateActivityAsync(ActivityCreateDTO activity) {
             if (activity is null)
-                throw new ArgumentException("Activity does not exists");
+                return Left(new ErrorDTO("Activity does not exists"));
 
             if (!ValidateActivityForCreate(activity))
-                throw new InvalidOperationException("One of values on this slot is occupied");
+                return Left(new ErrorDTO("One of values on this slot is occupied"));
 
             var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup);
             var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == activity.Subject);
@@ -52,9 +54,25 @@ namespace Application {
             var slot = await _context.Slots.FirstOrDefaultAsync(s => s.Index == activity.Slot);
             var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room);
 
-            await _context.Activities.AddAsync(new Activity(room, classGroup, subject, slot, teacher));
-            await _context.SaveChangesAsync();
+            var createdActivity = new Activity(room, classGroup, subject, slot, teacher);
+            if (ValidateUpdatedActivity(createdActivity))
+                return Left(new ErrorDTO("One of values is incorrect"));
+
+            try {
+                await _context.Activities.AddAsync(createdActivity);
+                await _context.SaveChangesAsync();
+                return Right(Unit.Default);
+            }
+            catch (Exception) {
+                return Left(new ErrorDTO("Error while updating database"));
+            }
         }
+        private bool ValidateUpdatedActivity(Activity activity)
+            => !(activity.Room is null ||
+                activity.ClassGroup is null ||
+                activity.Subject is null ||
+                activity.Teacher is null ||
+                activity.Slot is null);
 
         private bool ValidateActivityForCreate(ActivityCreateDTO activity) {
             return ValidateActivity(
@@ -72,50 +90,61 @@ namespace Application {
                 )
             ).Count() == 0;
         }
-        public async Task EditActivityAsync(int id, ActivityEditDTO activity) {
+        public async Task<Either<ErrorDTO, Unit>> EditActivityAsync(int id, ActivityEditDTO activity) {
             if (activity is null)
-                throw new ArgumentException("Activity does not exist");
+                return Left(new ErrorDTO("Activity does not exist"));
 
             var activityToEdit = GetActivities().FirstOrDefault(a => a.Id == id);
             if (activityToEdit is null)
-                throw new ArgumentException("Activity does not exist");
+                return Left(new ErrorDTO("Activity does not exist"));
 
-            //TODO think about throwing exception while slot in dto is different from value from db 
             if (!ValidateActivityForEdit(id, activity))
-                throw new InvalidOperationException("One of values on this slot is occupied");
+                return Left(new ErrorDTO("One of values on this slot is occupied"));
 
-            if (activityToEdit.ClassGroup.Name != activity.ClassGroup)
-                activityToEdit.ClassGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup)
-                    ?? throw new ArgumentException(activity.ClassGroup + " class does not exist in database");
+            activityToEdit.ClassGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup);
+            activityToEdit.Subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Name == activity.Subject);
+            activityToEdit.Teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Name == activity.Teacher);
+            activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room);
 
-            if (activityToEdit.Subject.Name != activity.Subject)
-                activityToEdit.Subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Name == activity.Subject)
-                    ?? throw new ArgumentException(activity.Subject + " subject not exist in database");
+            if (ValidateUpdatedActivity(activityToEdit))
+                return Left(new ErrorDTO("One of values is incorrect"));
 
-            if (activityToEdit.Teacher.Name != activity.Teacher)
-                activityToEdit.Teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Name == activity.Teacher)
-                    ?? throw new ArgumentException(activity.Teacher + " teacher does not exist in database");
-
-            if (activityToEdit.Room.Name != activity.Room)
-                activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room)
-                    ?? throw new ArgumentException(activity.Room + " room does not exist in database");
-
-            _context.Entry(activityToEdit).Property("Timestamp").OriginalValue = activity.Timestamp;
-            _context.Activities.Update(activityToEdit);
-            await _context.SaveChangesAsync();
+            try {
+                _context.Entry(activityToEdit).Property("Timestamp").OriginalValue = activity.Timestamp;
+                _context.Activities.Update(activityToEdit);
+                await _context.SaveChangesAsync();
+                return Right(Unit.Default);
+            }
+            catch (DbUpdateConcurrencyException) {
+                return Left(new ErrorDTO("Someone has already updated this activity"));
+            }
+            catch (Exception) {
+                return Left(new ErrorDTO("Error while updating database"));
+            }
         }
         private bool ValidateActivityForEdit(int id, ActivityEditDTO activity) =>
             ValidateActivity(
                 GetActivities().Where(a => a.Id != id),
                 activity
             );
-        public async Task DeleteActivityAsync(int id, byte[] timestamp) {
+
+        public async Task<Either<ErrorDTO, Unit>> DeleteActivityAsync(int id, byte[] timestamp) {
             var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
             if (activity is null)
-                throw new ArgumentException("Activity does not exist");
-            _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
-            _context.Activities.Remove(activity);
-            await _context.SaveChangesAsync();
+                return Left(new ErrorDTO("Activity does not exist"));
+            try {
+                _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
+                _context.Activities.Remove(activity);
+                await _context.SaveChangesAsync();
+                return Right(Unit.Default);
+            }
+            catch (DbUpdateConcurrencyException) {
+                return Left(new ErrorDTO("Someone has already updated this activity"));
+            }
+            catch (Exception) {
+                return Left(new ErrorDTO("Error while updating database"));
+            }
+
         }
     }
 }
