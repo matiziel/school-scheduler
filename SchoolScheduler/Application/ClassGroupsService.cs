@@ -8,14 +8,23 @@ using Persistence;
 using Common;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using LanguageExt;
+using static LanguageExt.Prelude;
+using Contracts.DataTransferObjects;
 
 namespace Application {
     public class ClassGroupsService : GenericDictionaryService<ClassGroup>, IClassGroupsService {
         public ClassGroupsService(ApplicationDbContext context) : base(context) { }
-        public IEnumerable<string> GetDictionaryBySlot(int slot, int? id = null) {
-            var groups = _context.ClassGroups.Select(c => c.Name).OrderBy(c => c);
-            var occupiedGroups = Helper.GetActivitiesBySlot(_context, slot, id).Select(a => a.ClassGroup.Name);
-            return groups.Where(g => !occupiedGroups.Contains(g)).ToList();
+        public Either<ErrorDTO, IEnumerable<string>> GetDictionaryBySlot(int slot, int? id = null) {
+            try {
+                var groups = _context.ClassGroups.Select(c => c.Name).OrderBy(c => c);
+                var occupiedGroups = Helper.GetActivitiesBySlot(_context, slot, id).Select(a => a.ClassGroup.Name);
+                return Right(groups.Where(g => !occupiedGroups.Contains(g)).ToList() as IEnumerable<string>);
+            }
+            catch (Exception) {
+                return Left(new ErrorDTO("Error while getting class groups dictionary"));
+            }
+
         }
     }
 }

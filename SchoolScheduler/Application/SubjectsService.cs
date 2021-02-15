@@ -8,13 +8,21 @@ using Persistence;
 using Common;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using LanguageExt;
+using static LanguageExt.Prelude;
+using Contracts.DataTransferObjects;
 
 namespace Application {
     public class SubjectsService : GenericDictionaryService<Subject>, ISubjectsService {
         public SubjectsService(ApplicationDbContext context) : base(context) { }
 
-        public IEnumerable<string> GetDictionaryBySlot(int slot, int? id = null) {
-            return _context.Subjects.Select(s => s.Name).AsNoTracking().OrderBy(s => s).ToList();    
+        public Either<ErrorDTO, IEnumerable<string>> GetDictionaryBySlot(int slot, int? id = null) {
+            try {
+                return Right(_context.Subjects.Select(s => s.Name).AsNoTracking().OrderBy(s => s).ToList() as IEnumerable<string>);
+            }
+            catch(Exception) {
+                return Left(new ErrorDTO("Error while getting subjects dictionary"));
+            }     
         }
     }
 }

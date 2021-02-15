@@ -21,14 +21,13 @@ namespace WebApi.Controllers {
             _service = service;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DictionaryReadDTO>>> Get() {
-            try {
-                return Ok(await _service.GetDictionaryAsync());
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
-        }
+        public async Task<ActionResult<IEnumerable<DictionaryReadDTO>>> Get()
+            => (await _service.GetDictionaryAsync())
+                .Match<ActionResult<IEnumerable<DictionaryReadDTO>>>(
+                    Left: l => NotFound(l),
+                    Right: r => Ok(r)
+                );
+
         [HttpGet("slot/{slot:int}")]
         public ActionResult<IEnumerable<string>> GetBySlot(int slot, [FromQuery] int? id) {
             try {
@@ -39,69 +38,35 @@ namespace WebApi.Controllers {
             }
         }
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<DictionaryReadDTO>> Get(int id) {
-            try {
-                return Ok(await _service.GetDictionaryElementAsync(id));
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
-        }
+        public async Task<ActionResult<DictionaryReadDTO>> Get(int id)
+            => (await _service.GetDictionaryElementAsync(id))
+                .Match<ActionResult<DictionaryReadDTO>>(
+                    Left: l => NotFound(l),
+                    Right: r => Ok(r)
+                );
+
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] DictionaryElementCreateDTO element) {
-            try {
-                if (element is null)
-                    return NotFound();
-                if (ModelState.IsValid) {
-                    await _service.AddKey(element);
-                    return Ok();
-                }
-                return BadRequest(new ErrorDTO("Passed dictionary element is invalid"));
-            }
-            catch (InvalidOperationException e) {
-                return BadRequest(new ErrorDTO(e.Message));
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
+        public async Task<ActionResult> Create([FromBody] DictionaryElementCreateDTO element)
+        => (await _service.AddKey(element))
+                .Match<ActionResult>(
+                    Left: l => NotFound(l),
+                    Right: r => Ok(r)
+                );
 
-        }
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Edit(int? id, [FromBody] DictionaryElementEditDTO element) {
-            try {
-                if (id is null || element is null)
-                    return NotFound();
-                if (ModelState.IsValid) {
-                    await _service.UpdateKey(element);
-                    return Ok();
-                }
-                return BadRequest(new ErrorDTO("Passed dictionary element is invalid"));
-            }
-            catch (DbUpdateConcurrencyException) {
-                return BadRequest(new ErrorDTO("Someone has already updated this element"));
-            }
-            catch (InvalidOperationException e) {
-                return BadRequest(new ErrorDTO(e.Message));
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
-        }
-        [HttpDelete("{id:int}/{timestamp}")]
-        public async Task<IActionResult> Delete(int? id, string timestamp) {
-            try {
-                if (id is null || timestamp is null)
-                    return NotFound();
+        public async Task<IActionResult> Edit(int? id, [FromBody] DictionaryElementEditDTO element)
+            => (await _service.UpdateKey(element))
+                .Match<ActionResult>(
+                    Left: l => NotFound(l),
+                    Right: r => Ok(r)
+                );
 
-                await _service.RemoveKey(id.Value, Convert.FromBase64String(timestamp));
-                return Ok();
-            }
-            catch (DbUpdateConcurrencyException) {
-                return BadRequest(new ErrorDTO("Someone has already updated this element"));
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
-        }
+        [HttpDelete("{id:int}/{timestamp}")]
+        public async Task<IActionResult> Delete(int? id, string timestamp)
+            => (await _service.RemoveKey(id.Value, Convert.FromBase64String(timestamp)))
+                .Match<ActionResult>(
+                    Left: l => NotFound(l),
+                    Right: r => Ok(r)
+                );
     }
 }
