@@ -20,31 +20,27 @@ namespace WebApi.Controllers {
         }
 
         [HttpGet("rooms/{room}")]
-        public ActionResult<ScheduleDTO> GetByRoom(string room) {
-            try {
-                return Ok(_scheduleService.GetScheduleByRoom(room));
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
-        }
+        public ActionResult<ScheduleDTO> GetByRoom(string room)
+        => _scheduleService.GetScheduleByRoom(room)
+                .Match<ActionResult>(
+                    Left: l => BadRequest(l),
+                    Right: r => Ok(r)
+                );
+
         [HttpGet("teachers/{teacher}")]
-        public ActionResult<ScheduleDTO> GetByTeacher(string teacher) {
-            try {
-                return Ok(_scheduleService.GetScheduleByTeacher(teacher));
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
-        }
+        public ActionResult<ScheduleDTO> GetByTeacher(string teacher)
+            => _scheduleService.GetScheduleByTeacher(teacher)
+                .Match<ActionResult>(
+                    Left: l => BadRequest(l),
+                    Right: r => Ok(r)
+                );
+
         [HttpGet("classGroups/{group}")]
-        public ActionResult<ScheduleDTO> GetByGroup(string group) {
-            try {
-                return Ok(_scheduleService.GetScheduleByGroup(group));
-            }
-            catch (Exception e) {
-                return NotFound(new ErrorDTO(e.Message));
-            }
-        }
+        public ActionResult<ScheduleDTO> GetByGroup(string group)
+            => _scheduleService.GetScheduleByGroup(group)
+                .Match<ActionResult>(
+                    Left: l => BadRequest(l),
+                    Right: r => Ok(r)
+                );
     }
 }

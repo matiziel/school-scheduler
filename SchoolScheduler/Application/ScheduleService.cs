@@ -4,7 +4,10 @@ using Contracts.DataTransferObjects.Schedule;
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Persistence;
-
+using LanguageExt;
+using static LanguageExt.Prelude;
+using Contracts.DataTransferObjects;
+using System;
 
 namespace Application {
     public class ScheduleService : IScheduleService {
@@ -22,46 +25,59 @@ namespace Application {
                 .Include(a => a.Subject)
                 .AsNoTracking();
         }
-        public ScheduleDTO GetScheduleByGroup(string classGroup) {
-            var activitiesByGroup = GetActivities().Where(a => a.ClassGroup.Name == classGroup);
-            var schedule = new ScheduleDTO();
-            foreach (var item in activitiesByGroup) {
-                if (item.Slot.Index < schedule.Slots.Length) {
-                    schedule.Slots[item.Slot.Index].Id = item.Id;
-                    schedule.Slots[item.Slot.Index].Title = item.GetTitleForGroups();
+        public Either<ErrorDTO, ScheduleDTO> GetScheduleByGroup(string classGroup) {
+            try {
+                var activitiesByGroup = GetActivities().Where(a => a.ClassGroup.Name == classGroup);
+                var schedule = new ScheduleDTO();
+                foreach (var item in activitiesByGroup) {
+                    if (item.Slot.Index < schedule.Slots.Length) {
+                        schedule.Slots[item.Slot.Index].Id = item.Id;
+                        schedule.Slots[item.Slot.Index].Title = item.GetTitleForGroups();
+                    }
                 }
+                schedule.Name = classGroup;
+                schedule.Type = "classGroups";
+                return Right(schedule);
             }
-            schedule.Name = classGroup;
-            schedule.Type = "classGroups";
-            return schedule;
+            catch (Exception e) {
+                return Left(new ErrorDTO(e.Message));
+            }
         }
-
-        public ScheduleDTO GetScheduleByRoom(string room) {
-            var activitiesByGroup = GetActivities().Where(a => a.Room.Name == room);
-            var schedule = new ScheduleDTO();
-            foreach (var item in activitiesByGroup) {
-                if (item.Slot.Index < schedule.Slots.Length) {
-                    schedule.Slots[item.Slot.Index].Id = item.Id;
-                    schedule.Slots[item.Slot.Index].Title = item.GetTitleForRooms();
+        public Either<ErrorDTO, ScheduleDTO> GetScheduleByRoom(string room) {
+            try {
+                var activitiesByGroup = GetActivities().Where(a => a.Room.Name == room);
+                var schedule = new ScheduleDTO();
+                foreach (var item in activitiesByGroup) {
+                    if (item.Slot.Index < schedule.Slots.Length) {
+                        schedule.Slots[item.Slot.Index].Id = item.Id;
+                        schedule.Slots[item.Slot.Index].Title = item.GetTitleForRooms();
+                    }
                 }
+                schedule.Name = room;
+                schedule.Type = "rooms";
+                return Right(schedule);
             }
-            schedule.Name = room;
-            schedule.Type = "rooms";
-            return schedule;
+            catch (Exception e) {
+                return Left(new ErrorDTO(e.Message));
+            }
         }
-
-        public ScheduleDTO GetScheduleByTeacher(string teacher) {
-            var activitiesByGroup = GetActivities().Where(a => a.Teacher.Name == teacher);
-            var schedule = new ScheduleDTO();
-            foreach (var item in activitiesByGroup) {
-                if (item.Slot.Index < schedule.Slots.Length) {
-                    schedule.Slots[item.Slot.Index].Id = item.Id;
-                    schedule.Slots[item.Slot.Index].Title = item.GetTitleForTeachers();
+        public Either<ErrorDTO, ScheduleDTO> GetScheduleByTeacher(string teacher) {
+            try {
+                var activitiesByGroup = GetActivities().Where(a => a.Teacher.Name == teacher);
+                var schedule = new ScheduleDTO();
+                foreach (var item in activitiesByGroup) {
+                    if (item.Slot.Index < schedule.Slots.Length) {
+                        schedule.Slots[item.Slot.Index].Id = item.Id;
+                        schedule.Slots[item.Slot.Index].Title = item.GetTitleForTeachers();
+                    }
                 }
+                schedule.Name = teacher;
+                schedule.Type = "teachers";
+                return Right(schedule);
             }
-            schedule.Name = teacher;
-            schedule.Type = "teachers";
-            return schedule;
+            catch (Exception e) {
+                return Left(new ErrorDTO(e.Message));
+            }
         }
     }
 }

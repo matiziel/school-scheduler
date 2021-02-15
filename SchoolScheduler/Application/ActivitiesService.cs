@@ -20,18 +20,23 @@ namespace Application {
             _context = context;
         }
         public async Task<Either<ErrorDTO, ActivityEditDTO>> GetActivity(int id) {
-            var activity = await GetActivities().AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
-            if (activity is null)
-                return Left(new ErrorDTO("Activity does not exist"));
-            return Right(new ActivityEditDTO() {
-                Id = activity.Id,
-                Slot = activity.Slot.Index,
-                ClassGroup = activity.ClassGroup.Name,
-                Room = activity.Room.Name,
-                Subject = activity.Subject.Name,
-                Teacher = activity.Teacher.Name,
-                Timestamp = activity.Timestamp
-            });
+            try {
+                var activity = await GetActivities().AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+                if (activity is null)
+                    return Left(new ErrorDTO("Activity does not exist"));
+                return Right(new ActivityEditDTO() {
+                    Id = activity.Id,
+                    Slot = activity.Slot.Index,
+                    ClassGroup = activity.ClassGroup.Name,
+                    Room = activity.Room.Name,
+                    Subject = activity.Subject.Name,
+                    Teacher = activity.Teacher.Name,
+                    Timestamp = activity.Timestamp
+                });
+            }
+            catch (Exception) {
+                return Left(new ErrorDTO("Error while getting activity"));
+            }
         }
         private IQueryable<Activity> GetActivities() {
             return _context.Activities
@@ -42,29 +47,30 @@ namespace Application {
                 .Include(a => a.Subject);
         }
         public async Task<Either<ErrorDTO, Unit>> CreateActivityAsync(ActivityCreateDTO activity) {
-            if (activity is null)
-                return Left(new ErrorDTO("Activity does not exists"));
-
-            if (!ValidateActivityForCreate(activity))
-                return Left(new ErrorDTO("One of values on this slot is occupied"));
-
-            var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup);
-            var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == activity.Subject);
-            var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Name == activity.Teacher);
-            var slot = await _context.Slots.FirstOrDefaultAsync(s => s.Index == activity.Slot);
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room);
-
-            var createdActivity = new Activity(room, classGroup, subject, slot, teacher);
-            if (ValidateUpdatedActivity(createdActivity))
-                return Left(new ErrorDTO("One of values is incorrect"));
-
             try {
+                if (activity is null)
+                    return Left(new ErrorDTO("Activity does not exists"));
+
+                if (!ValidateActivityForCreate(activity))
+                    return Left(new ErrorDTO("One of values on this slot is occupied"));
+
+                var classGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup);
+                var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == activity.Subject);
+                var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Name == activity.Teacher);
+                var slot = await _context.Slots.FirstOrDefaultAsync(s => s.Index == activity.Slot);
+                var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Name == activity.Room);
+
+                var createdActivity = new Activity(room, classGroup, subject, slot, teacher);
+                if (!ValidateUpdatedActivity(createdActivity))
+                    return Left(new ErrorDTO("One of values is incorrect"));
+
+
                 await _context.Activities.AddAsync(createdActivity);
                 await _context.SaveChangesAsync();
                 return Right(Unit.Default);
             }
             catch (Exception) {
-                return Left(new ErrorDTO("Error while updating database"));
+                return Left(new ErrorDTO("Error while creating activity"));
             }
         }
         private bool ValidateUpdatedActivity(Activity activity)
@@ -91,25 +97,26 @@ namespace Application {
             ).Count() == 0;
         }
         public async Task<Either<ErrorDTO, Unit>> EditActivityAsync(int id, ActivityEditDTO activity) {
-            if (activity is null)
-                return Left(new ErrorDTO("Activity does not exist"));
-
-            var activityToEdit = GetActivities().FirstOrDefault(a => a.Id == id);
-            if (activityToEdit is null)
-                return Left(new ErrorDTO("Activity does not exist"));
-
-            if (!ValidateActivityForEdit(id, activity))
-                return Left(new ErrorDTO("One of values on this slot is occupied"));
-
-            activityToEdit.ClassGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup);
-            activityToEdit.Subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Name == activity.Subject);
-            activityToEdit.Teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Name == activity.Teacher);
-            activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room);
-
-            if (ValidateUpdatedActivity(activityToEdit))
-                return Left(new ErrorDTO("One of values is incorrect"));
-
             try {
+                if (activity is null)
+                    return Left(new ErrorDTO("Activity does not exist"));
+
+                var activityToEdit = GetActivities().FirstOrDefault(a => a.Id == id);
+                if (activityToEdit is null)
+                    return Left(new ErrorDTO("Activity does not exist"));
+
+                if (!ValidateActivityForEdit(id, activity))
+                    return Left(new ErrorDTO("One of values on this slot is occupied"));
+
+                activityToEdit.ClassGroup = await _context.ClassGroups.FirstOrDefaultAsync(c => c.Name == activity.ClassGroup);
+                activityToEdit.Subject = await _context.Subjects.FirstOrDefaultAsync(c => c.Name == activity.Subject);
+                activityToEdit.Teacher = await _context.Teachers.FirstOrDefaultAsync(c => c.Name == activity.Teacher);
+                activityToEdit.Room = await _context.Rooms.FirstOrDefaultAsync(c => c.Name == activity.Room);
+
+                if (!ValidateUpdatedActivity(activityToEdit))
+                    return Left(new ErrorDTO("One of values is incorrect"));
+
+
                 _context.Entry(activityToEdit).Property("Timestamp").OriginalValue = activity.Timestamp;
                 _context.Activities.Update(activityToEdit);
                 await _context.SaveChangesAsync();
@@ -119,7 +126,7 @@ namespace Application {
                 return Left(new ErrorDTO("Someone has already updated this activity"));
             }
             catch (Exception) {
-                return Left(new ErrorDTO("Error while updating database"));
+                return Left(new ErrorDTO("Error while updating activity"));
             }
         }
         private bool ValidateActivityForEdit(int id, ActivityEditDTO activity) =>
@@ -129,10 +136,11 @@ namespace Application {
             );
 
         public async Task<Either<ErrorDTO, Unit>> DeleteActivityAsync(int id, byte[] timestamp) {
-            var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
-            if (activity is null)
-                return Left(new ErrorDTO("Activity does not exist"));
             try {
+                var activity = _context.Activities.FirstOrDefault(a => a.Id == id);
+                if (activity is null)
+                    return Left(new ErrorDTO("Activity does not exist"));
+
                 _context.Entry(activity).Property("Timestamp").OriginalValue = timestamp;
                 _context.Activities.Remove(activity);
                 await _context.SaveChangesAsync();
@@ -142,7 +150,7 @@ namespace Application {
                 return Left(new ErrorDTO("Someone has already updated this activity"));
             }
             catch (Exception) {
-                return Left(new ErrorDTO("Error while updating database"));
+                return Left(new ErrorDTO("Error while deleting activity"));
             }
 
         }

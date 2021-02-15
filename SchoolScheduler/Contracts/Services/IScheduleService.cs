@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
+using Contracts.DataTransferObjects;
 using Contracts.DataTransferObjects.Schedule;
+using LanguageExt;
 
 namespace Contracts.Services {
     public interface IScheduleService {
-        ScheduleDTO GetScheduleByGroup(string classGroup);
-        ScheduleDTO GetScheduleByRoom(string room);
-        ScheduleDTO GetScheduleByTeacher(string teacher);
+        Either<ErrorDTO, ScheduleDTO> GetScheduleByGroup(string classGroup);
+        Either<ErrorDTO, ScheduleDTO>  GetScheduleByRoom(string room);
+        Either<ErrorDTO, ScheduleDTO>  GetScheduleByTeacher(string teacher);
     }
 
 }
