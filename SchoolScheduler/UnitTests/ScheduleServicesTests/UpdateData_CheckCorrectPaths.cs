@@ -35,7 +35,7 @@ namespace UnitTests.ScheduleServicesTests {
                 Teacher = teacher
             };
             var service = new ActivitiesService(context);
-            await service.CreateActivityAsync(activityDTO);
+            var value = await service.CreateActivityAsync(activityDTO);
             var activity = GetActivities(context).FirstOrDefault(
                 a => a.Teacher.Name == teacher &&
                     a.Subject.Name == subject &&
@@ -43,6 +43,7 @@ namespace UnitTests.ScheduleServicesTests {
                     a.Room.Name == room &&
                     a.ClassGroup.Name == classGroup
             );
+            Assert.True(value.IsRight);
             Assert.NotNull(activity);
         }
 
@@ -68,7 +69,7 @@ namespace UnitTests.ScheduleServicesTests {
                 Teacher = teacher
             };
             var service = new ActivitiesService(context);
-            await service.EditActivityAsync(activity.Id, activityDTO);
+            var value = await service.EditActivityAsync(activity.Id, activityDTO);
             var activityToCheck = GetActivities(context).FirstOrDefault(
                 a =>
                     a.Id == id &&
@@ -77,6 +78,7 @@ namespace UnitTests.ScheduleServicesTests {
                     a.Subject.Name == subject &&
                     a.ClassGroup.Name == classGroup
                 );
+            Assert.True(value.IsRight);
             Assert.NotNull(activityToCheck);
         }
         [Theory]
@@ -92,9 +94,11 @@ namespace UnitTests.ScheduleServicesTests {
                     a.ClassGroup.Name == classgroup
                 );
             var service = new ActivitiesService(context);
-            await service.DeleteActivityAsync(activityToDelete.Id, activityToDelete.Timestamp);
+            var value = await service.DeleteActivityAsync(activityToDelete.Id, activityToDelete.Timestamp);
             var activity = context.Activities.FirstOrDefault(a => a.Id == activityToDelete.Id);
             Assert.Null(activity);
+            Assert.True(value.IsRight);
+
         }
     }
 }

@@ -16,10 +16,10 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData(1000)]
         [InlineData(2000)]
         [InlineData(3000)]
-        public async Task GetActivityByGroupAsync_GiveIncorrectId_ThrowsArgumentException(int id) {
+        public async Task GetActivityByGroupAsync_GiveIncorrectId_GetError(int id) {
             using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<ArgumentException>(
-                async () => await service.GetActivity(id));
+            var test = await service.GetActivity(id);
+            Assert.True(test.IsLeft);
         }
 
     }

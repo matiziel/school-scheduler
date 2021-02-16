@@ -12,10 +12,10 @@ namespace UnitTests.ScheduleServicesTests {
     public class UpdateData_CheckErrors {
 
         [Fact]
-        public async Task CreateActivityAsync_WhenActivityDTOIsNull_CheckThrowsArgumentException() {
+        public async Task CreateActivityAsync_WhenActivityDTOIsNull_CheckErrorOccured() {
             using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<ArgumentException>(
-                async () => await service.CreateActivityAsync(null));
+            var value = await service.CreateActivityAsync(null);
+            Assert.True(value.IsLeft);
         }
         [Theory]
         [InlineData("nowak", "112", "mat", "1a", 0)]
@@ -24,11 +24,11 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("nowak", "111", "mat", "1a", 0)]
         [InlineData("kowalski", "111", "phys", "2a", 0)]
         [InlineData("kowalski", "113", "eng", "1a", 0)]
-        public async Task CreateActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
+        public async Task CreateActivityAsync_WhenOneOfValuesIsOccupied_CheckErrorOccured(
             string teacher, string room, string subject, string classGroup, int slot) {
             using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
+            var value = await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot));
+            Assert.True(value.IsLeft);
         }
         [Theory]
         [InlineData("nowak", "112", "mat", null, 22)]
@@ -40,12 +40,12 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("kowalski", "111", "xxx", "2a", 12)]
         [InlineData("kowalski", "113", "eng", "xxx", 13)]
         [InlineData("kowalski", "111", "phys", "2a", 76)]
-        public async Task CreateActivityAsync_WhenOneOfValuesIsNullOrDoesNotExist_CheckArgumentException(
+        public async Task CreateActivityAsync_WhenOneOfValuesIsNullOrDoesNotExist_CheckErrorOccured(
             string teacher, string room, string subject, string classGroup, int slot) {
             using var context = PrepareData.GetDbContext();
             var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<ArgumentException>(
-                async () => await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot)));
+            var value = await service.CreateActivityAsync(GetDTOToCreate(teacher, room, subject, classGroup, slot));
+            Assert.True(value.IsLeft);
         }
         private ActivityCreateDTO GetDTOToCreate(
             string teacher, string room, string subject, string classGroup, int slot) {
@@ -59,23 +59,23 @@ namespace UnitTests.ScheduleServicesTests {
             };
         }
         [Fact]
-        public async Task EditActivityAsync_WhenActivityDTOIsNull_CheckThrows() {
+        public async Task EditActivityAsync_WhenActivityDTOIsNull_CheckErrorOccured() {
             using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<ArgumentException>(
-                async () => await service.EditActivityAsync(1, null));
+            var value = await service.EditActivityAsync(1, null);
+            Assert.True(value.IsLeft);
         }
         [Theory]
         [InlineData("kowalski", "112", "eng", "3a")]
         [InlineData("nowak", "114", "phys", "1a")]
         [InlineData("mazurek", "111", "esp", "2a")]
         [InlineData("kowalski", "111", "esp", "1a")]
-        public async Task EditActivityAsync_WhenOneOfValuesIsOccupied_CheckThrowsInvalidOperation(
+        public async Task EditActivityAsync_WhenOneOfValuesIsOccupied_CheckErrorOccured(
             string teacher, string room, string subject, string classGroup) {
 
             using var context = PrepareData.GetDbContext(); var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
             var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
+            var value = await service.EditActivityAsync(activityDTO.Id, activityDTO);
+            Assert.True(value.IsLeft);
         }
         [Theory]
         [InlineData("asddas", "114", "esp", "4a")]
@@ -86,13 +86,13 @@ namespace UnitTests.ScheduleServicesTests {
         [InlineData("nowak", null, "esp", "6a")]
         [InlineData("clarkson", "112", null, "7a")]
         [InlineData("may", "117", "esp", null)]
-        public async Task EditActivityAsync_WhenOneOfValuesIsIncorrect_CheckThrowsArgumentException(
+        public async Task EditActivityAsync_WhenOneOfValuesIsIncorrect_CheckErrorOccured(
             string teacher, string room, string subject, string classGroup) {
 
             using var context = PrepareData.GetDbContext(); var activityDTO = GetDTOToEdit(teacher, room, subject, classGroup, context);
             var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<ArgumentException>(
-                async () => await service.EditActivityAsync(activityDTO.Id, activityDTO));
+            var value = await service.EditActivityAsync(activityDTO.Id, activityDTO);
+            Assert.True(value.IsLeft);
         }
         private ActivityEditDTO GetDTOToEdit(
             string teacher, string room, string subject, string classGroup, ApplicationDbContext context) {
@@ -113,11 +113,11 @@ namespace UnitTests.ScheduleServicesTests {
         [Theory]
         [InlineData(10000)]
         [InlineData(20000)]
-        public async Task DeleteActivityAsync_CheckThrowsInNull(int id) {
+        public async Task DeleteActivityAsync_CheckErrorOccured(int id) {
 
             using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
-            await Assert.ThrowsAsync<ArgumentException>(
-                async () => await service.DeleteActivityAsync(id, null));
+            var value = await service.DeleteActivityAsync(id, null);
+            Assert.True(value.IsLeft);
         }
     }
 }

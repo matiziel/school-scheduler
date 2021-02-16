@@ -7,10 +7,11 @@ using Model;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.DataTransferObjects.Activities;
 
 namespace UnitTests.ScheduleServicesTests {
     public class GetData_CheckCorrectPaths {
-        
+
         private IQueryable<Activity> GetActivities(ApplicationDbContext context) {
             return context.Activities
                 .Include(a => a.Slot)
@@ -21,25 +22,34 @@ namespace UnitTests.ScheduleServicesTests {
         }
         [Fact]
         public async Task GetActivityAsync_ReturnCorrectDTO() {
-            using var context = PrepareData.GetDbContext(); var service = new ActivitiesService(context);
+            using var context = PrepareData.GetDbContext();
+            var service = new ActivitiesService(context);
             var activity = GetActivities(context).FirstOrDefault();
             var activityDTO = await service.GetActivity(activity.Id);
-            Assert.Equal(activity.Id, activityDTO.Id);
-            Assert.Equal(activity.Room.Name, activityDTO.Room);
-            Assert.Equal(activity.Slot.Index, activityDTO.Slot);
-            Assert.Equal(activity.Subject.Name, activityDTO.Subject);
-            Assert.Equal(activity.Teacher.Name, activityDTO.Teacher);
-            Assert.Equal(activity.ClassGroup.Name, activityDTO.ClassGroup);
+            Assert.True(activityDTO.IsRight);
+            activityDTO.IfRight(r => {
+                Assert.Equal(activity.Id, r.Id);
+                Assert.Equal(activity.Room.Name, r.Room);
+                Assert.Equal(activity.Slot.Index, r.Slot);
+                Assert.Equal(activity.Subject.Name, r.Subject);
+                Assert.Equal(activity.Teacher.Name, r.Teacher);
+                Assert.Equal(activity.ClassGroup.Name, r.ClassGroup);
+            });
         }
         [Theory]
         [InlineData("1a", "111 mat", 0)]
         [InlineData("2a", "112 phys", 1)]
         public void GetScheduleByGroup_ReturnCorrectDTO(string group, string title, int index) {
-            using var context = PrepareData.GetDbContext(); var service = new ScheduleService(context);
+            using var context = PrepareData.GetDbContext();
+            var service = new ScheduleService(context);
             var scheduleDTO = service.GetScheduleByGroup(group);
-            Assert.Equal(title, scheduleDTO.Slots[index].Title);
-            Assert.Equal("Group", scheduleDTO.Type);
-            Assert.Equal(group, scheduleDTO.Name);
+            Assert.True(scheduleDTO.IsRight);
+            scheduleDTO.IfRight(r => {
+                Assert.Equal(title, r.Slots[index].Title);
+                Assert.Equal("classGroups", r.Type);
+                Assert.Equal(group, r.Name);
+            });
+
         }
         [Theory]
         [InlineData("111", "1a", 0)]
@@ -47,9 +57,13 @@ namespace UnitTests.ScheduleServicesTests {
         public void GetScheduleByRoom_ReturnCorrectDTO(string room, string title, int index) {
             using var context = PrepareData.GetDbContext(); var service = new ScheduleService(context);
             var scheduleDTO = service.GetScheduleByRoom(room);
-            Assert.Equal(title, scheduleDTO.Slots[index].Title);
-            Assert.Equal("Room", scheduleDTO.Type);
-            Assert.Equal(room, scheduleDTO.Name);
+            Assert.True(scheduleDTO.IsRight);
+            scheduleDTO.IfRight(r => {
+                Assert.Equal(title, r.Slots[index].Title);
+                Assert.Equal("rooms", r.Type);
+                Assert.Equal(room, r.Name);
+            });
+
         }
         [Theory]
         [InlineData("kowalski", "111 mat 1a", 0)]
@@ -57,9 +71,13 @@ namespace UnitTests.ScheduleServicesTests {
         public void GetScheduleByTeacher_ReturnCorrectDTO(string teacher, string title, int index) {
             using var context = PrepareData.GetDbContext(); var service = new ScheduleService(context);
             var scheduleDTO = service.GetScheduleByTeacher(teacher);
-            Assert.Equal(title, scheduleDTO.Slots[index].Title);
-            Assert.Equal("Teacher", scheduleDTO.Type);
-            Assert.Equal(teacher, scheduleDTO.Name);
+            Assert.True(scheduleDTO.IsRight);
+            scheduleDTO.IfRight(r => {
+                Assert.Equal(title, r.Slots[index].Title);
+                Assert.Equal("teachers", r.Type);
+                Assert.Equal(teacher, r.Name);
+            });
+
         }
     }
 }
